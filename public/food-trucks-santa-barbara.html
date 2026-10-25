@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0A0A0A">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+<title>Food Trucks in Santa Barbara — Live Map, Menus &amp; Online Ordering | WYA</title>
+<meta name="description" content="Find every food truck in Santa Barbara on a live GPS map. Browse menus, order online, and book catering — no commission, no apps required. Free for customers.">
+<meta name="keywords" content="food trucks santa barbara, food trucks near me santa barbara, best food trucks santa barbara, food truck catering santa barbara, street food santa barbara, food trucks ucsb, food truck events santa barbara, santa barbara street food, santa barbara food truck map, funk zone food trucks, isla vista food trucks">
+<link rel="canonical" href="https://wya.digisigns.link/food-trucks-santa-barbara">
+
+<!-- Open Graph -->
+<meta property="og:title" content="Food Trucks in Santa Barbara — Live Map, Menus &amp; Online Ordering | WYA">
+<meta property="og:description" content="Find every food truck in Santa Barbara on a live GPS map. Browse menus, order online, book catering. Free for customers.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://wya.digisigns.link/food-trucks-santa-barbara">
+<meta property="og:image" content="https://wya.digisigns.link/icon-512.png">
+<meta property="og:locale" content="en_US">
+<meta property="og:site_name" content="WYA — Where You At">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Food Trucks in Santa Barbara — Live Map &amp; Online Ordering | WYA">
+<meta name="twitter:description" content="Live GPS map of every food truck in Santa Barbara. Order online, book catering, NFC tap-to-order. Free for customers.">
+<meta name="twitter:image" content="https://wya.digisigns.link/icon-512.png">
+
+<!-- Schema.org Structured Data -->
+<script type="application/ld+json">
+[
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "WYA — Where You At",
+    "alternateName": "WYA",
+    "url": "https://wya.digisigns.link",
+    "description": "Live GPS map of food trucks, pop-ups, and local vendors in Santa Barbara. Browse menus, order online, and book catering — no commission.",
+    "applicationCategory": "FoodService",
+    "operatingSystem": "Web",
+    "areaServed": {
+      "@type": "City",
+      "name": "Santa Barbara",
+      "addressRegion": "CA",
+      "addressCountry": "US"
+    },
+    "offers": [
+      {
+        "@type": "Offer",
+        "name": "Customer Access",
+        "price": "0",
+        "priceCurrency": "USD",
+        "description": "Free for customers — find food trucks, browse menus, order online"
+      },
+      {
+        "@type": "Offer",
+        "name": "Vendor Free Plan",
+        "price": "0",
+        "priceCurrency": "USD",
+        "description": "Free listing, menu, and live GPS tracking for food truck vendors"
+      },
+      {
+        "@type": "Offer",
+        "name": "Vendor Pro Plan",
+        "price": "29",
+        "priceCurrency": "USD",
+        "billingDuration": "P1M",
+        "description": "Online ordering, delivery zones, and analytics for food trucks"
+      },
+      {
+        "@type": "Offer",
+        "name": "Vendor Growth Plan",
+        "price": "59",
+        "priceCurrency": "USD",
+        "billingDuration": "P1M",
+        "description": "Full catering pipeline, event booking, push notifications, loyalty programs"
+      }
+    ],
+    "provider": {
+      "@type": "Organization",
+      "name": "Universoul LLC",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Santa Barbara",
+        "addressRegion": "CA",
+        "addressCountry": "US"
+      }
+    },
+    "keywords": "food trucks Santa Barbara, food truck map, order food online, NFC ordering, food truck catering Santa Barbara"
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "How do I find food trucks near me in Santa Barbara?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Open the WYA map at wya.digisigns.link and you will see every food truck broadcasting their live GPS location right now. No account required — just open the map and find who is open near you."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I order food online from a Santa Barbara food truck?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Food trucks on the WYA Pro or Growth plan have full online ordering enabled. Browse their menu, customize your order, pay on your phone, and pick up when it is ready. No app download needed."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do food trucks sign up for WYA?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Go to wya.digisigns.link/vendor and create a free account. Your listing, menu, and live GPS tracking are all included in the free plan. Setup takes under 60 seconds."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is WYA free for customers?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, WYA is completely free for customers. Find food trucks on the live map, browse full menus with photos and prices, and order online — all at no cost."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do food trucks pay a commission on orders?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. WYA charges food trucks a flat monthly subscription (free, $29/mo Pro, or $59/mo Growth) with zero commission on orders. Every dollar from your customers goes directly to you."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Can I book a food truck for a catering event in Santa Barbara?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. WYA includes a full catering and event booking pipeline for Growth plan vendors. Send a catering request through the platform, receive a quote, book, and pay — all in one place. Popular for corporate events, UCSB events, weddings, and brewery pop-ups."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What areas does WYA cover?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "WYA covers all of Santa Barbara County including Downtown Santa Barbara, the Funk Zone, State Street, UCSB and Isla Vista, Goleta, Montecito, and the Santa Barbara Harbor. Any vendor can go live from anywhere."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How does the NFC tap-to-order feature work?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Food trucks on WYA can get an NFC card from DigiTap. A customer taps their phone to the card, the truck's full menu instantly loads in the browser, they place an order, and pay — no app download required. It works on any modern iPhone or Android."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is WYA only for food trucks?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "No. WYA supports any mobile or pop-up vendor — food trucks, coffee carts, farmers market stalls, flower vendors, artisan pop-ups, and more. If you sell it locally, you belong on the map."
+        }
+      }
+    ]
+  }
+]
+</script>
+
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://static.digisigns.link/soul-ui-v2.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#0A0A0A;
+  --card:#141414;
+  --card-hl:#0f0f1e;
+  --card-border-hl:rgba(108,99,255,.35);
+  --border:rgba(255,255,255,.07);
+  --text:rgba(255,255,255,.92);
+  --muted:rgba(255,255,255,.55);
+  --purple:#6c63ff;
+  --green:#22c55e;
+  --red:#ef4444;
+  --amber:#f59e0b;
+  --blue:#3b82f6;
+  --orange:#FF6B35;
+  --red2:#FD1D1D;
+  --gold:#FCB045;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+/* GRAIN */
+.grain{position:fixed;inset:0;z-index:9997;pointer-events:none;opacity:.04;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");background-size:200px 200px}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:16px 24px;background:rgba(10,10,10,.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text)}
+.nav-logo-icon{width:36px;height:36px;background:var(--orange);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.nav-logo-name{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.05em}
+.nav-logo-name span{background:linear-gradient(135deg,var(--orange),var(--red2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nav-cta{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;background:linear-gradient(135deg,var(--orange),var(--red2));color:#fff;border-radius:10px;font-size:14px;font-weight:700;text-decoration:none;transition:opacity .2s}
+.nav-cta:hover{opacity:.88}
+
+/* HERO */
+.hero{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;padding-top:72px}
+
+/* GRID BG */
+.hero-grid{position:absolute;inset:0;overflow:hidden}
+.hero-grid svg{width:100%;height:100%;opacity:.07}
+.grid-line{stroke:rgba(255,107,53,.6);stroke-width:.5;animation:grid-pulse 4s ease-in-out infinite}
+@keyframes grid-pulse{0%,100%{opacity:.3}50%{opacity:1}}
+
+/* ORBS */
+.orb{position:absolute;border-radius:50%;filter:blur(120px);pointer-events:none;animation:orb-drift 10s ease-in-out infinite}
+.orb-1{width:520px;height:520px;background:radial-gradient(circle,rgba(255,107,53,.18) 0%,transparent 70%);top:-15%;left:-10%;animation-duration:11s}
+.orb-2{width:380px;height:380px;background:radial-gradient(circle,rgba(108,99,255,.12) 0%,transparent 70%);bottom:-10%;right:-5%;animation-delay:-5s;animation-duration:13s}
+@keyframes orb-drift{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(28px,-18px) scale(1.04)}66%{transform:translate(-18px,14px) scale(.97)}}
+
+/* HERO CONTENT */
+.hero-content{position:relative;z-index:10;text-align:center;padding:60px 24px 48px;max-width:760px}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(255,107,53,.1);border:1px solid rgba(255,107,53,.3);border-radius:50px;padding:7px 18px;font-size:.78rem;font-weight:600;color:var(--orange);letter-spacing:.1em;text-transform:uppercase;margin-bottom:28px}
+.live-dot{width:7px;height:7px;background:var(--green);border-radius:50%;box-shadow:0 0 8px var(--green);animation:blink 1.4s ease-in-out infinite;flex-shrink:0}
+@keyframes blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+.hero h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(3.4rem,10vw,7rem);line-height:.92;letter-spacing:.02em;margin-bottom:24px;background:linear-gradient(160deg,#fff 30%,rgba(255,255,255,.5) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero h1 .accent{background:linear-gradient(135deg,var(--orange),var(--red2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:clamp(1rem,2.2vw,1.18rem);color:var(--muted);max-width:520px;margin:0 auto 36px;line-height:1.7;font-weight:300}
+.hero-sub strong{color:rgba(255,255,255,.8);font-weight:600}
+
+/* BADGES */
+.hero-badges{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-bottom:36px}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:7px 14px;background:var(--card);border:1px solid var(--border);border-radius:8px;font-size:13px;font-weight:600;color:var(--muted)}
+.badge .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.badge .dot-green{background:var(--green)}
+.badge .dot-orange{background:var(--orange)}
+.badge .dot-purple{background:var(--purple)}
+.badge .dot-blue{background:var(--blue)}
+
+/* HERO CTAs */
+.hero-ctas{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn-primary{display:inline-flex;align-items:center;gap:8px;padding:15px 28px;background:linear-gradient(135deg,var(--orange),var(--red2));color:#fff;border-radius:12px;font-size:16px;font-weight:700;text-decoration:none;transition:opacity .2s,transform .15s}
+.btn-primary:hover{opacity:.9}
+.btn-primary:active{transform:scale(.97)}
+.btn-ghost{display:inline-flex;align-items:center;gap:8px;padding:14px 28px;background:transparent;color:var(--text);border:1.5px solid var(--border);border-radius:12px;font-size:16px;font-weight:600;text-decoration:none;transition:border-color .2s,background .2s}
+.btn-ghost:hover{border-color:rgba(255,107,53,.4);background:rgba(255,107,53,.04)}
+
+/* TRUST STRIP */
+.trust-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border-top:1px solid var(--border);border-bottom:1px solid var(--border);position:relative;z-index:10;margin-top:auto;width:100%}
+.trust-item{background:var(--bg);padding:20px 16px;text-align:center}
+.trust-num{font-family:'Bebas Neue',sans-serif;font-size:1.8rem;background:linear-gradient(135deg,var(--orange),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:4px}
+.trust-label{font-size:.72rem;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;font-weight:600}
+
+/* SECTIONS */
+.section{padding:88px 24px;max-width:1100px;margin:0 auto}
+.section-head{margin-bottom:48px}
+.section-label{font-size:.72rem;font-weight:700;letter-spacing:.2em;color:var(--orange);text-transform:uppercase;margin-bottom:12px}
+.divider{width:48px;height:2px;background:linear-gradient(90deg,var(--orange),transparent);margin-bottom:20px}
+.section-head h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.4rem,6vw,4rem);line-height:1;letter-spacing:.02em;margin-bottom:14px}
+.section-head h2 .grad{background:linear-gradient(135deg,var(--orange),var(--red2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.section-head p{color:var(--muted);font-size:1rem;max-width:520px;line-height:1.7;font-weight:300}
+
+/* HOW IT WORKS */
+.how-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+.how-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:32px 28px;position:relative;overflow:hidden;transition:border-color .3s}
+.how-card:hover{border-color:rgba(255,107,53,.3)}
+.how-num{font-family:'Bebas Neue',sans-serif;font-size:5rem;color:rgba(255,107,53,.06);position:absolute;top:10px;right:18px;line-height:1;pointer-events:none;user-select:none}
+.how-icon{width:46px;height:46px;border-radius:12px;background:rgba(255,107,53,.1);border:1px solid rgba(255,107,53,.2);display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin-bottom:18px}
+.how-card h3{font-size:1.05rem;font-weight:700;margin-bottom:8px}
+.how-card p{font-size:.9rem;color:var(--muted);line-height:1.65}
+
+/* WHY GRID */
+.why-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.why-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:28px 24px;transition:border-color .3s,transform .3s}
+.why-card:hover{border-color:var(--card-border-hl);transform:translateY(-3px)}
+.why-card-icon{font-size:1.6rem;margin-bottom:14px}
+.why-card h3{font-size:1rem;font-weight:700;margin-bottom:8px}
+.why-card p{font-size:.875rem;color:var(--muted);line-height:1.6}
+
+/* PLANS */
+.plans-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.plan-card{background:var(--card);border:1.5px solid var(--border);border-radius:20px;padding:28px 24px;display:flex;flex-direction:column;position:relative}
+.plan-card.featured{border-color:var(--orange);background:linear-gradient(135deg,rgba(255,107,53,.06),var(--card))}
+.plan-badge{position:absolute;top:14px;right:14px;background:var(--orange);color:#fff;font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:.05em}
+.plan-name{font-size:.72rem;font-weight:700;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin-bottom:6px}
+.plan-price{font-family:'Bebas Neue',sans-serif;font-size:3rem;line-height:1;background:linear-gradient(135deg,var(--orange),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px}
+.plan-price small{font-family:'DM Sans',sans-serif;font-size:14px;font-weight:500;color:var(--muted);-webkit-text-fill-color:var(--muted)}
+.plan-desc{font-size:.875rem;color:var(--muted);margin-bottom:20px;line-height:1.55}
+.plan-features{list-style:none;display:flex;flex-direction:column;gap:9px;margin-bottom:24px;flex:1}
+.plan-features li{display:flex;align-items:flex-start;gap:9px;font-size:.875rem;line-height:1.5}
+.plan-features li::before{content:"✓";color:var(--green);font-weight:700;flex-shrink:0;margin-top:1px}
+.plan-cta{display:block;text-align:center;padding:13px;border-radius:12px;font-size:14px;font-weight:700;text-decoration:none;transition:.15s;cursor:pointer}
+.plan-cta.solid{background:linear-gradient(135deg,var(--orange),var(--red2));color:#fff}
+.plan-cta.ghost{background:transparent;border:1.5px solid rgba(255,255,255,.12);color:var(--text)}
+.plan-cta.ghost:hover{border-color:rgba(255,107,53,.4)}
+.plan-cta:active{opacity:.8;transform:scale(.98)}
+
+/* NFC SECTION */
+.nfc-section{background:linear-gradient(135deg,var(--card-hl),var(--card));border:1px solid var(--card-border-hl);border-radius:24px;padding:56px 40px;text-align:center;position:relative;overflow:hidden}
+.nfc-section::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 0%,rgba(108,99,255,.12) 0%,transparent 65%);pointer-events:none}
+.nfc-icon{font-size:3.5rem;margin-bottom:20px;position:relative;z-index:1}
+.nfc-section h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.2rem,5vw,3.5rem);line-height:1;letter-spacing:.02em;margin-bottom:16px;position:relative;z-index:1}
+.nfc-section .grad-purple{background:linear-gradient(135deg,var(--purple),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.nfc-section p{color:var(--muted);font-size:1rem;max-width:520px;margin:0 auto 28px;line-height:1.7;position:relative;z-index:1}
+.nfc-steps{display:flex;gap:0;justify-content:center;align-items:center;flex-wrap:wrap;margin-bottom:32px;position:relative;z-index:1}
+.nfc-step{display:flex;flex-direction:column;align-items:center;gap:8px;padding:0 24px}
+.nfc-step-icon{width:52px;height:52px;border-radius:14px;background:rgba(108,99,255,.12);border:1px solid rgba(108,99,255,.25);display:flex;align-items:center;justify-content:center;font-size:1.4rem}
+.nfc-step-label{font-size:.8rem;font-weight:600;color:var(--muted);text-align:center;max-width:80px}
+.nfc-arrow{font-size:1.4rem;color:rgba(255,255,255,.2);flex-shrink:0}
+.nfc-claim{display:inline-block;background:rgba(108,99,255,.12);border:1px solid rgba(108,99,255,.3);border-radius:8px;padding:10px 20px;font-size:.875rem;font-weight:600;color:var(--purple);position:relative;z-index:1}
+
+/* LOCATIONS GRID */
+.locations-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.location-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:22px 20px;display:flex;align-items:center;gap:14px;transition:border-color .25s,transform .25s;text-decoration:none;color:var(--text)}
+.location-card:hover{border-color:rgba(255,107,53,.3);transform:translateY(-2px)}
+.location-icon{font-size:1.6rem;flex-shrink:0}
+.location-name{font-size:.95rem;font-weight:700;margin-bottom:3px}
+.location-sub{font-size:.8rem;color:var(--muted)}
+
+/* EVENT SECTION */
+.event-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.event-card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:26px 22px;transition:border-color .3s}
+.event-card:hover{border-color:rgba(255,107,53,.25)}
+.event-card-icon{font-size:1.6rem;margin-bottom:12px}
+.event-card h3{font-size:.95rem;font-weight:700;margin-bottom:8px}
+.event-card p{font-size:.85rem;color:var(--muted);line-height:1.6}
+
+/* PIPELINE STEPS */
+.pipeline{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+.pipeline-step{flex:1;min-width:140px;background:rgba(255,107,53,.05);border:1px solid rgba(255,107,53,.15);border-radius:12px;padding:14px 16px;text-align:center}
+.pipeline-step-num{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;color:rgba(255,107,53,.5);line-height:1;margin-bottom:4px}
+.pipeline-step-label{font-size:.8rem;font-weight:600;color:var(--muted)}
+
+/* FAQ */
+.faq-list{display:flex;flex-direction:column;gap:12px}
+.faq-item{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:border-color .25s}
+.faq-item.open{border-color:rgba(255,107,53,.3)}
+.faq-question{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 24px;cursor:pointer;user-select:none;font-size:.95rem;font-weight:600;line-height:1.4}
+.faq-question:hover{color:var(--orange)}
+.faq-icon{flex-shrink:0;width:22px;height:22px;border-radius:50%;border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--muted);transition:transform .3s,border-color .25s}
+.faq-item.open .faq-icon{transform:rotate(45deg);border-color:var(--orange);color:var(--orange)}
+.faq-answer{max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s}
+.faq-answer-inner{padding:0 24px 20px;font-size:.9rem;color:var(--muted);line-height:1.75}
+
+/* BOTTOM CTA */
+.bottom-cta{text-align:center;padding:96px 24px;position:relative;overflow:hidden}
+.bottom-cta::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 30%,rgba(255,107,53,.1) 0%,transparent 65%);pointer-events:none}
+.bottom-cta h2{font-family:'Bebas Neue',sans-serif;font-size:clamp(2.8rem,8vw,5.5rem);line-height:.95;letter-spacing:.02em;margin-bottom:18px;position:relative;z-index:1}
+.bottom-cta h2 .grad{background:linear-gradient(135deg,var(--orange),var(--red2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.bottom-cta p{color:var(--muted);font-size:1.05rem;max-width:460px;margin:0 auto 36px;line-height:1.7;position:relative;z-index:1}
+.bottom-cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;position:relative;z-index:1}
+
+/* FOOTER */
+.footer{border-top:1px solid var(--border);padding:40px 24px;text-align:center;max-width:1100px;margin:0 auto}
+.footer-logo{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:.08em;background:linear-gradient(135deg,var(--orange),var(--red2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:8px}
+.footer p{font-size:.8rem;color:var(--muted);line-height:1.9}
+.footer a{color:rgba(255,255,255,.3);text-decoration:none;transition:color .2s}
+.footer a:hover{color:var(--orange)}
+
+/* SCROLL REVEAL */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
+.reveal.visible{opacity:1;transform:none}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .trust-strip{grid-template-columns:repeat(2,1fr)}
+  .nfc-steps{gap:0}
+  .nfc-step{padding:0 14px}
+  .nfc-arrow{font-size:1rem}
+  .pipeline{flex-direction:column}
+  .nav-cta span{display:none}
+}
+@media(max-width:480px){
+  .hero h1{letter-spacing:.01em}
+  .hero-badges{gap:8px}
+  .badge{font-size:12px;padding:6px 12px}
+  .hero-ctas{flex-direction:column;align-items:center}
+  .btn-primary,.btn-ghost{width:100%;max-width:320px;justify-content:center}
+  .trust-strip{grid-template-columns:repeat(2,1fr)}
+  .nfc-steps{flex-direction:column;gap:12px}
+  .nfc-arrow{transform:rotate(90deg)}
+  .bottom-cta-btns{flex-direction:column;align-items:center}
+}
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+
+<!-- NAV -->
+<nav class="nav">
+  <a class="nav-logo" href="https://wya.digisigns.link" aria-label="WYA home">
+    <div class="nav-logo-icon">📍</div>
+    <div class="nav-logo-name">WHERE <span>YOU AT</span></div>
+  </a>
+  <a class="nav-cta" href="https://wya.digisigns.link">
+    <span>Find Food Trucks</span> &#8594;
+  </a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid" aria-hidden="true">
+    <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <line class="grid-line" x1="80" y1="0" x2="80" y2="900" style="animation-delay:0s"/>
+      <line class="grid-line" x1="200" y1="0" x2="200" y2="900" style="animation-delay:.3s"/>
+      <line class="grid-line" x1="320" y1="0" x2="320" y2="900" style="animation-delay:.6s"/>
+      <line class="grid-line" x1="440" y1="0" x2="440" y2="900" style="animation-delay:.9s"/>
+      <line class="grid-line" x1="560" y1="0" x2="560" y2="900" style="animation-delay:1.2s"/>
+      <line class="grid-line" x1="680" y1="0" x2="680" y2="900" style="animation-delay:1.5s"/>
+      <line class="grid-line" x1="800" y1="0" x2="800" y2="900" style="animation-delay:1.8s"/>
+      <line class="grid-line" x1="920" y1="0" x2="920" y2="900" style="animation-delay:2.1s"/>
+      <line class="grid-line" x1="1040" y1="0" x2="1040" y2="900" style="animation-delay:2.4s"/>
+      <line class="grid-line" x1="1160" y1="0" x2="1160" y2="900" style="animation-delay:2.7s"/>
+      <line class="grid-line" x1="1280" y1="0" x2="1280" y2="900" style="animation-delay:3s"/>
+      <line class="grid-line" x1="1400" y1="0" x2="1400" y2="900" style="animation-delay:3.3s"/>
+      <line class="grid-line" x1="0" y1="100" x2="1440" y2="100" style="animation-delay:.15s"/>
+      <line class="grid-line" x1="0" y1="220" x2="1440" y2="220" style="animation-delay:.45s"/>
+      <line class="grid-line" x1="0" y1="340" x2="1440" y2="340" style="animation-delay:.75s"/>
+      <line class="grid-line" x1="0" y1="460" x2="1440" y2="460" style="animation-delay:1.05s"/>
+      <line class="grid-line" x1="0" y1="580" x2="1440" y2="580" style="animation-delay:1.35s"/>
+      <line class="grid-line" x1="0" y1="700" x2="1440" y2="700" style="animation-delay:1.65s"/>
+      <line class="grid-line" x1="0" y1="820" x2="1440" y2="820" style="animation-delay:1.95s"/>
+      <circle cx="320" cy="220" r="2.5" fill="rgba(255,107,53,.5)" style="animation:grid-pulse 3.5s ease-in-out infinite"/>
+      <circle cx="680" cy="460" r="2.5" fill="rgba(255,107,53,.5)" style="animation:grid-pulse 3.5s ease-in-out infinite;animation-delay:.8s"/>
+      <circle cx="1040" cy="340" r="2.5" fill="rgba(255,107,53,.5)" style="animation:grid-pulse 3.5s ease-in-out infinite;animation-delay:1.6s"/>
+      <circle cx="200" cy="580" r="2.5" fill="rgba(255,107,53,.5)" style="animation:grid-pulse 3.5s ease-in-out infinite;animation-delay:2.4s"/>
+    </svg>
+  </div>
+  <div class="orb orb-1" aria-hidden="true"></div>
+  <div class="orb orb-2" aria-hidden="true"></div>
+
+  <div class="hero-content">
+    <div class="hero-eyebrow">
+      <span class="live-dot" aria-hidden="true"></span>
+      Live Map &middot; Santa Barbara, CA
+    </div>
+    <h1>Every food truck in Santa Barbara.<br><span class="accent">Live on the map.</span></h1>
+    <p class="hero-sub">
+      See real-time GPS locations, browse full menus with photos and prices, and
+      <strong>order directly from the truck</strong> — no app, no commission, no guessing.
+    </p>
+
+    <div class="hero-badges" aria-label="Key features">
+      <div class="badge"><span class="dot dot-green" aria-hidden="true"></span>Live GPS map</div>
+      <div class="badge"><span class="dot dot-orange" aria-hidden="true"></span>Order online</div>
+      <div class="badge"><span class="dot dot-purple" aria-hidden="true"></span>NFC tap-to-order</div>
+      <div class="badge"><span class="dot dot-blue" aria-hidden="true"></span>No commission</div>
+    </div>
+
+    <div class="hero-ctas">
+      <a class="btn-primary" href="https://wya.digisigns.link">
+        Open the Map &#8594;
+      </a>
+      <a class="btn-ghost" href="#vendor">
+        I'm a Food Truck Owner
+      </a>
+    </div>
+  </div>
+
+  <!-- TRUST STRIP -->
+  <div class="trust-strip" role="list" aria-label="Trust indicators">
+    <div class="trust-item" role="listitem">
+      <div class="trust-num">100+</div>
+      <div class="trust-label">Food trucks tracked</div>
+    </div>
+    <div class="trust-item" role="listitem">
+      <div class="trust-num">GPS</div>
+      <div class="trust-label">Real-time location</div>
+    </div>
+    <div class="trust-item" role="listitem">
+      <div class="trust-num">&#x1F4F1;</div>
+      <div class="trust-label">Order from your phone</div>
+    </div>
+    <div class="trust-item" role="listitem">
+      <div class="trust-num">SB</div>
+      <div class="trust-label">SB-based team</div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS — CUSTOMERS -->
+<section class="section reveal" id="how">
+  <div class="section-head">
+    <div class="section-label">For customers</div>
+    <div class="divider" aria-hidden="true"></div>
+    <h2>From hunger to order<br>in <span class="grad">three taps</span></h2>
+    <p>No calls, no driving around, no guessing. The map shows you exactly where every food truck is parked right now.</p>
+  </div>
+  <div class="how-grid">
+    <div class="how-card">
+      <div class="how-num" aria-hidden="true">01</div>
+      <div class="how-icon" aria-hidden="true">🗺️</div>
+      <h3>Open the map</h3>
+      <p>Visit <strong>wya.digisigns.link</strong> on any device. Instantly see every food truck near you with live GPS dots — updated in real time as they move.</p>
+    </div>
+    <div class="how-card">
+      <div class="how-num" aria-hidden="true">02</div>
+      <div class="how-icon" aria-hidden="true">🍔</div>
+      <h3>Browse the menu</h3>
+      <p>Tap any truck to see their full menu with photos, prices, modifier groups, and prep times. Know exactly what you are getting before you walk up.</p>
+    </div>
+    <div class="how-card">
+      <div class="how-num" aria-hidden="true">03</div>
+      <div class="how-icon" aria-hidden="true">✅</div>
+      <h3>Order and pick up</h3>
+      <p>Place your order and pay directly on your phone. Walk up to the truck when it is ready — no line, no cash, no waiting to flag someone down.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOR EVENT PLANNERS -->
+<section class="section reveal" id="events" style="border-top:1px solid var(--border)">
+  <div class="section-head">
+    <div class="section-label">Catering &amp; events</div>
+    <div class="divider" aria-hidden="true"></div>
+    <h2>Book a food truck for<br><span class="grad">your next event</span></h2>
+    <p>Corporate lunches, UCSB events, weddings, brewery pop-ups — WYA connects event planners directly with Santa Barbara food trucks through a clean catering pipeline.</p>
+  </div>
+  <div class="event-grid">
+    <div class="event-card">
+      <div class="event-card-icon">🏢</div>
+      <h3>Corporate &amp; Tech Events</h3>
+      <p>Great for Deckers / HOKA, AppFolio, and other Santa Barbara tech companies. Book a food truck for your next team lunch or office event.</p>
+    </div>
+    <div class="event-card">
+      <div class="event-card-icon">🎓</div>
+      <h3>UCSB &amp; Campus Events</h3>
+      <p>Graduation parties, club events, farmers markets on campus. WYA vendors are ready to serve UCSB and Isla Vista events with full online coordination.</p>
+    </div>
+    <div class="event-card">
+      <div class="event-card-icon">🍷</div>
+      <h3>Winery &amp; Brewery Pop-Ups</h3>
+      <p>Santa Barbara wine country and the Funk Zone are a natural fit for food truck pop-ups. Coordinate directly with your preferred vendor through the platform.</p>
+    </div>
+    <div class="event-card">
+      <div class="event-card-icon">💒</div>
+      <h3>Weddings &amp; Private Events</h3>
+      <p>Casual, fun, and memorable. Food trucks bring something different to weddings and private parties — and WYA makes the booking friction-free.</p>
+    </div>
+  </div>
+  <div>
+    <p style="color:var(--muted);font-size:.9rem;margin-top:32px;margin-bottom:20px;font-weight:600;text-transform:uppercase;letter-spacing:.08em">The catering pipeline</p>
+    <div class="pipeline">
+      <div class="pipeline-step">
+        <div class="pipeline-step-num">1</div>
+        <div class="pipeline-step-label">Request</div>
+      </div>
+      <div class="pipeline-step">
+        <div class="pipeline-step-num">2</div>
+        <div class="pipeline-step-label">Quote</div>
+      </div>
+      <div class="pipeline-step">
+        <div class="pipeline-step-num">3</div>
+        <div class="pipeline-step-label">Book</div>
+      </div>
+      <div class="pipeline-step">
+        <div class="pipeline-step-num">4</div>
+        <div class="pipeline-step-label">Pay</div>
+      </div>
+      <div class="pipeline-step">
+        <div class="pipeline-step-num">5</div>
+        <div class="pipeline-step-label">Show up</div>
+      </div>
+    </div>
+  </div>
+  <div style="margin-top:32px">
+    <a class="btn-primary" href="https://wya.digisigns.link">Request Catering Quote &#8594;</a>
+  </div>
+</section>
+
+<!-- FOR FOOD TRUCK OWNERS -->
+<section class="section reveal" id="vendor" style="border-top:1px solid var(--border)">
+  <div class="section-head">
+    <div class="section-label">For food truck owners</div>
+    <div class="divider" aria-hidden="true"></div>
+    <h2>Get found by <span class="grad">100,000+</span><br>Santa Barbara residents</h2>
+    <p>List your truck free. Show up on the map every time you open. Upgrade to accept online orders, book catering, and run loyalty programs — all with zero commission.</p>
+  </div>
+  <div class="plans-grid">
+    <!-- Free -->
+    <div class="plan-card">
+      <div class="plan-name">Free</div>
+      <div class="plan-price">$0 <small>/mo</small></div>
+      <div class="plan-desc">Get on the map and start being found — no credit card required.</div>
+      <ul class="plan-features">
+        <li>Vendor listing + profile page</li>
+        <li>Live GPS check-in (go live when open)</li>
+        <li>Full menu builder with photos</li>
+        <li>Basic analytics (views, taps)</li>
+        <li>DigiTap NFC card compatible</li>
+      </ul>
+      <a class="plan-cta ghost" href="https://wya.digisigns.link/vendor">List Your Truck Free</a>
+    </div>
+
+    <!-- Pro -->
+    <div class="plan-card featured">
+      <div class="plan-badge">Most popular</div>
+      <div class="plan-name">Pro</div>
+      <div class="plan-price">$29 <small>/mo</small></div>
+      <div class="plan-desc">For trucks that want to take orders and run their business on the platform.</div>
+      <ul class="plan-features">
+        <li>Everything in Free</li>
+        <li>Online ordering (customers pay on phone)</li>
+        <li>Delivery zone management</li>
+        <li>Full analytics dashboard</li>
+        <li>Order history + customer data</li>
+        <li>Zero commission on all orders</li>
+      </ul>
+      <a class="plan-cta solid" href="https://wya.digisigns.link/vendor">Start Pro — $29/mo</a>
+    </div>
+
+    <!-- Growth -->
+    <div class="plan-card">
+      <div class="plan-name">Growth</div>
+      <div class="plan-price">$59 <small>/mo</small></div>
+      <div class="plan-desc">Full business suite with catering, events, push notifications, and loyalty.</div>
+      <ul class="plan-features">
+        <li>Everything in Pro</li>
+        <li>Catering and event booking pipeline</li>
+        <li>Push notifications to followers</li>
+        <li>Customer loyalty programs</li>
+        <li>Reviews and ratings management</li>
+        <li>Priority placement on the map</li>
+        <li>Zero commission — always</li>
+      </ul>
+      <a class="plan-cta solid" href="https://wya.digisigns.link/vendor">Start Growth — $59/mo</a>
+    </div>
+  </div>
+</section>
+
+<!-- WHY WYA -->
+<section class="section reveal" style="border-top:1px solid var(--border)">
+  <div class="section-head">
+    <div class="section-label">Why WYA wins</div>
+    <div class="divider" aria-hidden="true"></div>
+    <h2>Built differently from<br><span class="grad">every other platform</span></h2>
+    <p>Other apps take a cut of every order. WYA charges vendors a flat monthly fee — the rest goes directly to you.</p>
+  </div>
+  <div class="why-grid">
+    <div class="why-card">
+      <div class="why-card-icon">📍</div>
+      <h3>Live GPS — not a static directory</h3>
+      <p>Vendors check in when they open. The map shows real-time locations, not listings that are six months out of date.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-card-icon">💸</div>
+      <h3>Zero commission, always</h3>
+      <p>Grubhub takes up to 30%. WYA takes zero. Flat monthly subscription means you keep every dollar your customers spend.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-card-icon">📱</div>
+      <h3>No app download required</h3>
+      <p>Customers open a link in their browser — that is it. No friction, no barriers, no convincing anyone to install an app.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-card-icon">📡</div>
+      <h3>NFC + map + ordering in one</h3>
+      <p>No other platform combines live GPS tracking, NFC tap-to-order, catering booking, and push notifications in a single product.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-card-icon">🤝</div>
+      <h3>Local Santa Barbara team</h3>
+      <p>WYA is built and run in Santa Barbara. We know the Funk Zone, UCSB, and the Harbor. This is our city too.</p>
+    </div>
+    <div class="why-card">
+      <div class="why-card-icon">🎯</div>
+      <h3>Discovery + ordering + loyalty</h3>
+      <p>Find the truck, order from it, earn loyalty points — all in the same platform. Customers have one reason to keep coming back.</p>
+    </div>
+  </div>
+</section>
+
+<!-- NFC SECTION -->
+<section class="section reveal" style="border-top:1px solid var(--border)" id="nfc">
+  <div class="nfc-section">
+    <div class="nfc-icon" aria-hidden="true">&#x1F4F2;</div>
+    <h2>Tap. Order. <span class="grad-purple">Eat.</span></h2>
+    <p>WYA vendors get a DigiTap NFC card. A customer taps their phone to the card at the truck — the full menu loads instantly in their browser, they order, they pay. No app. No QR code scanning. Just a tap.</p>
+    <div class="nfc-steps" aria-label="NFC ordering flow">
+      <div class="nfc-step">
+        <div class="nfc-step-icon" aria-hidden="true">&#x1F4F2;</div>
+        <div class="nfc-step-label">Tap card at truck</div>
+      </div>
+      <div class="nfc-arrow" aria-hidden="true">&#8594;</div>
+      <div class="nfc-step">
+        <div class="nfc-step-icon" aria-hidden="true">&#x1F354;</div>
+        <div class="nfc-step-label">Menu loads instantly</div>
+      </div>
+      <div class="nfc-arrow" aria-hidden="true">&#8594;</div>
+      <div class="nfc-step">
+        <div class="nfc-step-icon" aria-hidden="true">&#x1F6D2;</div>
+        <div class="nfc-step-label">Order &amp; pay</div>
+      </div>
+      <div class="nfc-arrow" aria-hidden="true">&#8594;</div>
+      <div class="nfc-step">
+        <div class="nfc-step-icon" aria-hidden="true">&#x2705;</div>
+        <div class="nfc-step-label">Pick up when ready</div>
+      </div>
+    </div>
+    <div class="nfc-claim">Nobody else combines NFC + live map + online ordering in Santa Barbara</div>
+  </div>
+</section>
+
+<!-- POPULAR LOCATIONS -->
+<section class="section reveal" style="border-top:1px solid var(--border)" id="locations">
+  <div class="section-head">
+    <div class="section-label">Where they park</div>
+    <div class="divider" aria-hidden="true"></div>
+    <h2>Popular food truck<br><span class="grad">locations in SB</span></h2>
+    <p>Santa Barbara food trucks move — that is the point. WYA shows you where they are right now, whether they are on State Street or all the way out in Goleta.</p>
+  </div>
+  <div class="locations-grid">
+    <a class="location-card" href="https://wya.digisigns.link" aria-label="Find food trucks on State Street">
+      <div class="location-icon" aria-hidden="true">🏙️</div>
+      <div>
+        <div class="location-name">State Street</div>
+        <div class="location-sub">Downtown core, lunch &amp; dinner</div>
+      </div>
+    </a>
+    <a class="location-card" href="https://wya.digisigns.link" aria-label="Find food trucks in the Funk Zone">
+      <div class="location-icon" aria-hidden="true">🍷</div>
+      <div>
+        <div class="location-name">Funk Zone</div>
+        <div class="location-sub">Breweries, wine bars, pop-ups</div>
+      </div>
+    </a>
+    <a class="location-card" href="https://wya.digisigns.link" aria-label="Find food trucks at UCSB">
+      <div class="location-icon" aria-hidden="true">🎓</div>
+      <div>
+        <div class="location-name">UCSB Campus</div>
+        <div class="location-sub">Student lunch, campus events</div>
+      </div>
+    </a>
+    <a class="location-card" href="https://wya.digisigns.link" aria-label="Find food trucks near Stearns Wharf">
+      <div class="location-icon" aria-hidden="true">⚓</div>
+      <div>
+        <div class="location-name">Stearns Wharf</div>
+        <div class="location-sub">Tourist corridor, seafront dining</div>
+      </div>
+    </a>
+    <a class="location-card" href="https://wya.digisigns.link" aria-label="Find food trucks in Goleta">
+      <div class="location-icon" aria-hidden="true">🏢</div>
+      <div>
+        <div class="location-name">Goleta</div>
+        <div class="location-sub">Tech campuses, corporate lunch</div>
+      </div>
+    </a>
+    <a class="location-card" href="https://wya.digisigns.link" aria-label="Find food trucks in Isla Vista">
+      <div class="location-icon" aria-hidden="true">🍕</div>
+      <div>
+        <div class="location-name">Isla Vista</div>
+        <div class="location-sub">Late nights, student favorites</div>
+      </div>
+    </a>
+    <a class="location-card" href="https://wya.digisigns.link" aria-label="Find food trucks in Montecito">
+      <div class="location-icon" aria-hidden="true">🌴</div>
+      <div>
+        <div class="location-name">Montecito</div>
+        <div class="location-sub">Upscale pop-ups, private events</div>
+      </div>
+    </a>
+    <a class="location-card" href="https://wya.digisigns.link" aria-label="Find food trucks at Santa Barbara Harbor">
+      <div class="location-icon" aria-hidden="true">🚢</div>
+      <div>
+        <div class="location-name">Santa Barbara Harbor</div>
+        <div class="location-sub">Weekend events, waterfront</div>
+      </div>
+    </a>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section reveal" style="border-top:1px solid var(--border)" id="faq">
+  <div class="section-head">
+    <div class="section-label">Frequently asked</div>
+    <div class="divider" aria-hidden="true"></div>
+    <h2>Common questions about<br><span class="grad">food trucks in SB</span></h2>
+  </div>
+  <div class="faq-list" role="list">
+
+    <div class="faq-item" role="listitem">
+      <button class="faq-question" aria-expanded="false" onclick="toggleFaq(this)">
+        How do I find food trucks near me in Santa Barbara?
+        <span class="faq-icon" aria-hidden="true">+</span>
+      </button>
+      <div class="faq-answer" role="region">
+        <div class="faq-answer-inner">Open the WYA map at <strong>wya.digisigns.link</strong> from any phone or computer. You will see every food truck that is currently broadcasting their live GPS location. No account required — just open the map and find who is open near you right now.</div>
+      </div>
+    </div>
+
+    <div class="faq-item" role="listitem">
+      <button class="faq-question" aria-expanded="false" onclick="toggleFaq(this)">
+        Can I order food online from a Santa Barbara food truck?
+        <span class="faq-icon" aria-hidden="true">+</span>
+      </button>
+      <div class="faq-answer" role="region">
+        <div class="faq-answer-inner">Yes. Food trucks on WYA's Pro or Growth plan have full online ordering enabled. Browse their menu, customize your order with modifiers, pay on your phone, and pick up when it is ready. No app download needed — it all works in your mobile browser.</div>
+      </div>
+    </div>
+
+    <div class="faq-item" role="listitem">
+      <button class="faq-question" aria-expanded="false" onclick="toggleFaq(this)">
+        How do food trucks sign up for WYA?
+        <span class="faq-icon" aria-hidden="true">+</span>
+      </button>
+      <div class="faq-answer" role="region">
+        <div class="faq-answer-inner">Go to <strong>wya.digisigns.link/vendor</strong> and create a free account. Your listing, menu builder, and live GPS check-in are all included at zero cost. Setup takes under 60 seconds. No credit card required to start.</div>
+      </div>
+    </div>
+
+    <div class="faq-item" role="listitem">
+      <button class="faq-question" aria-expanded="false" onclick="toggleFaq(this)">
+        Is WYA free for customers?
+        <span class="faq-icon" aria-hidden="true">+</span>
+      </button>
+      <div class="faq-answer" role="region">
+        <div class="faq-answer-inner">Yes, WYA is completely free for customers. Find food trucks on the live map, browse full menus with photos and prices, read reviews, and place orders — all at no cost, with no account required to view the map.</div>
+      </div>
+    </div>
+
+    <div class="faq-item" role="listitem">
+      <button class="faq-question" aria-expanded="false" onclick="toggleFaq(this)">
+        Do food trucks pay a commission on orders through WYA?
+        <span class="faq-icon" aria-hidden="true">+</span>
+      </button>
+      <div class="faq-answer" role="region">
+        <div class="faq-answer-inner">No — and this is intentional. WYA charges food trucks a flat monthly subscription (Free, $29/mo Pro, or $59/mo Growth) with <strong>zero commission on orders</strong>. Every dollar your customers spend goes directly to you. Platforms like Grubhub take 20–30%; WYA takes nothing.</div>
+      </div>
+    </div>
+
+    <div class="faq-item" role="listitem">
+      <button class="faq-question" aria-expanded="false" onclick="toggleFaq(this)">
+        Can I book a food truck for catering in Santa Barbara?
+        <span class="faq-icon" aria-hidden="true">+</span>
+      </button>
+      <div class="faq-answer" role="region">
+        <div class="faq-answer-inner">Yes. WYA Growth plan vendors have a full catering and event booking pipeline built in. Submit a catering request through the platform, receive a quote directly from the truck, confirm the booking, and pay — all in one place. Popular for corporate events, UCSB functions, weddings, and brewery pop-ups.</div>
+      </div>
+    </div>
+
+    <div class="faq-item" role="listitem">
+      <button class="faq-question" aria-expanded="false" onclick="toggleFaq(this)">
+        What areas does WYA cover in Santa Barbara?
+        <span class="faq-icon" aria-hidden="true">+</span>
+      </button>
+      <div class="faq-answer" role="region">
+        <div class="faq-answer-inner">WYA covers all of Santa Barbara County. Food trucks can go live from anywhere — Downtown, the Funk Zone, State Street, UCSB and Isla Vista, Goleta, Montecito, and the Harbor. If a vendor has GPS coverage and opens for business, they appear on the map.</div>
+      </div>
+    </div>
+
+    <div class="faq-item" role="listitem">
+      <button class="faq-question" aria-expanded="false" onclick="toggleFaq(this)">
+        How does the NFC tap-to-order feature work?
+        <span class="faq-icon" aria-hidden="true">+</span>
+      </button>
+      <div class="faq-answer" role="region">
+        <div class="faq-answer-inner">Food trucks on WYA can get a DigiTap NFC card — a small card or sticker placed at the service window. A customer holds their phone near the card, the truck's full WYA menu loads instantly in the mobile browser, they customize and place an order, and pay. It works on any modern iPhone or Android without any app installation.</div>
+      </div>
+    </div>
+
+    <div class="faq-item" role="listitem">
+      <button class="faq-question" aria-expanded="false" onclick="toggleFaq(this)">
+        Is WYA only for food trucks?
+        <span class="faq-icon" aria-hidden="true">+</span>
+      </button>
+      <div class="faq-answer" role="region">
+        <div class="faq-answer-inner">No. WYA supports any mobile or pop-up vendor — food trucks, coffee carts, farmers market stalls, artisan pop-up shops, flower vendors, bakers, and more. Food trucks are the primary focus in Santa Barbara, but anyone who sells locally and moves around belongs on the map.</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- BOTTOM CTA -->
+<section class="bottom-cta reveal">
+  <h2>Find your next meal.<br><span class="grad">Open the map.</span></h2>
+  <p>Every food truck in Santa Barbara, live on a single map. Free for customers, fair for vendors.</p>
+  <div class="bottom-cta-btns">
+    <a class="btn-primary" href="https://wya.digisigns.link">Open the Map &#8594;</a>
+    <a class="btn-ghost" href="https://wya.digisigns.link/vendor">List Your Truck Free</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-logo">WYA</div>
+  <p>
+    &copy; 2026 <a href="https://digisigns.link">Universoul LLC</a> &middot; Santa Barbara, CA<br>
+    <a href="https://wya.digisigns.link">Home</a> &middot;
+    <a href="https://wya.digisigns.link/vendor">For Vendors</a> &middot;
+    <a href="https://wya.digisigns.link/plans">Pricing</a> &middot;
+    <a href="#">Privacy</a> &middot;
+    <a href="#">Terms</a>
+  </p>
+</footer>
+
+<script>
+// Scroll reveal
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+// FAQ accordion
+function toggleFaq(btn) {
+  const item = btn.closest('.faq-item');
+  const answer = item.querySelector('.faq-answer');
+  const isOpen = item.classList.contains('open');
+
+  // Close all open items
+  document.querySelectorAll('.faq-item.open').forEach(openItem => {
+    openItem.classList.remove('open');
+    openItem.querySelector('.faq-answer').style.maxHeight = '0';
+    openItem.querySelector('.faq-question').setAttribute('aria-expanded', 'false');
+  });
+
+  // Open clicked if it was closed
+  if (!isOpen) {
+    item.classList.add('open');
+    answer.style.maxHeight = answer.scrollHeight + 'px';
+    btn.setAttribute('aria-expanded', 'true');
+  }
+}
+
+// Load live vendor count from WYA API
+(async function loadLiveCount() {
+  try {
+    const d = await (await fetch('/api/public/stats')).json();
+    const count = d.vendors_live || d.vendors_total;
+    if (count) {
+      // Update trust strip count if API returns data
+      const el = document.querySelector('.trust-num');
+      if (el && count > 0) el.textContent = count + '+';
+    }
+  } catch (_) {
+    // Fail silently — static copy already shows "100+"
+  }
+})();
+</script>
+
+</body>
+</html>

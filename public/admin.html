@@ -1,0 +1,1616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#0a0a0a">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<title>WYA Admin</title>
+<meta name="description" content="WYA Admin Panel — Manage vendors on the live map.">
+<meta name="robots" content="noindex, nofollow">
+<link rel="stylesheet" href="https://static.digisigns.link/soul-ui-v2.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{--orange:#FF6B35;--green:#22C55E;--red:#EF4444;--blue:#4CC9F0;--purple:#A855F7;--amber:#FCB045;--bg:#0A0A0A;--surface:#0F0F0F;--card:#141414;--border:#1A1A1A;--border2:#242424;--text:#F5F5F5;--muted:#9CA3AF;--muted2:#6B7280}
+html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden}
+
+/* ── LOGIN ── */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;background:radial-gradient(ellipse at 50% 20%,rgba(255,107,53,.12) 0%,var(--bg) 65%)}
+.login-box{background:var(--surface);border:1px solid var(--border2);border-radius:20px;padding:36px 28px;width:100%;max-width:380px}
+.login-logo{font-size:20px;font-weight:900;letter-spacing:-.3px;color:var(--orange);margin-bottom:4px}
+.login-sub{font-size:13px;color:var(--muted);margin-bottom:28px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px}
+.field input{width:100%;padding:13px 16px;background:var(--bg);border:1.5px solid var(--border2);border-radius:12px;color:var(--text);font-size:15px;outline:none;font-family:inherit;transition:border-color .2s;-webkit-appearance:none}
+.field input:focus{border-color:var(--orange)}
+.login-btn{width:100%;padding:15px;background:var(--orange);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;margin-top:6px;-webkit-appearance:none;transition:.15s}
+.login-btn:active{opacity:.85;transform:scale(.98)}
+.login-err{color:var(--red);font-size:13px;margin-top:10px;display:none;padding:10px 14px;background:rgba(239,68,68,.08);border-radius:10px;border:1px solid rgba(239,68,68,.2)}
+
+/* ── APP SHELL ── */
+#app{display:none;min-height:100vh;flex-direction:column}
+#app.show{display:flex}
+
+/* TOP NAV */
+.topnav{background:var(--surface);border-bottom:1px solid var(--border);padding:0 16px;height:54px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;position:sticky;top:0;z-index:100}
+.topnav-brand{font-size:16px;font-weight:900;letter-spacing:-.2px}
+.topnav-brand span{color:var(--orange)}
+.topnav-badge{background:rgba(255,107,53,.15);color:var(--orange);font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:.5px;margin-left:8px}
+.topnav-right{display:flex;align-items:center;gap:10px}
+.topnav-user{font-size:12px;color:var(--muted);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.signout-btn{background:transparent;border:1px solid var(--border2);border-radius:8px;color:var(--muted);font-size:12px;padding:6px 10px;cursor:pointer;font-family:inherit;-webkit-appearance:none}
+.signout-btn:active{color:var(--red)}
+
+/* BOTTOM NAV */
+.botnav{background:var(--surface);border-top:1px solid var(--border);display:flex;height:58px;flex-shrink:0;padding-bottom:env(safe-area-inset-bottom);position:sticky;bottom:0;z-index:100;overflow-x:auto;scrollbar-width:none}
+.botnav::-webkit-scrollbar{display:none}
+.botnav-tab{flex:1;min-width:60px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;color:var(--muted);font-size:9px;font-weight:600;transition:.15s;border:none;background:transparent;font-family:inherit;white-space:nowrap;padding:0 4px}
+.botnav-tab.active{color:var(--orange)}
+.botnav-icon{font-size:22px;line-height:1}
+
+/* CONTENT */
+.content{flex:1;overflow-y:auto;padding:16px}
+
+/* STATS GRID */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px 16px}
+.stat-n{font-size:30px;font-weight:900;letter-spacing:-1px;margin-bottom:4px}
+.stat-l{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+.stat-card.green .stat-n{color:var(--green)}
+.stat-card.orange .stat-n{color:var(--orange)}
+.stat-card.blue .stat-n{color:var(--blue)}
+
+/* SECTION HEADER */
+.section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.section-title{font-size:14px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+.section-action{font-size:13px;color:var(--orange);font-weight:600;cursor:pointer;background:none;border:none;font-family:inherit;padding:4px 0}
+
+/* VENDOR CARDS */
+.vendor-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:10px;display:flex;flex-direction:column;gap:12px}
+.vc-top{display:flex;align-items:flex-start;gap:12px}
+.vc-icon{width:44px;height:44px;border-radius:12px;background:var(--surface);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
+.vc-info{flex:1;min-width:0}
+.vc-name{font-size:15px;font-weight:700;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vc-email{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vc-status{flex-shrink:0}
+.status-pill{display:inline-flex;align-items:center;gap:5px;border-radius:20px;padding:4px 10px;font-size:11px;font-weight:700}
+.status-pill.open{background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.2)}
+.status-pill.closed{background:rgba(107,114,128,.1);color:var(--muted);border:1px solid var(--border2)}
+.status-pill.pending{background:rgba(76,201,240,.12);color:var(--blue);border:1px solid rgba(76,201,240,.2)}
+.status-pill.confirmed,.status-pill.preparing{background:rgba(255,107,53,.12);color:var(--orange);border:1px solid rgba(255,107,53,.2)}
+.status-pill.ready{background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.2)}
+.status-pill.picked_up,.status-pill.delivered{background:rgba(107,114,128,.1);color:var(--muted);border:1px solid var(--border2)}
+.status-pill.cancelled{background:rgba(239,68,68,.12);color:var(--red);border:1px solid rgba(239,68,68,.2)}
+.status-dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+.vc-meta{display:flex;gap:8px;flex-wrap:wrap}
+.vc-tag{background:var(--surface);border:1px solid var(--border2);border-radius:8px;padding:3px 10px;font-size:11px;color:var(--muted);font-weight:500;text-transform:capitalize}
+.vc-actions{display:flex;gap:8px}
+.btn-action{flex:1;padding:10px 12px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;border:none;-webkit-appearance:none;transition:.15s}
+.btn-action:active{opacity:.8;transform:scale(.97)}
+.btn-impersonate{background:rgba(255,107,53,.12);color:var(--orange);border:1px solid rgba(255,107,53,.2)}
+.btn-toggle{background:rgba(34,197,94,.1);color:var(--green);border:1px solid rgba(34,197,94,.2)}
+.btn-toggle.off{background:rgba(107,114,128,.1);color:var(--muted);border:1px solid var(--border2)}
+.btn-del{background:rgba(239,68,68,.1);color:var(--red);border:1px solid rgba(239,68,68,.2);flex:0;padding:10px 14px}
+.btn-primary{background:var(--orange);color:#fff;border:none}
+.btn-secondary{background:var(--card);color:var(--muted);border:1px solid var(--border2)}
+
+/* SEARCH */
+.search-wrap{position:relative;margin-bottom:14px}
+.search-wrap input{width:100%;padding:12px 16px 12px 40px;background:var(--card);border:1.5px solid var(--border);border-radius:12px;color:var(--text);font-size:14px;outline:none;font-family:inherit;-webkit-appearance:none;transition:border-color .2s}
+.search-wrap input:focus{border-color:var(--orange)}
+.search-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:16px;pointer-events:none}
+
+/* FILTERS */
+.filter-row{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px;scrollbar-width:none}
+.filter-row::-webkit-scrollbar{display:none}
+.filter-chip{white-space:nowrap;padding:7px 14px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--border2);background:var(--card);color:var(--muted);-webkit-appearance:none;font-family:inherit;transition:.15s;flex-shrink:0}
+.filter-chip.active{border-color:var(--orange);color:var(--orange);background:rgba(255,107,53,.08)}
+
+/* EMPTY STATE */
+.empty{text-align:center;padding:48px 24px;color:var(--muted)}
+.empty-icon{font-size:40px;margin-bottom:12px}
+.empty-text{font-size:15px;font-weight:600;margin-bottom:6px;color:var(--text)}
+
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:500;display:none;align-items:flex-end}
+.modal-bg.show{display:flex}
+.modal{background:var(--surface);border-radius:20px 20px 0 0;padding:24px;width:100%;max-height:85vh;overflow-y:auto;padding-bottom:calc(24px + env(safe-area-inset-bottom))}
+.modal-handle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 20px}
+.modal-title{font-size:17px;font-weight:800;margin-bottom:20px}
+.modal-field{margin-bottom:14px}
+.modal-field label{display:block;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:7px}
+.modal-field input,.modal-field select,.modal-field textarea{width:100%;padding:13px 16px;background:var(--bg);border:1.5px solid var(--border2);border-radius:12px;color:var(--text);font-size:14px;outline:none;font-family:inherit;-webkit-appearance:none;transition:border-color .2s}
+.modal-field input:focus,.modal-field select:focus,.modal-field textarea:focus{border-color:var(--orange)}
+.modal-field select option{background:var(--surface)}
+.modal-actions{display:flex;gap:10px;margin-top:20px}
+.modal-cancel{flex:1;padding:14px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;background:var(--card);border:1px solid var(--border2);color:var(--muted);-webkit-appearance:none}
+.modal-save{flex:2;padding:14px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;background:var(--orange);border:none;color:#fff;-webkit-appearance:none}
+.modal-save:active,.modal-cancel:active{opacity:.8}
+.modal-section{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin:20px 0 10px;padding-top:16px;border-top:1px solid var(--border)}
+
+/* TOAST */
+.toast{position:fixed;bottom:calc(70px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%) translateY(20px);background:var(--card);border:1px solid var(--border2);border-radius:12px;padding:12px 20px;font-size:13px;font-weight:600;opacity:0;transition:all .3s;pointer-events:none;white-space:nowrap;z-index:600;max-width:calc(100vw - 32px)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.success{border-color:rgba(34,197,94,.3);color:var(--green)}
+.toast.error{border-color:rgba(239,68,68,.3);color:var(--red)}
+
+/* ACTIVITY LOG */
+.activity-item{padding:14px 0;border-bottom:1px solid var(--border);display:flex;gap:12px;align-items:flex-start}
+.activity-item:last-child{border-bottom:none}
+.activity-icon{font-size:24px;flex-shrink:0;width:36px;height:36px;background:var(--card);border-radius:10px;display:flex;align-items:center;justify-content:center}
+.activity-text{flex:1;min-width:0}
+.activity-main{font-size:13px;font-weight:600;margin-bottom:3px}
+.activity-time{font-size:11px;color:var(--muted)}
+
+/* TABS CONTENT */
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* ORDER CARDS */
+.order-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:10px;cursor:pointer;transition:border-color .2s}
+.order-card:active{border-color:var(--border2)}
+.order-card.expanded{border-color:var(--orange)}
+.order-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px}
+.order-vendor{font-size:13px;font-weight:700}
+.order-customer{font-size:12px;color:var(--muted);margin-bottom:4px}
+.order-summary{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.order-total{font-size:18px;font-weight:900;color:var(--green);white-space:nowrap}
+.order-time{font-size:11px;color:var(--muted2);margin-top:6px}
+.order-details{display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
+.order-details.show{display:block}
+.order-item-row{display:flex;justify-content:space-between;font-size:13px;padding:4px 0;border-bottom:1px solid var(--border)}
+.order-item-row:last-child{border-bottom:none}
+
+/* PROMO CARDS */
+.promo-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;margin-bottom:10px;display:flex;align-items:center;gap:14px}
+.promo-code-badge{background:rgba(168,85,247,.12);border:1px solid rgba(168,85,247,.2);border-radius:10px;padding:10px 14px;font-size:16px;font-weight:900;color:var(--purple);letter-spacing:1px;flex-shrink:0;min-width:80px;text-align:center}
+.promo-info{flex:1;min-width:0}
+.promo-name{font-size:14px;font-weight:700;margin-bottom:4px}
+.promo-meta{font-size:12px;color:var(--muted)}
+.promo-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.toggle-switch{position:relative;width:40px;height:22px;cursor:pointer}
+.toggle-switch input{opacity:0;width:0;height:0;position:absolute}
+.toggle-track{position:absolute;inset:0;background:var(--border2);border-radius:11px;transition:.2s}
+.toggle-switch input:checked+.toggle-track{background:var(--green)}
+.toggle-thumb{position:absolute;width:16px;height:16px;background:#fff;border-radius:50%;top:3px;left:3px;transition:.2s}
+.toggle-switch input:checked~.toggle-thumb{left:21px}
+
+/* COMMISSION TABLE */
+.amb-table{width:100%;border-collapse:collapse;margin-top:8px}
+.amb-table th{text-align:left;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;padding:8px 12px;border-bottom:1px solid var(--border)}
+.amb-table td{padding:12px;font-size:13px;border-bottom:1px solid var(--border)}
+.amb-table tr:last-child td{border-bottom:none}
+.amb-table .num{font-weight:700;color:var(--green)}
+
+/* REVIEWS */
+.review-item{padding:12px;background:var(--bg);border-radius:10px;margin-bottom:8px}
+.review-stars{color:var(--amber);font-size:13px;margin-bottom:4px}
+.review-text{font-size:13px;color:var(--text);margin-bottom:4px}
+.review-meta{font-size:11px;color:var(--muted);display:flex;justify-content:space-between;align-items:center}
+.btn-del-review{background:rgba(239,68,68,.1);color:var(--red);border:1px solid rgba(239,68,68,.2);border-radius:6px;padding:3px 8px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit}
+
+/* ANALYTICS */
+.gmv-bar{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px 16px;margin-bottom:20px}
+.gmv-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px}
+.gmv-value{font-size:36px;font-weight:900;color:var(--green);letter-spacing:-1.5px}
+.gmv-sub{font-size:12px;color:var(--muted);margin-top:4px}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-wrap">
+    <div class="login-box">
+      <div class="login-logo">WYA Admin</div>
+      <div class="login-sub">Super Admin Control Panel</div>
+      <div class="field"><label>Email</label>
+        <input type="email" id="le" placeholder="admin@email.com" autocomplete="email" inputmode="email">
+      </div>
+      <div class="field"><label>Password</label>
+        <input type="password" id="lp" placeholder="Password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+      </div>
+      <div onclick="doLogin()" class="login-btn" role="button" tabindex="0">Sign In →</div>
+      <div class="login-err" id="lerr"></div>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <nav class="topnav">
+    <div style="display:flex;align-items:center">
+      <div class="topnav-brand">Where <span>You</span> At</div>
+      <span class="topnav-badge">Admin</span>
+    </div>
+    <div class="topnav-right">
+      <span class="topnav-user" id="topnav-user"></span>
+      <button class="signout-btn" onclick="signOut()">Out</button>
+    </div>
+  </nav>
+
+  <div class="content" id="main-content">
+
+    <!-- Dashboard Tab -->
+    <div class="tab-content active" id="tab-dashboard">
+      <div id="gmv-section" style="display:none">
+        <div class="gmv-bar">
+          <div class="gmv-label">Platform GMV</div>
+          <div class="gmv-value" id="stat-gmv">$—</div>
+          <div class="gmv-sub" id="stat-gmv-sub">All-time gross merchandise value</div>
+        </div>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-card orange"><div class="stat-n" id="stat-total">—</div><div class="stat-l">Vendors</div></div>
+        <div class="stat-card green"><div class="stat-n" id="stat-open">—</div><div class="stat-l">Live Now</div></div>
+        <div class="stat-card blue"><div class="stat-n" id="stat-sessions">—</div><div class="stat-l">Sessions</div></div>
+        <div class="stat-card"><div class="stat-n" id="stat-trial" style="color:var(--orange)">—</div><div class="stat-l">On Trial</div></div>
+        <div class="stat-card"><div class="stat-n" id="stat-referrals" style="color:var(--purple)">—</div><div class="stat-l">Referrals</div></div>
+        <div class="stat-card"><div class="stat-n" id="stat-ambassadors" style="color:var(--amber)">—</div><div class="stat-l">Ambassadors</div></div>
+        <div class="stat-card blue"><div class="stat-n" id="stat-orders">—</div><div class="stat-l">Total Orders</div></div>
+        <div class="stat-card green"><div class="stat-n" id="stat-customers">—</div><div class="stat-l">Customers</div></div>
+      </div>
+      <div class="section-head">
+        <div class="section-title">Live Right Now</div>
+        <button class="section-action" onclick="switchTab('vendors')">See all →</button>
+      </div>
+      <div id="live-list"></div>
+      <div class="section-head" style="margin-top:16px">
+        <div class="section-title">Trial Vendors Expiring Soon</div>
+      </div>
+      <div id="trial-list"></div>
+    </div>
+
+    <!-- Vendors Tab -->
+    <div class="tab-content" id="tab-vendors">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="vendor-search" placeholder="Search vendors…" oninput="renderVendors()">
+      </div>
+      <div class="filter-row">
+        <button class="filter-chip active" data-filter="all" onclick="setFilter('all',this)">All</button>
+        <button class="filter-chip" data-filter="open" onclick="setFilter('open',this)">🟢 Live</button>
+        <button class="filter-chip" data-filter="food" onclick="setFilter('food',this)">🍽️ Food</button>
+        <button class="filter-chip" data-filter="retail" onclick="setFilter('retail',this)">🛍 Retail</button>
+        <button class="filter-chip" data-filter="art" onclick="setFilter('art',this)">🎨 Art</button>
+        <button class="filter-chip" data-filter="services" onclick="setFilter('services',this)">🔧 Services</button>
+        <button class="filter-chip" data-filter="incomplete" onclick="setFilter('incomplete',this)">⚠️ Incomplete</button>
+        <button class="filter-chip" data-filter="real" onclick="setFilter('real',this)">✅ Real Only</button>
+        <button class="filter-chip" data-filter="seeded" onclick="setFilter('seeded',this)">🌱 Seeded</button>
+        <button class="filter-chip" data-filter="test" onclick="setFilter('test',this)">🧪 Test</button>
+      </div>
+      <div id="vendor-list"></div>
+    </div>
+
+    <!-- Orders Tab -->
+    <div class="tab-content" id="tab-orders">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="order-search" placeholder="Search vendor or customer…" oninput="renderOrders()">
+      </div>
+      <div class="filter-row">
+        <button class="filter-chip active" data-ofilter="all" onclick="setOrderFilter('all',this)">All</button>
+        <button class="filter-chip" data-ofilter="pending" onclick="setOrderFilter('pending',this)">Pending</button>
+        <button class="filter-chip" data-ofilter="confirmed" onclick="setOrderFilter('confirmed',this)">Active</button>
+        <button class="filter-chip" data-ofilter="ready" onclick="setOrderFilter('ready',this)">Ready</button>
+        <button class="filter-chip" data-ofilter="delivered" onclick="setOrderFilter('delivered',this)">Completed</button>
+        <button class="filter-chip" data-ofilter="cancelled" onclick="setOrderFilter('cancelled',this)">Cancelled</button>
+      </div>
+      <div id="order-list"></div>
+    </div>
+
+    <!-- Events Tab -->
+    <div class="tab-content" id="tab-events">
+      <div class="stats-grid" id="event-stats-grid" style="margin-bottom:16px"></div>
+      <div class="section-head" style="margin-bottom:12px">
+        <div class="section-title">All Events</div>
+        <button class="section-action" onclick="loadEvents()">Refresh</button>
+      </div>
+      <div id="event-list"><div style="font-size:13px;color:var(--muted);text-align:center;padding:24px">Loading...</div></div>
+    </div>
+
+    <!-- Promos Tab -->
+    <div class="tab-content" id="tab-promos">
+      <div class="section-head" style="margin-bottom:16px">
+        <div class="section-title">Promo Codes</div>
+        <button class="section-action" onclick="openPromoModal()">+ Create</button>
+      </div>
+      <div id="promo-list"></div>
+
+      <div style="margin-top:24px">
+        <div class="section-head" style="margin-bottom:12px">
+          <div class="section-title">Ambassador Commissions</div>
+        </div>
+        <div class="stats-grid" style="margin-bottom:16px">
+          <div class="stat-card green"><div class="stat-n" id="comm-total">$—</div><div class="stat-l">Total Earned</div></div>
+          <div class="stat-card"><div class="stat-n" id="comm-outstanding" style="color:var(--amber)">$—</div><div class="stat-l">Outstanding</div></div>
+        </div>
+        <div id="ambassador-commissions"></div>
+      </div>
+    </div>
+
+    <!-- Revenue Tab -->
+    <div class="tab-content" id="tab-revenue">
+      <!-- MRR Section -->
+      <div style="background:linear-gradient(135deg,rgba(255,107,53,.08),var(--card));border:1.5px solid rgba(255,107,53,.2);border-radius:18px;padding:20px;margin-bottom:16px;text-align:center">
+        <div style="font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Monthly Recurring Revenue</div>
+        <div style="font-size:40px;font-weight:900;color:var(--orange);letter-spacing:-1px" id="mrr-total">$—</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px" id="mrr-churn"></div>
+      </div>
+      <div id="mrr-tiers" class="stats-grid" style="margin-bottom:16px"></div>
+      <div id="financial-overview" style="margin-bottom:16px"></div>
+
+      <div class="stats-grid" style="margin-bottom:20px">
+        <div class="stat-card green"><div class="stat-n" id="rev-total">$—</div><div class="stat-l">Total Revenue</div></div>
+        <div class="stat-card orange"><div class="stat-n" id="rev-commission">$—</div><div class="stat-l">Commission</div></div>
+        <div class="stat-card" style=""><div class="stat-n" id="rev-tips" style="color:var(--amber)">$—</div><div class="stat-l">Tips</div></div>
+        <div class="stat-card blue"><div class="stat-n" id="rev-today">$—</div><div class="stat-l">Today</div></div>
+      </div>
+
+      <!-- Commissions Section -->
+      <div class="section-head"><div class="section-title">Vendor Commissions</div></div>
+      <div id="vendor-commissions" style="margin-bottom:16px"></div>
+
+      <!-- Payout Queue -->
+      <div class="section-head"><div class="section-title">Payout Queue</div><button class="section-action" onclick="createPayout()">+ Payout</button></div>
+      <div id="payout-queue" style="margin-bottom:16px"></div>
+
+      <div class="section-head"><div class="section-title">Orders By Status</div></div>
+      <div id="rev-status-grid" class="stats-grid" style="margin-bottom:20px"></div>
+      <div class="section-head"><div class="section-title">Top Vendors By Commission</div></div>
+      <div id="rev-top-vendors"></div>
+    </div>
+
+    <!-- Activity Tab -->
+    <div class="tab-content" id="tab-activity">
+      <div class="section-head" style="margin-bottom:4px">
+        <div class="section-title">Recent Activity</div>
+      </div>
+      <div id="activity-list"></div>
+    </div>
+
+    <!-- Ambassador / Referrals Tab -->
+    <div class="tab-content" id="tab-ambassadors">
+      <!-- Phase 748: Pending Payout Requests -->
+      <div class="section-head" style="margin-bottom:12px">
+        <div class="section-title">Pending Payout Requests</div>
+      </div>
+      <div id="amb-payout-queue" style="margin-bottom:24px">
+        <div style="font-size:13px;color:var(--muted);text-align:center;padding:12px">Loading...</div>
+      </div>
+
+      <div class="section-head" style="margin-bottom:12px">
+        <div class="section-title">Top Referrers</div>
+      </div>
+      <div id="ambassador-list"></div>
+
+      <!-- Phase 748: Broadcast -->
+      <div style="margin-top:24px;background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px">
+        <div style="font-size:14px;font-weight:700;margin-bottom:14px">Push Broadcast</div>
+        <div style="margin-bottom:10px">
+          <label style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:6px">Target</label>
+          <select id="bc-target" style="width:100%;padding:10px 14px;background:var(--bg);border:1.5px solid var(--border2);border-radius:10px;color:var(--text);font-size:14px;font-family:inherit;outline:none;-webkit-appearance:none">
+            <option value="all">All Users</option>
+            <option value="vendors">Vendors Only</option>
+            <option value="customers">Customers Only</option>
+          </select>
+        </div>
+        <div style="margin-bottom:10px">
+          <label style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:6px">Title</label>
+          <input type="text" id="bc-title" maxlength="100" placeholder="Notification title" style="width:100%;padding:10px 14px;background:var(--bg);border:1.5px solid var(--border2);border-radius:10px;color:var(--text);font-size:14px;font-family:inherit;outline:none;box-sizing:border-box">
+        </div>
+        <div style="margin-bottom:12px">
+          <label style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;display:block;margin-bottom:6px">Message</label>
+          <textarea id="bc-message" maxlength="200" rows="2" placeholder="Notification message" style="width:100%;padding:10px 14px;background:var(--bg);border:1.5px solid var(--border2);border-radius:10px;color:var(--text);font-size:14px;font-family:inherit;outline:none;resize:none;box-sizing:border-box"></textarea>
+        </div>
+        <button onclick="sendBroadcast()" style="width:100%;padding:12px;background:var(--orange);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">Send Broadcast</button>
+      </div>
+    </div>
+
+    <!-- Phase 749: Invite Tab -->
+    <div class="tab-content" id="tab-invites">
+      <div id="invite-stats" style="display:flex;gap:8px;margin-bottom:16px"></div>
+      <div class="section-head" style="margin-bottom:12px">
+        <div class="section-title">Send Invite</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:24px">
+        <input type="text" id="inv-name" placeholder="Business name" style="padding:12px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:inherit;font-size:14px">
+        <input type="email" id="inv-email" placeholder="Email address *" style="padding:12px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:inherit;font-size:14px">
+        <input type="tel" id="inv-phone" placeholder="Phone (optional)" style="padding:12px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:inherit;font-size:14px">
+        <textarea id="inv-msg" placeholder="Personal message (optional)" rows="2" style="padding:12px;background:var(--card);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:inherit;font-size:14px;resize:none"></textarea>
+        <button onclick="sendInvite()" style="padding:12px;background:var(--orange);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">Send Invite →</button>
+      </div>
+      <div class="section-head" style="margin-bottom:12px">
+        <div class="section-title">Invite History</div>
+      </div>
+      <div id="invite-list"></div>
+    </div>
+
+  </div>
+
+  <nav class="botnav">
+    <button class="botnav-tab active" id="btn-dashboard" onclick="switchTab('dashboard')">
+      <span class="botnav-icon">📊</span>Dashboard
+    </button>
+    <button class="botnav-tab" id="btn-vendors" onclick="switchTab('vendors')">
+      <span class="botnav-icon">🚚</span>Vendors
+    </button>
+    <button class="botnav-tab" id="btn-orders" onclick="switchTab('orders')">
+      <span class="botnav-icon">📦</span>Orders
+    </button>
+    <button class="botnav-tab" id="btn-events" onclick="switchTab('events')">
+      <span class="botnav-icon">🎪</span>Events
+    </button>
+    <button class="botnav-tab" id="btn-promos" onclick="switchTab('promos')">
+      <span class="botnav-icon">🏷️</span>Promos
+    </button>
+    <button class="botnav-tab" id="btn-revenue" onclick="switchTab('revenue')">
+      <span class="botnav-icon">💰</span>Revenue
+    </button>
+    <button class="botnav-tab" id="btn-activity" onclick="switchTab('activity')">
+      <span class="botnav-icon">📋</span>Activity
+    </button>
+    <button class="botnav-tab" id="btn-invites" onclick="switchTab('invites')">
+      <span class="botnav-icon">✉️</span>Invite
+    </button>
+    <button class="botnav-tab" id="btn-ambassadors" onclick="switchTab('ambassadors')">
+      <span class="botnav-icon">🤝</span>Referrals
+    </button>
+  </nav>
+</div>
+
+<!-- EDIT VENDOR MODAL -->
+<div class="modal-bg" id="edit-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modal-title">Edit Vendor</div>
+    <div class="modal-field"><label>Business Name</label><input type="text" id="edit-name"></div>
+    <div class="modal-field"><label>Category</label>
+      <select id="edit-cat">
+        <option value="food">Food & Beverage</option>
+        <option value="retail">Retail</option>
+        <option value="art">Art & Craft</option>
+        <option value="services">Services</option>
+        <option value="other">Other</option>
+      </select>
+    </div>
+    <div class="modal-field"><label>Phone</label><input type="tel" id="edit-phone" inputmode="tel"></div>
+    <div class="modal-field"><label>Description</label><textarea id="edit-desc" rows="3" style="resize:none"></textarea></div>
+    <div class="modal-field"><label>New Password <span style="color:var(--muted);font-weight:400;text-transform:none">(leave blank to keep)</span></label><input type="password" id="edit-pw" placeholder="New password…"></div>
+
+    <div class="modal-section">Delivery & Social Links</div>
+    <div class="modal-field"><label>DoorDash URL</label><input type="url" id="edit-doordash" placeholder="https://doordash.com/…"></div>
+    <div class="modal-field"><label>UberEats URL</label><input type="url" id="edit-ubereats" placeholder="https://ubereats.com/…"></div>
+    <div class="modal-field"><label>Website</label><input type="url" id="edit-website" placeholder="https://…"></div>
+
+    <div class="modal-section">Business Hours</div>
+    <div id="edit-hours-grid" style="margin-bottom:10px"></div>
+
+    <div class="modal-section">Reviews</div>
+    <div id="edit-reviews-list" style="margin-bottom:10px"></div>
+
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeModal()">Cancel</button>
+      <button class="modal-save" onclick="saveEdit()">Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- PROMO MODAL -->
+<div class="modal-bg" id="promo-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="promo-modal-title">Create Promo Code</div>
+    <div class="modal-field"><label>Promo Code</label><input type="text" id="promo-code" placeholder="SUMMER20" style="text-transform:uppercase"></div>
+    <div class="modal-field"><label>Discount Type</label>
+      <select id="promo-type">
+        <option value="percent">Percent Off (%)</option>
+        <option value="flat">Flat Amount ($)</option>
+      </select>
+    </div>
+    <div class="modal-field"><label>Discount Value</label><input type="number" id="promo-value" placeholder="20" min="0" step="0.01"></div>
+    <div class="modal-field"><label>Max Uses <span style="color:var(--muted);font-weight:400;text-transform:none">(0 = unlimited)</span></label><input type="number" id="promo-maxuses" placeholder="100" min="0"></div>
+    <div class="modal-field"><label>Valid Until</label><input type="date" id="promo-until"></div>
+    <div class="modal-field">
+      <label>Active</label>
+      <label class="toggle-switch" style="display:block;margin-top:4px">
+        <input type="checkbox" id="promo-active" checked>
+        <div class="toggle-track"></div>
+        <div class="toggle-thumb"></div>
+      </label>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closePromoModal()">Cancel</button>
+      <button class="modal-save" onclick="savePromo()">Save Promo</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAYOUT MODAL -->
+<div class="modal-bg" id="payout-modal">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Create Payout</div>
+    <div class="modal-field">
+      <label>Vendor</label>
+      <select id="payout-vendor"></select>
+    </div>
+    <div class="modal-field">
+      <label>Amount ($)</label>
+      <input type="number" id="payout-amount" placeholder="0.00" min="0" step="0.01">
+    </div>
+    <div class="modal-field">
+      <label>Payment Method</label>
+      <select id="payout-method">
+        <option value="venmo">Venmo</option>
+        <option value="zelle">Zelle</option>
+        <option value="check">Check</option>
+      </select>
+    </div>
+    <div id="payout-feedback" style="display:none;font-size:13px;padding:10px 14px;border-radius:10px;margin-top:4px"></div>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closePayoutModal()">Cancel</button>
+      <button class="modal-save" id="payout-submit-btn" onclick="submitPayout()">Create Payout</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const KEY = 'wya_admin_token';
+let tok = localStorage.getItem(KEY) || '';
+let vendors = [], orders = [], promos = [], activeFilter = 'all', activeOrderFilter = 'all', editingId = null, editingPromoId = null, activeTab = 'dashboard';
+let adminUserLat = null, adminUserLng = null;
+
+function haversineAdmin(lat1, lng1, lat2, lng2) {
+  const R = 3959;
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLng/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+// Request geolocation once on load for distance display
+if (navigator.geolocation) {
+  navigator.geolocation.getCurrentPosition(
+    p => { adminUserLat = p.coords.latitude; adminUserLng = p.coords.longitude; },
+    () => {},
+    { timeout: 5000, maximumAge: 300000 }
+  );
+}
+
+const catEmoji = {food_truck:'🚚',farmers_market:'🌽',pop_up_shop:'🏪',art_vendor:'🎨',clothing:'👕',jewelry:'💍',bakery:'🥐',coffee:'☕',flowers:'🌸',beauty:'💅',auto_services:'🚗',home_services:'🔧',retail:'🛍️',print_shop:'🪧',restaurant:'🍽️',music:'🎵',signs_graphics:'🪧',tattoo_studio:'🖋️',food:'🍽️',services:'🔧',art:'🎨',other:'📦',admin:'⚡'};
+
+// ── AUTH ──────────────────────────────────────────────────────
+async function doLogin() {
+  const email = document.getElementById('le').value.trim();
+  const pw = document.getElementById('lp').value;
+  const err = document.getElementById('lerr');
+  err.style.display = 'none';
+  try {
+    const d = await post('/api/vendor/login', {email, password:pw});
+    if (!d.token) { err.style.display='block'; err.textContent=d.error||'Login failed'; return; }
+    const me = await apiFetch('/api/vendor/me', d.token);
+    if (!me.vendor?.is_super_admin) { err.style.display='block'; err.textContent='Admin access required'; return; }
+    tok = d.token; localStorage.setItem(KEY, tok);
+    document.getElementById('topnav-user').textContent = me.vendor.name;
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').classList.add('show');
+    loadAll();
+  } catch(e) { err.style.display='block'; err.textContent='Network error'; }
+}
+
+function signOut() {
+  localStorage.removeItem(KEY); tok='';
+  document.getElementById('app').classList.remove('show');
+  document.getElementById('login-screen').style.display = '';
+  document.getElementById('lp').value = '';
+}
+
+// ── API ───────────────────────────────────────────────────────
+async function post(path, data) {
+  const r = await fetch(path, {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+  return r.json();
+}
+async function apiFetch(path, token) {
+  const r = await fetch(path, {headers:{'x-auth-token':token||tok}});
+  return r.json();
+}
+async function apiPost(path, data) {
+  const r = await fetch(path, {method:'POST',headers:{'Content-Type':'application/json','x-auth-token':tok},body:JSON.stringify(data)});
+  return r.json();
+}
+async function apiPut(path, data) {
+  const r = await fetch(path, {method:'PUT',headers:{'Content-Type':'application/json','x-auth-token':tok},body:JSON.stringify(data)});
+  return r.json();
+}
+async function apiDelete(path) {
+  const r = await fetch(path, {method:'DELETE',headers:{'x-auth-token':tok}});
+  return r.json();
+}
+
+// ── LOAD ──────────────────────────────────────────────────────
+async function loadAll() {
+  const [stats, vlist, refStats, ordersRes, promosRes, analyticsRes, ambOverview] = await Promise.all([
+    apiFetch('/api/admin/stats'),
+    apiFetch('/api/admin/vendors'),
+    apiFetch('/api/admin/referral-stats').catch(()=>({})),
+    apiFetch('/api/admin/orders').catch(()=>({})),
+    apiFetch('/api/admin/promos').catch(()=>({})),
+    apiFetch('/api/admin/analytics').catch(()=>({})),
+    apiFetch('/api/admin/ambassador/overview').catch(()=>({}))
+  ]);
+
+  vendors = vlist.vendors || [];
+  // Compute distance for admin view if geolocation available
+  if (adminUserLat) {
+    vendors = vendors.map(v => {
+      if (v.lat && v.lng && v.distance_mi === undefined) {
+        v.distance_mi = Math.round(haversineAdmin(adminUserLat, adminUserLng, v.lat, v.lng) * 10) / 10;
+      }
+      return v;
+    });
+  }
+  orders = ordersRes.orders || [];
+  promos = promosRes.promos || [];
+
+  // Core stats
+  document.getElementById('stat-total').textContent = stats.total_vendors || vendors.length;
+  document.getElementById('stat-open').textContent = stats.open_vendors || vendors.filter(v=>v.is_open).length;
+  document.getElementById('stat-sessions').textContent = stats.active_sessions || 0;
+  document.getElementById('stat-trial').textContent = vendors.filter(v=>v.subscription_status==='trial').length;
+  document.getElementById('stat-referrals').textContent = refStats.total_referrals || 0;
+  document.getElementById('stat-ambassadors').textContent = (refStats.top_referrers||[]).length;
+
+  // New stats
+  document.getElementById('stat-orders').textContent = stats.total_orders || orders.length || 0;
+  document.getElementById('stat-customers').textContent = stats.total_customers || 0;
+
+  // GMV from analytics
+  if (analyticsRes.gmv !== undefined) {
+    document.getElementById('gmv-section').style.display = 'block';
+    document.getElementById('stat-gmv').textContent = '$' + formatMoney(analyticsRes.gmv);
+    if (analyticsRes.gmv_period) document.getElementById('stat-gmv-sub').textContent = analyticsRes.gmv_period;
+  }
+
+  // Ambassador commissions
+  if (ambOverview.total_commissions !== undefined) {
+    document.getElementById('comm-total').textContent = '$' + formatMoney(ambOverview.total_commissions || 0);
+    const outstanding = (ambOverview.total_commissions || 0) - (ambOverview.total_payouts || 0);
+    document.getElementById('comm-outstanding').textContent = '$' + formatMoney(outstanding);
+  }
+
+  renderLive();
+  renderVendors();
+  renderActivity();
+  renderAmbassadors(refStats.top_referrers||[]);
+  renderOrders();
+  renderPromos();
+  renderAmbassadorCommissions(ambOverview);
+  loadTrials();
+  loadPendingPayouts();
+}
+
+async function loadTrials() {
+  try {
+    const d = await apiFetch('/api/admin/trials');
+    if (!d.ok) return;
+    const el = document.getElementById('trial-list');
+    const expiring = (d.vendors||[]).filter(v=>v.days_left<=7);
+    if (!expiring.length) { el.innerHTML='<div style="font-size:13px;color:var(--muted);text-align:center;padding:12px">No trials expiring within 7 days</div>'; return; }
+    el.innerHTML = expiring.map(v => `<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 16px;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between">
+      <div><div style="font-size:14px;font-weight:600">${esc(v.name)}</div><div style="font-size:12px;color:var(--muted)">${esc(v.email||'')}</div></div>
+      <span style="font-size:12px;font-weight:700;color:${v.days_left<=3?'var(--red)':'var(--orange)'};background:${v.days_left<=3?'rgba(239,68,68,.1)':'rgba(255,107,53,.1)'};padding:4px 10px;border-radius:8px">${v.days_left}d left</span>
+    </div>`).join('');
+  } catch(e) { showToast('Failed to load trials','error'); }
+}
+
+function formatMoney(n) {
+  const num = parseFloat(n) || 0;
+  return num >= 1000 ? (num/1000).toFixed(1)+'k' : num.toFixed(2);
+}
+
+function renderLive() {
+  const live = vendors.filter(v=>v.is_open && v.id !== 'SUPERADMIN-001');
+  const el = document.getElementById('live-list');
+  if (!live.length) { el.innerHTML='<div class="empty"><div class="empty-icon">😴</div><div class="empty-text">No vendors live right now</div></div>'; return; }
+  el.innerHTML = live.map(v => vendorCard(v, true)).join('');
+}
+
+function renderVendors() {
+  const q = (document.getElementById('vendor-search')?.value || '').toLowerCase();
+  let list = vendors.filter(v => v.id !== 'SUPERADMIN-001');
+  if (activeFilter === 'open') list = list.filter(v=>v.is_open);
+  else if (activeFilter === 'incomplete') list = list.filter(v=>!v.onboarding_complete);
+  else if (activeFilter === 'real') list = list.filter(v=>v.data_source!=='test' && v.data_source!=='seeded');
+  else if (activeFilter === 'test') list = list.filter(v=>v.data_source==='test');
+  else if (activeFilter === 'seeded') list = list.filter(v=>v.data_source==='seeded');
+  else if (activeFilter !== 'all') list = list.filter(v=>v.category===activeFilter);
+  if (q) list = list.filter(v=>v.name.toLowerCase().includes(q)||(v.email||'').toLowerCase().includes(q)||(v.category||'').includes(q));
+  const el = document.getElementById('vendor-list');
+  if (!list.length) { el.innerHTML='<div class="empty"><div class="empty-icon">🔍</div><div class="empty-text">No vendors found</div></div>'; return; }
+  el.innerHTML = list.map(v => vendorCard(v, false)).join('');
+}
+
+function vendorCard(v, compact) {
+  const emoji = catEmoji[v.category] || '📦';
+  const open = v.is_open;
+  const rating = parseFloat(v.avg_rating) || 0;
+  const stars = rating > 0 ? '★'.repeat(Math.round(rating)) + '☆'.repeat(5-Math.round(rating)) : '';
+  const deliveryLinks = [
+    v.doordash_url ? `<span class="vc-tag" style="color:var(--red);border-color:rgba(239,68,68,.2)">🚗 DoorDash</span>` : '',
+    v.ubereats_url ? `<span class="vc-tag" style="color:#06C167;border-color:rgba(6,193,103,.2)">🟢 UberEats</span>` : '',
+  ].filter(Boolean).join('');
+
+  return `<div class="vendor-card" id="vc-${v.id}">
+    <div class="vc-top">
+      <div class="vc-icon">${emoji}</div>
+      <div class="vc-info">
+        <div class="vc-name">${esc(v.name)} ${v.data_source==='test'?'<span style="font-size:9px;background:rgba(239,68,68,.15);color:#EF4444;padding:1px 5px;border-radius:4px;margin-left:4px">TEST</span>':v.data_source==='seeded'?'<span style="font-size:9px;background:rgba(76,201,240,.15);color:#4CC9F0;padding:1px 5px;border-radius:4px;margin-left:4px">SEEDED</span>':v.data_source==='founding'?'<span style="font-size:9px;background:rgba(252,176,69,.15);color:#FCB045;padding:1px 5px;border-radius:4px;margin-left:4px">FOUNDING</span>':''}</div>
+        <div class="vc-email">${esc(v.email||'')}</div>
+      </div>
+      <div class="vc-status">
+        <span class="status-pill ${open?'open':'closed'}">
+          <span class="status-dot"></span>${open?'LIVE':'OFF'}
+        </span>
+      </div>
+    </div>
+    <div class="vc-meta">
+      <span class="vc-tag">${v.category||'vendor'}</span>
+      ${v.distance_mi !== undefined ? `<span class="vc-tag" style="color:#4CC9F0;border-color:rgba(76,201,240,.2)">📍 ${v.distance_mi} mi</span>` : ''}
+      ${v.subscription_status==='active'?'<span class="vc-tag" style="color:var(--green);border-color:rgba(34,197,94,.2)">Subscribed</span>':v.trial_days_remaining!==undefined?`<span class="vc-tag" style="color:${v.trial_days_remaining<=7?'var(--red)':'var(--orange)'};border-color:${v.trial_days_remaining<=7?'rgba(239,68,68,.2)':'rgba(255,107,53,.2)'}">${v.trial_days_remaining}d trial left</span>`:'<span class="vc-tag">Trial</span>'}
+      ${v.phone?`<span class="vc-tag">${esc(v.phone)}</span>`:''}
+      ${v.instagram?`<span class="vc-tag" style="color:#E1306C;border-color:rgba(225,48,108,.2)">IG: ${esc(v.instagram)}</span>`:''}
+      ${v.tiktok?`<span class="vc-tag" style="color:#00f2ea;border-color:rgba(0,242,234,.2)">TT: ${esc(v.tiktok)}</span>`:''}
+      ${v.website?`<span class="vc-tag" style="color:var(--blue);border-color:rgba(76,201,240,.2)">🌐 Web</span>`:''}
+      ${deliveryLinks}
+      ${rating > 0 ? `<span class="vc-tag" style="color:var(--amber);border-color:rgba(252,176,69,.2)">${stars} ${rating.toFixed(1)}</span>` : ''}
+      ${v.total_orders ? `<span class="vc-tag" style="color:var(--blue);border-color:rgba(76,201,240,.2)">📦 ${v.total_orders} orders</span>` : ''}
+    </div>
+    ${v.onboarding_complete ? '<div style="display:flex;align-items:center;gap:6px;padding:6px 12px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:10px;margin-bottom:6px"><span style="color:var(--green);font-weight:700;font-size:12px">✓ Profile Complete</span></div>' :
+      `<div style="margin-bottom:6px">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+          <div style="flex:1;height:5px;background:var(--dark);border-radius:3px;overflow:hidden"><div style="height:100%;width:${v.onboarding_percent||0}%;background:var(--orange);border-radius:3px"></div></div>
+          <span style="font-size:11px;color:var(--orange);font-weight:700;white-space:nowrap">${Math.round((v.onboarding_percent||0)/100*6)}/6</span>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px">${(v.onboarding_missing||[]).map(s=>'<span style="font-size:10px;padding:2px 6px;border-radius:4px;background:rgba(255,107,53,.08);color:var(--orange);border:1px solid rgba(255,107,53,.15)">'+s+'</span>').join('')}</div>
+      </div>`}
+    ${!compact ? `<div class="vc-actions">
+      <button class="btn-action btn-impersonate" onclick="impersonate('${v.id}','${esc(v.name).replace(/'/g,"\\'")}')">👤 Impersonate</button>
+      <button class="btn-action btn-toggle ${open?'':'off'}" onclick="toggleVendor('${v.id}',${open?0:1})">${open?'Go Offline':'Go Live'}</button>
+      ${!v.onboarding_complete ? `<button class="btn-action" style="color:var(--orange);border-color:rgba(255,107,53,.2)" onclick="nudgeVendor('${v.id}')">📩 Nudge</button>` : ''}
+      <button class="btn-action btn-del" onclick="deleteVendor('${v.id}','${esc(v.name).replace(/'/g,"\\'")}')">🗑</button>
+    </div>
+    <button class="btn-action btn-impersonate" style="width:100%;margin-top:-4px" onclick="openEdit('${v.id}')">✏️ Edit Profile</button>` : ''}
+  </div>`;
+}
+
+function setFilter(f, el) {
+  activeFilter = f;
+  document.querySelectorAll('.filter-chip[data-filter]').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  renderVendors();
+}
+
+// ── ORDERS ────────────────────────────────────────────────────
+function setOrderFilter(f, el) {
+  activeOrderFilter = f;
+  document.querySelectorAll('.filter-chip[data-ofilter]').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  renderOrders();
+}
+
+function renderOrders() {
+  const q = (document.getElementById('order-search')?.value || '').toLowerCase();
+  let list = [...orders];
+  if (activeOrderFilter !== 'all') {
+    if (activeOrderFilter === 'confirmed') list = list.filter(o=>['confirmed','preparing'].includes(o.status));
+    else if (activeOrderFilter === 'delivered') list = list.filter(o=>['picked_up','delivered'].includes(o.status));
+    else list = list.filter(o=>o.status === activeOrderFilter);
+  }
+  if (q) list = list.filter(o =>
+    (o.vendor_name||'').toLowerCase().includes(q) ||
+    (o.customer_name||'').toLowerCase().includes(q) ||
+    (o.customer_email||'').toLowerCase().includes(q)
+  );
+  const el = document.getElementById('order-list');
+  if (!list.length) {
+    el.innerHTML='<div class="empty"><div class="empty-icon">📦</div><div class="empty-text">No orders found</div></div>';
+    return;
+  }
+  el.innerHTML = list.map(o => orderCard(o)).join('');
+}
+
+function orderCard(o) {
+  let items = [];
+  try { items = JSON.parse(o.items_json || '[]'); } catch(e) {}
+  const summary = items.length ? items.map(i=>`${i.qty||1}× ${i.name||i.title||'Item'}`).join(', ') : 'Order';
+  const total = parseFloat(o.total || o.total_amount || 0);
+  const ts = o.created_at ? new Date(o.created_at).toLocaleString([],{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) : '';
+  const statusClass = o.status || 'pending';
+
+  return `<div class="order-card" id="oc-${o.id}" onclick="toggleOrderDetails('${o.id}')">
+    <div class="order-top">
+      <div>
+        <div class="order-vendor">${esc(o.vendor_name||'Unknown Vendor')}</div>
+        <div class="order-customer">👤 ${esc(o.customer_name||o.customer_email||'Customer')}</div>
+        <div class="order-summary">${esc(summary)}</div>
+      </div>
+      <div style="text-align:right">
+        <div class="order-total">$${total.toFixed(2)}</div>
+        <span class="status-pill ${statusClass}" style="font-size:10px;padding:3px 8px;margin-top:4px;display:inline-flex">${(o.status||'pending').replace('_',' ').toUpperCase()}</span>
+      </div>
+    </div>
+    <div class="order-time">${ts}</div>
+    <div class="order-details" id="od-${o.id}">
+      ${items.length ? items.map(i=>`
+        <div class="order-item-row">
+          <span>${i.qty||1}× ${esc(i.name||i.title||'Item')}</span>
+          <span style="color:var(--green)">$${parseFloat(i.price||0).toFixed(2)}</span>
+        </div>`).join('') : '<div style="font-size:12px;color:var(--muted)">No item details</div>'}
+      ${o.customer_notes ? `<div style="font-size:12px;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">📝 ${esc(o.customer_notes)}</div>` : ''}
+      ${o.tip > 0 ? `<div style="font-size:12px;color:var(--amber);margin-top:4px">Tip: $${parseFloat(o.tip).toFixed(2)}</div>` : ''}
+      ${o.commission_amount > 0 ? `<div style="font-size:12px;color:var(--orange);margin-top:2px">Commission: $${parseFloat(o.commission_amount).toFixed(2)}</div>` : ''}
+      ${!['cancelled','delivered','picked_up'].includes(o.status) ? `<div style="margin-top:10px;display:flex;gap:8px">
+        <button class="btn-action btn-del" onclick="event.stopPropagation();cancelOrder('${o.id}')" style="flex:1;font-size:12px">Cancel Order</button>
+      </div>` : ''}
+    </div>
+  </div>`;
+}
+
+function toggleOrderDetails(id) {
+  const el = document.getElementById('od-' + id);
+  const card = document.getElementById('oc-' + id);
+  if (!el) return;
+  const expanded = el.classList.toggle('show');
+  card.classList.toggle('expanded', expanded);
+}
+
+// ── PROMOS ────────────────────────────────────────────────────
+function renderPromos() {
+  const el = document.getElementById('promo-list');
+  if (!promos.length) {
+    el.innerHTML='<div class="empty"><div class="empty-icon">🏷️</div><div class="empty-text">No promo codes yet</div><div style="font-size:13px;color:var(--muted);margin-top:6px">Tap + Create to add one</div></div>';
+    return;
+  }
+  el.innerHTML = promos.map(p => promoCard(p)).join('');
+}
+
+function promoCard(p) {
+  const discLabel = p.discount_type === 'percent' ? `${p.discount_value}% off` : `$${parseFloat(p.discount_value).toFixed(2)} off`;
+  const usageLabel = p.max_uses ? `${p.use_count||0}/${p.max_uses} used` : `${p.use_count||0} used`;
+  const vendorLabel = p.vendor_name || (p.vendor_id ? `Vendor #${p.vendor_id}` : 'Platform');
+  const validUntil = p.valid_until ? `Expires ${new Date(p.valid_until).toLocaleDateString()}` : 'No expiry';
+  const isActive = p.active == 1 || p.active === true;
+
+  return `<div class="promo-card">
+    <div class="promo-code-badge">${esc(p.code)}</div>
+    <div class="promo-info">
+      <div class="promo-name">${discLabel}</div>
+      <div class="promo-meta">${usageLabel} · ${validUntil}</div>
+      <div class="promo-meta" style="margin-top:2px">🏪 ${esc(vendorLabel)}</div>
+    </div>
+    <div class="promo-right">
+      <label class="toggle-switch" onclick="togglePromo(event,'${p.id}',${isActive?0:1})">
+        <input type="checkbox" ${isActive?'checked':''} readonly>
+        <div class="toggle-track"></div>
+        <div class="toggle-thumb"></div>
+      </label>
+      <button class="btn-action btn-del" style="flex:0;padding:6px 10px;font-size:11px" onclick="deletePromo('${p.id}','${esc(p.code)}')">🗑</button>
+    </div>
+  </div>`;
+}
+
+function openPromoModal(id) {
+  editingPromoId = id || null;
+  const existing = id ? promos.find(p=>p.id==id) : null;
+  document.getElementById('promo-modal-title').textContent = existing ? 'Edit Promo Code' : 'Create Promo Code';
+  document.getElementById('promo-code').value = existing ? existing.code : '';
+  document.getElementById('promo-type').value = existing ? existing.discount_type : 'percent';
+  document.getElementById('promo-value').value = existing ? existing.discount_value : '';
+  document.getElementById('promo-maxuses').value = existing ? (existing.max_uses||0) : '';
+  document.getElementById('promo-until').value = existing && existing.valid_until ? existing.valid_until.split('T')[0] : '';
+  document.getElementById('promo-active').checked = existing ? (existing.active==1||existing.active===true) : true;
+  document.getElementById('promo-modal').classList.add('show');
+}
+
+function closePromoModal() {
+  document.getElementById('promo-modal').classList.remove('show');
+  editingPromoId = null;
+}
+
+async function savePromo() {
+  const data = {
+    code: document.getElementById('promo-code').value.trim().toUpperCase(),
+    discount_type: document.getElementById('promo-type').value,
+    discount_value: parseFloat(document.getElementById('promo-value').value) || 0,
+    max_uses: parseInt(document.getElementById('promo-maxuses').value) || 0,
+    valid_until: document.getElementById('promo-until').value || null,
+    active: document.getElementById('promo-active').checked ? 1 : 0
+  };
+  if (!data.code) { showToast('Code is required','error'); return; }
+  try {
+    let d;
+    if (editingPromoId) {
+      d = await apiPut(`/api/admin/promos/${editingPromoId}`, data);
+    } else {
+      d = await apiPost('/api/admin/promos', data);
+    }
+    if (d.ok || d.promo) {
+      closePromoModal();
+      showToast(editingPromoId ? 'Promo updated!' : 'Promo created!','success');
+      const promosRes = await apiFetch('/api/admin/promos').catch(()=>({}));
+      promos = promosRes.promos || promos;
+      renderPromos();
+    } else showToast(d.error||'Failed','error');
+  } catch(e) { showToast('Error','error'); }
+}
+
+async function togglePromo(e, id, newState) {
+  e.stopPropagation();
+  try {
+    const d = await apiPut(`/api/admin/promos/${id}`, {active: newState});
+    if (d.ok) {
+      promos = promos.map(p=>p.id==id?{...p,active:newState}:p);
+      renderPromos();
+      showToast(newState ? 'Promo activated' : 'Promo deactivated','success');
+    } else showToast(d.error||'Failed','error');
+  } catch(e) { showToast('Error','error'); }
+}
+
+async function deletePromo(id, code) {
+  if (!confirm(`Delete promo code "${code}"?`)) return;
+  try {
+    const d = await apiDelete(`/api/admin/promos/${id}`);
+    if (d.ok) {
+      promos = promos.filter(p=>p.id!=id);
+      renderPromos();
+      showToast(`Deleted ${code}`,'success');
+    } else showToast(d.error||'Failed','error');
+  } catch(e) { showToast('Error','error'); }
+}
+
+function renderAmbassadorCommissions(overview) {
+  const el = document.getElementById('ambassador-commissions');
+  if (!el) return;
+  const topAmbs = overview.top_ambassadors || [];
+  if (!topAmbs.length) {
+    el.innerHTML='<div style="font-size:13px;color:var(--muted);text-align:center;padding:16px 0">No ambassador data yet</div>';
+    return;
+  }
+  el.innerHTML = `<div style="overflow-x:auto"><table class="amb-table">
+    <thead><tr><th>Ambassador</th><th>Referrals</th><th>Earned</th></tr></thead>
+    <tbody>${topAmbs.map(a=>`
+      <tr>
+        <td>${esc(a.name||a.email||'Ambassador')}</td>
+        <td class="num">${a.referral_count||0}</td>
+        <td class="num">$${formatMoney(a.total_earned||0)}</td>
+      </tr>`).join('')}
+    </tbody>
+  </table></div>`;
+}
+
+// ── ACTIONS ───────────────────────────────────────────────────
+async function impersonate(id, name) {
+  try {
+    const d = await apiPost(`/api/admin/impersonate/${id}`);
+    if (d.token) {
+      // Store admin token for return
+      sessionStorage.setItem('wya_admin_return_token', tok);
+      showToast(`Viewing as ${name}`, 'success');
+      setTimeout(() => {
+        window.open(`/vendor?token=${d.token}&impersonate=1`, '_blank');
+      }, 400);
+    } else showToast(d.error||'Failed', 'error');
+  } catch(e) { showToast('Error', 'error'); }
+}
+
+async function nudgeVendor(id) {
+  try {
+    const d = await apiPost(`/api/admin/nudge/${id}`, {});
+    if (d.ok) showToast(`Nudge sent to ${d.sent_to}`, 'success');
+    else showToast(d.error||'Failed', 'error');
+  } catch(e) { showToast('Error sending nudge', 'error'); }
+}
+
+async function toggleVendor(id, newState) {
+  try {
+    const d = await apiPost(`/api/admin/vendors/${id}/toggle`, {is_open:newState});
+    if (d.ok) { vendors = vendors.map(v=>v.id===id?{...v,is_open:newState}:v); renderVendors(); renderLive(); showToast(newState?'Vendor is live!':'Vendor offline','success'); }
+    else showToast(d.error||'Failed','error');
+  } catch(e) { showToast('Error','error'); }
+}
+
+async function deleteVendor(id, name) {
+  if (!confirm(`Delete ${name}? This cannot be undone.`)) return;
+  try {
+    const d = await apiDelete(`/api/admin/vendors/${id}`);
+    if (d.ok) { vendors = vendors.filter(v=>v.id!==id); renderVendors(); renderLive(); loadAll(); showToast(`Deleted ${name}`,'success'); }
+    else showToast(d.error||'Failed','error');
+  } catch(e) { showToast('Error','error'); }
+}
+
+async function openEdit(id) {
+  const v = vendors.find(x=>x.id===id);
+  if (!v) return;
+  editingId = id;
+  document.getElementById('modal-title').textContent = `Edit: ${v.name}`;
+  document.getElementById('edit-name').value = v.name||'';
+  document.getElementById('edit-cat').value = v.category||'food';
+  document.getElementById('edit-phone').value = v.phone||'';
+  document.getElementById('edit-desc').value = v.description||'';
+  document.getElementById('edit-pw').value = '';
+  document.getElementById('edit-doordash').value = v.doordash_url||'';
+  document.getElementById('edit-ubereats').value = v.ubereats_url||'';
+  document.getElementById('edit-website').value = v.website||'';
+
+  // Load business hours
+  let hours = {};
+  try { hours = v.business_hours ? JSON.parse(v.business_hours) : {}; } catch(e) {}
+  renderHoursGrid(hours);
+
+  // Load reviews
+  const revEl = document.getElementById('edit-reviews-list');
+  revEl.innerHTML = '<div style="font-size:12px;color:var(--muted)">Loading reviews…</div>';
+  try {
+    const rd = await apiFetch(`/api/admin/vendors/${id}/reviews`);
+    const reviews = rd.reviews || [];
+    if (!reviews.length) {
+      revEl.innerHTML = '<div style="font-size:12px;color:var(--muted)">No reviews yet</div>';
+    } else {
+      revEl.innerHTML = reviews.map(r => `
+        <div class="review-item">
+          <div class="review-stars">${'★'.repeat(r.rating||5)}${'☆'.repeat(5-(r.rating||5))}</div>
+          <div class="review-text">${esc(r.comment||r.text||'')}</div>
+          <div class="review-meta">
+            <span>${esc(r.reviewer_name||r.customer_name||'Anonymous')}</span>
+            <button class="btn-del-review" onclick="deleteReview('${id}','${r.id}')">🗑 Delete</button>
+          </div>
+        </div>`).join('');
+    }
+  } catch(e) {
+    revEl.innerHTML = '<div style="font-size:12px;color:var(--muted)">Reviews unavailable</div>';
+  }
+
+  document.getElementById('edit-modal').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('edit-modal').classList.remove('show');
+  editingId = null;
+}
+
+async function saveEdit() {
+  if (!editingId) return;
+  const data = {
+    name: document.getElementById('edit-name').value.trim(),
+    category: document.getElementById('edit-cat').value,
+    phone: document.getElementById('edit-phone').value.trim(),
+    description: document.getElementById('edit-desc').value.trim(),
+    doordash_url: document.getElementById('edit-doordash').value.trim(),
+    ubereats_url: document.getElementById('edit-ubereats').value.trim(),
+    website: document.getElementById('edit-website').value.trim(),
+    business_hours: JSON.stringify(collectHours()),
+  };
+  const pw = document.getElementById('edit-pw').value;
+  if (pw) data.password = pw;
+  try {
+    const d = await apiPut(`/api/admin/vendors/${editingId}`, data);
+    if (d.ok) {
+      vendors = vendors.map(v=>v.id===editingId?{...v,...data}:v);
+      renderVendors(); renderLive();
+      closeModal(); showToast('Saved!','success');
+    } else showToast(d.error||'Failed','error');
+  } catch(e) { showToast('Error','error'); }
+}
+
+async function deleteReview(vendorId, reviewId) {
+  if (!confirm('Delete this review?')) return;
+  try {
+    const d = await apiDelete(`/api/admin/vendors/${vendorId}/reviews/${reviewId}`);
+    if (d.ok) {
+      showToast('Review deleted','success');
+      openEdit(vendorId);
+    } else showToast(d.error||'Failed','error');
+  } catch(e) { showToast('Error','error'); }
+}
+
+// ── ACTIVITY ──────────────────────────────────────────────────
+function renderActivity() {
+  const live = vendors.filter(v=>v.is_open && v.id!=='SUPERADMIN-001');
+  const offline = vendors.filter(v=>!v.is_open && v.id!=='SUPERADMIN-001');
+  const items = [
+    ...live.map(v=>({icon:'🟢',text:`${v.name} is live`,time:v.last_seen||'recently'})),
+    ...offline.map(v=>({icon:'⚫',text:`${v.name} is offline`,time:v.last_seen||'recently'})),
+  ];
+  const el = document.getElementById('activity-list');
+  if (!items.length) { el.innerHTML='<div class="empty"><div class="empty-icon">📋</div><div class="empty-text">No activity yet</div></div>'; return; }
+  el.innerHTML = items.map(i=>`
+    <div class="activity-item">
+      <div class="activity-icon">${i.icon}</div>
+      <div class="activity-text">
+        <div class="activity-main">${esc(i.text)}</div>
+        <div class="activity-time">${i.time ? new Date(i.time).toLocaleString([],{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) : ''}</div>
+      </div>
+    </div>`).join('');
+}
+
+// ── AMBASSADORS ──────────────────────────────────────────────
+function renderAmbassadors(topReferrers) {
+  const el = document.getElementById('ambassador-list');
+  if (!topReferrers.length) { el.innerHTML='<div class="empty"><div class="empty-icon">🤝</div><div class="empty-text">No referrals yet</div></div>'; return; }
+  el.innerHTML = topReferrers.map((r, i) => `
+    <div class="vendor-card" style="flex-direction:row;align-items:center;gap:16px">
+      <div class="vc-icon" style="font-size:16px;font-weight:900;color:var(--orange)">#${i+1}</div>
+      <div class="vc-info" style="flex:1">
+        <div class="vc-name">${esc(r.name)}</div>
+        <div class="vc-email" style="color:var(--muted)">Code: ${esc(r.referral_code)}</div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:24px;font-weight:900;color:var(--green)">${r.referral_count}</div>
+        <div style="font-size:10px;color:var(--muted)">REFERRALS</div>
+      </div>
+    </div>`).join('');
+}
+
+// ── AMBASSADOR PAYOUTS (Phase 748) ───────────────────────────
+async function loadPendingPayouts() {
+  const el = document.getElementById('amb-payout-queue');
+  try {
+    const d = await apiFetch('/api/admin/ambassador/payouts/pending');
+    const payouts = d.payouts || [];
+    if (!payouts.length) {
+      el.innerHTML = '<div style="font-size:13px;color:var(--muted);text-align:center;padding:12px">No pending payout requests</div>';
+      return;
+    }
+    el.innerHTML = payouts.map(p => `<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <div style="font-size:14px;font-weight:600">${esc(p.vendor_name||'Ambassador')}</div>
+        <div style="font-size:12px;color:var(--muted)">${p.vendor_email||''} · ${p.created_at?.split('T')[0]||''}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="font-size:16px;font-weight:800;color:var(--green)">$${formatMoney(p.amount||0)}</div>
+        <button onclick="approveAmbassadorPayout('${p.id}')" style="padding:6px 12px;background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.2);border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit">Approve</button>
+        <button onclick="rejectAmbassadorPayout('${p.id}')" style="padding:6px 12px;background:rgba(239,68,68,.1);color:var(--red);border:1px solid rgba(239,68,68,.2);border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit">Reject</button>
+      </div>
+    </div>`).join('');
+  } catch(e) { el.innerHTML = '<div style="font-size:13px;color:var(--muted);text-align:center;padding:12px">Failed to load</div>'; }
+}
+async function approveAmbassadorPayout(id) {
+  if (!confirm('Approve this payout?')) return;
+  try {
+    const d = await apiPost(`/api/admin/ambassador/payout/${id}`);
+    if (d.ok) { showToast('Payout approved', 'success'); loadPendingPayouts(); }
+    else showToast(d.error||'Failed', 'error');
+  } catch(e) { showToast('Error', 'error'); }
+}
+async function rejectAmbassadorPayout(id) {
+  if (!confirm('Reject this payout request?')) return;
+  try {
+    const d = await apiPost(`/api/admin/ambassador/payouts/${id}/reject`);
+    if (d.ok) { showToast('Payout rejected', 'success'); loadPendingPayouts(); }
+    else showToast(d.error||'Failed', 'error');
+  } catch(e) { showToast('Error', 'error'); }
+}
+async function sendBroadcast() {
+  const target = document.getElementById('bc-target').value;
+  const title = document.getElementById('bc-title').value.trim();
+  const message = document.getElementById('bc-message').value.trim();
+  if (!title || !message) { showToast('Title and message required', 'error'); return; }
+  if (!confirm(`Send broadcast to ${target}?`)) return;
+  try {
+    const d = await apiPost('/api/admin/push/broadcast', { target, title, message });
+    if (d.ok) {
+      showToast(`Broadcast sent to ${d.sent} subscribers`, 'success');
+      document.getElementById('bc-title').value = '';
+      document.getElementById('bc-message').value = '';
+    } else showToast(d.error||'Failed', 'error');
+  } catch(e) { showToast('Error', 'error'); }
+}
+
+// ── CANCEL ORDER ──────────────────────────────────────────────
+async function cancelOrder(orderId) {
+  if (!confirm('Cancel this order?')) return;
+  try {
+    const d = await apiPut(`/api/admin/orders/${orderId}/status`, {status:'cancelled'});
+    if (d.ok) {
+      orders = orders.map(o=>o.id===orderId?{...o,...d.order,status:'cancelled'}:o);
+      renderOrders();
+      showToast('Order cancelled','success');
+    } else showToast(d.error||'Failed','error');
+  } catch(e) { showToast('Error cancelling order','error'); }
+}
+
+// ── REVENUE ──────────────────────────────────────────────────
+async function loadRevenue() {
+  try {
+    const d = await apiFetch('/api/admin/revenue');
+    if (!d.ok) return;
+    document.getElementById('rev-total').textContent = '$' + formatMoney(d.total_revenue);
+    document.getElementById('rev-commission').textContent = '$' + formatMoney(d.total_commission);
+    document.getElementById('rev-tips').textContent = '$' + formatMoney(d.total_tips);
+    document.getElementById('rev-today').textContent = '$' + formatMoney(d.today_revenue);
+    // Status grid
+    const statuses = ['pending','confirmed','preparing','ready','delivered','cancelled'];
+    const statusColors = {pending:'var(--blue)',confirmed:'var(--orange)',preparing:'var(--orange)',ready:'var(--green)',delivered:'var(--muted)',cancelled:'var(--red)'};
+    const grid = document.getElementById('rev-status-grid');
+    grid.innerHTML = statuses.map(s => `<div class="stat-card"><div class="stat-n" style="color:${statusColors[s]||'var(--text)'}">${d.orders_by_status[s]||0}</div><div class="stat-l">${s}</div></div>`).join('');
+    // Top vendors
+    const tv = document.getElementById('rev-top-vendors');
+    if (!(d.top_vendors_by_commission||[]).length) {
+      tv.innerHTML='<div style="font-size:13px;color:var(--muted);text-align:center;padding:16px">No commission data yet</div>';
+    } else {
+      tv.innerHTML = `<div style="overflow-x:auto"><table class="amb-table">
+        <thead><tr><th>Vendor</th><th>Orders</th><th>Commission</th></tr></thead>
+        <tbody>${d.top_vendors_by_commission.map(v=>`<tr><td>${esc(v.name)}</td><td class="num">${v.orders}</td><td class="num">$${formatMoney(v.commission)}</td></tr>`).join('')}</tbody>
+      </table></div>`;
+    }
+  } catch(e) { showToast('Failed to load commission data','error'); }
+  // Load MRR
+  try {
+    const m = await apiFetch('/api/admin/revenue/mrr');
+    if (m.ok) {
+      document.getElementById('mrr-total').textContent = '$' + formatMoney(m.mrr);
+      document.getElementById('mrr-churn').textContent = m.churn + ' churned vendors';
+      const tiers = document.getElementById('mrr-tiers');
+      const tierNames = { free:'Free', growth:'Growth', pro:'Pro', enterprise:'Enterprise' };
+      tiers.innerHTML = Object.entries(m.tier_breakdown||{}).map(([k,v]) => `<div class="stat-card"><div class="stat-n" style="color:${k==='free'?'var(--muted)':'var(--green)'}">${v.count}</div><div class="stat-l">${tierNames[k]||k} · $${formatMoney(v.revenue)}/mo</div></div>`).join('');
+    }
+  } catch(e) { showToast('Failed to load MRR data','error'); }
+  // Load commissions
+  try {
+    const c = await apiFetch('/api/admin/commissions?status=pending');
+    if (c.ok) {
+      const el = document.getElementById('vendor-commissions');
+      if (!(c.commissions||[]).length) {
+        el.innerHTML = '<div style="font-size:13px;color:var(--muted);text-align:center;padding:12px">No pending commissions</div>';
+      } else {
+        el.innerHTML = c.commissions.slice(0,10).map(x => `<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 16px;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center">
+          <div><div style="font-size:13px;font-weight:600">${esc(x.vendor_name||'Vendor')}</div><div style="font-size:11px;color:var(--muted)">$${formatMoney(x.gross)} gross · ${(x.rate*100).toFixed(0)}% rate</div></div>
+          <div style="text-align:right"><div style="font-size:14px;font-weight:700;color:var(--orange)">$${formatMoney(x.commission)}</div><div style="font-size:10px;color:var(--muted)">${x.period}</div></div>
+        </div>`).join('');
+      }
+    }
+  } catch(e) { showToast('Failed to load commissions','error'); }
+  // Load financial dashboard
+  try {
+    const f = await apiFetch('/api/admin/financial');
+    if (f.ok) {
+      const el = document.getElementById('financial-overview');
+      el.innerHTML = `
+        <div class="stats-grid" style="margin-bottom:12px">
+          <div class="stat-card green"><div class="stat-n">$${formatMoney(f.gross_revenue||0)}</div><div class="stat-l">Gross Revenue</div></div>
+          <div class="stat-card orange"><div class="stat-n">$${formatMoney(f.platform_commissions||0)}</div><div class="stat-l">Platform Commission</div></div>
+          <div class="stat-card"><div class="stat-n" style="color:var(--text)">$${formatMoney(f.vendor_net||0)}</div><div class="stat-l">Vendor Net</div></div>
+          <div class="stat-card blue"><div class="stat-n">$${formatMoney(f.avg_order_value||0)}</div><div class="stat-l">Avg Order</div></div>
+        </div>
+        ${f.onboarding_completion!==undefined?`<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:13px;color:var(--muted);font-weight:600">Onboarding Completion</span><span style="font-size:14px;font-weight:700;color:var(--orange)">${f.onboarding_completion}%</span></div>`:''}
+        ${f.tier_distribution?`<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:12px"><div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Plan Distribution</div><div style="display:flex;gap:12px;flex-wrap:wrap">${Object.entries(f.tier_distribution).map(([k,v])=>`<div style="text-align:center"><div style="font-size:18px;font-weight:900;color:var(--orange)">${v}</div><div style="font-size:11px;color:var(--muted)">${k}</div></div>`).join('')}</div></div>`:''}
+        ${f.per_vendor&&f.per_vendor.length?`<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden"><div style="padding:12px 16px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border)">Per-Vendor Revenue</div>${f.per_vendor.slice(0,10).map(v=>`<div style="padding:10px 16px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)"><div><div style="font-size:13px;font-weight:600">${esc(v.name)}</div><div style="font-size:11px;color:var(--muted)">${v.order_count||0} orders</div></div><div style="font-size:14px;font-weight:700;color:var(--green)">$${formatMoney(v.revenue||0)}</div></div>`).join('')}</div>`:''}`;
+    }
+  } catch(e) { showToast('Failed to load financial data','error'); }
+}
+
+function createPayout() {
+  const sel = document.getElementById('payout-vendor');
+  sel.innerHTML = vendors.map(v => `<option value="${v.id}">${esc(v.name)} (ID: ${v.id})</option>`).join('');
+  document.getElementById('payout-amount').value = '';
+  document.getElementById('payout-method').value = 'venmo';
+  const fb = document.getElementById('payout-feedback');
+  fb.style.display = 'none';
+  document.getElementById('payout-submit-btn').disabled = false;
+  document.getElementById('payout-modal').classList.add('show');
+}
+function closePayoutModal() {
+  document.getElementById('payout-modal').classList.remove('show');
+}
+async function submitPayout() {
+  const vid = document.getElementById('payout-vendor').value;
+  const amount = parseFloat(document.getElementById('payout-amount').value);
+  const method = document.getElementById('payout-method').value;
+  const fb = document.getElementById('payout-feedback');
+  const btn = document.getElementById('payout-submit-btn');
+  if (!amount || amount <= 0) {
+    fb.style.display = 'block'; fb.style.background = 'rgba(239,68,68,.08)'; fb.style.color = 'var(--red)'; fb.style.border = '1px solid rgba(239,68,68,.2)';
+    fb.textContent = 'Enter a valid amount'; return;
+  }
+  btn.disabled = true; btn.textContent = 'Creating...';
+  fb.style.display = 'none';
+  try {
+    const d = await apiFetch('/api/admin/payouts/create', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({vendor_id:vid,amount,method}) });
+    if (d.ok || d.id) {
+      fb.style.display = 'block'; fb.style.background = 'rgba(34,197,94,.08)'; fb.style.color = 'var(--green)'; fb.style.border = '1px solid rgba(34,197,94,.2)';
+      fb.textContent = 'Payout created successfully';
+      setTimeout(() => { closePayoutModal(); loadRevenue(); }, 1200);
+    } else {
+      fb.style.display = 'block'; fb.style.background = 'rgba(239,68,68,.08)'; fb.style.color = 'var(--red)'; fb.style.border = '1px solid rgba(239,68,68,.2)';
+      fb.textContent = d.error || 'Failed to create payout';
+      btn.disabled = false; btn.textContent = 'Create Payout';
+    }
+  } catch(e) {
+    fb.style.display = 'block'; fb.style.background = 'rgba(239,68,68,.08)'; fb.style.color = 'var(--red)'; fb.style.border = '1px solid rgba(239,68,68,.2)';
+    fb.textContent = 'Network error — please try again';
+    btn.disabled = false; btn.textContent = 'Create Payout';
+  }
+}
+
+// ── VENDOR HOURS (edit modal) ────────────────────────────────
+const dayLabels = {mon:'Monday',tue:'Tuesday',wed:'Wednesday',thu:'Thursday',fri:'Friday',sat:'Saturday',sun:'Sunday'};
+function renderHoursGrid(hours) {
+  const grid = document.getElementById('edit-hours-grid');
+  const days = ['mon','tue','wed','thu','fri','sat','sun'];
+  grid.innerHTML = days.map(d => {
+    const h = hours[d];
+    const open = h && h !== 'closed' && h.open ? h.open : '';
+    const close = h && h !== 'closed' && h.close ? h.close : '';
+    const isClosed = !open && !close;
+    return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+      <div style="width:70px;font-size:12px;font-weight:600;color:var(--muted)">${dayLabels[d].slice(0,3)}</div>
+      <input type="time" id="h-${d}-o" value="${open}" style="flex:1;padding:8px;background:var(--bg);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-size:13px;font-family:inherit">
+      <span style="font-size:12px;color:var(--muted)">to</span>
+      <input type="time" id="h-${d}-c" value="${close}" style="flex:1;padding:8px;background:var(--bg);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-size:13px;font-family:inherit">
+    </div>`;
+  }).join('');
+}
+
+function collectHours() {
+  const days = ['mon','tue','wed','thu','fri','sat','sun'];
+  const hours = {};
+  for (const d of days) {
+    const open = document.getElementById(`h-${d}-o`)?.value || '';
+    const close = document.getElementById(`h-${d}-c`)?.value || '';
+    if (open && close) hours[d] = {open, close};
+  }
+  return hours;
+}
+
+// ── EVENTS (Admin) ────────────────────────────────────────────
+let adminEvents = [];
+
+async function loadEvents() {
+  try {
+    const d = await apiFetch('/api/admin/events');
+    if (!d.ok) { showToast('Failed to load events', 'error'); return; }
+    adminEvents = d.events || [];
+    // Stats summary
+    const sg = document.getElementById('event-stats-grid');
+    const s = d.stats || {};
+    sg.innerHTML = [
+      { n: s.total || 0, l: 'Total', cls: 'blue' },
+      { n: s.upcoming || 0, l: 'Upcoming', cls: 'green' },
+      { n: s.past || 0, l: 'Past', cls: '' },
+      { n: s.archived || 0, l: 'Archived', cls: '' },
+    ].map(c => `<div class="stat-card ${c.cls}"><div class="stat-n" ${c.cls?'':'style="color:var(--muted)"'}>${c.n}</div><div class="stat-l">${c.l}</div></div>`).join('');
+    renderEventList();
+  } catch(e) { showToast('Error loading events', 'error'); }
+}
+
+function renderEventList() {
+  const el = document.getElementById('event-list');
+  if (!adminEvents.length) {
+    el.innerHTML = '<div class="empty"><div class="empty-icon">🎪</div><div class="empty-text">No events yet</div></div>';
+    return;
+  }
+  el.innerHTML = adminEvents.map(ev => eventCard(ev)).join('');
+}
+
+function eventCard(ev) {
+  const now = new Date().toISOString().slice(0, 10);
+  const isPast = ev.event_date < now;
+  const statusColor = ev.status === 'active' ? 'var(--green)' : ev.status === 'archived' ? 'var(--muted)' : 'var(--red)';
+  const statusBg = ev.status === 'active' ? 'rgba(34,197,94,.1)' : ev.status === 'archived' ? 'rgba(107,114,128,.1)' : 'rgba(239,68,68,.1)';
+  const typeBadge = ev.event_type === 'organizer'
+    ? '<span style="font-size:10px;background:rgba(168,85,247,.12);color:var(--purple);border:1px solid rgba(168,85,247,.2);padding:2px 7px;border-radius:6px;font-weight:700">ORGANIZER</span>'
+    : '<span style="font-size:10px;background:rgba(76,201,240,.12);color:var(--blue);border:1px solid rgba(76,201,240,.2);padding:2px 7px;border-radius:6px;font-weight:700">VENDOR</span>';
+  const priceTag = ev.price > 0 ? `<span style="font-size:11px;background:rgba(34,197,94,.1);color:var(--green);border:1px solid rgba(34,197,94,.2);padding:2px 8px;border-radius:6px;font-weight:700">$${parseFloat(ev.price).toFixed(2)}</span>` : '<span style="font-size:11px;background:rgba(107,114,128,.08);color:var(--muted);border:1px solid var(--border2);padding:2px 8px;border-radius:6px">FREE</span>';
+
+  return `<div class="order-card" id="evc-${ev.id}">
+    <div onclick="toggleEventBookings('${ev.id}')">
+      <div class="order-top">
+        <div style="flex:1;min-width:0">
+          <div style="font-size:14px;font-weight:700;margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(ev.title)}</div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:4px">${ev.event_date}${ev.start_time ? ' at ' + ev.start_time : ''}${ev.location ? ' · ' + esc(ev.location) : ''}</div>
+          <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">
+            <span style="font-size:11px;background:${statusBg};color:${statusColor};padding:2px 8px;border-radius:6px;font-weight:700;border:1px solid ${statusColor.replace(')',',0.2)').replace('var(','rgba(')}">
+              ${(ev.status||'active').toUpperCase()}${isPast ? ' · PAST' : ''}
+            </span>
+            ${typeBadge}
+            ${priceTag}
+            <span style="font-size:11px;color:var(--muted)">👥 ${ev.rsvp_count_live||0} RSVPs</span>
+            ${ev.event_type==='organizer' ? `<span style="font-size:11px;color:var(--muted)">🏪 ${ev.vendor_app_count||0} vendor apps</span>` : ''}
+          </div>
+          ${ev.organizer_email ? `<div style="font-size:11px;color:var(--muted);margin-top:4px">Organizer: ${esc(ev.organizer_name||ev.organizer_email)}</div>` : ''}
+          ${ev.vendor_name ? `<div style="font-size:11px;color:var(--muted);margin-top:2px">Vendor: ${esc(ev.vendor_name)}</div>` : ''}
+        </div>
+      </div>
+    </div>
+    <div class="vc-actions" style="margin-top:8px">
+      ${ev.status !== 'archived' ? `<button class="btn-action btn-toggle" onclick="setEventStatus('${ev.id}','archived')">Archive</button>` : `<button class="btn-action btn-toggle off" onclick="setEventStatus('${ev.id}','active')">Restore</button>`}
+      ${ev.status !== 'cancelled' ? `<button class="btn-action" style="background:rgba(252,176,69,.1);color:var(--amber);border:1px solid rgba(252,176,69,.2)" onclick="setEventStatus('${ev.id}','cancelled')">Cancel</button>` : ''}
+      <button class="btn-action btn-del" onclick="deleteEvent('${ev.id}','${esc(ev.title).replace(/'/g,"\\'")}')">🗑</button>
+    </div>
+    <div id="ev-bookings-${ev.id}" style="display:none;margin-top:12px;padding-top:12px;border-top:1px solid var(--border)"></div>
+  </div>`;
+}
+
+async function toggleEventBookings(id) {
+  const el = document.getElementById(`ev-bookings-${id}`);
+  if (!el) return;
+  if (el.style.display !== 'none') { el.style.display = 'none'; return; }
+  el.style.display = 'block';
+  el.innerHTML = '<div style="font-size:12px;color:var(--muted);padding:8px">Loading bookings...</div>';
+  try {
+    const d = await apiFetch(`/api/admin/events/${id}/bookings`);
+    if (!d.ok || !d.bookings?.length) {
+      el.innerHTML = '<div style="font-size:12px;color:var(--muted);padding:8px">No bookings yet</div>';
+      return;
+    }
+    el.innerHTML = '<div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px">Bookings</div>' +
+      d.bookings.map(b => {
+        const isVendor = b.user_type === 'vendor';
+        const statusColor = b.status === 'confirmed' || b.status === 'approved' ? 'var(--green)' : b.status === 'cancelled' || b.status === 'declined' ? 'var(--red)' : 'var(--amber)';
+        const approveBtn = (isVendor && b.status === 'pending')
+          ? `<button onclick="updateBookingStatus('${id}','${b.id}','approved')" style="padding:4px 10px;background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.2);border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit">Approve</button>
+             <button onclick="updateBookingStatus('${id}','${b.id}','declined')" style="padding:4px 10px;background:rgba(239,68,68,.1);color:var(--red);border:1px solid rgba(239,68,68,.2);border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit">Decline</button>`
+          : (b.status === 'pending' || b.status === 'pending_payment')
+            ? `<button onclick="updateBookingStatus('${id}','${b.id}','confirmed')" style="padding:4px 10px;background:rgba(34,197,94,.12);color:var(--green);border:1px solid rgba(34,197,94,.2);border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit">Confirm</button>
+               <button onclick="updateBookingStatus('${id}','${b.id}','cancelled')" style="padding:4px 10px;background:rgba(239,68,68,.1);color:var(--red);border:1px solid rgba(239,68,68,.2);border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;font-family:inherit">Cancel</button>` : '';
+        return `<div style="padding:8px 10px;background:var(--bg);border-radius:10px;margin-bottom:6px;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap">
+          <div style="min-width:0;flex:1">
+            <div style="font-size:13px;font-weight:600">${esc(b.user_name||b.user_email||b.user_id)}</div>
+            <div style="font-size:11px;color:var(--muted)">${isVendor ? '🏪 Vendor' : '👤 Customer'} · ${b.created_at?.split('T')[0]||''}</div>
+            ${b.message ? `<div style="font-size:11px;color:var(--muted);margin-top:2px;font-style:italic">"${esc(b.message)}"</div>` : ''}
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+            <span style="font-size:11px;font-weight:700;color:${statusColor};padding:2px 8px;background:${statusColor.replace('var(--green)','rgba(34,197,94,.1)').replace('var(--red)','rgba(239,68,68,.1)').replace('var(--amber)','rgba(252,176,69,.1)')};border-radius:6px">${(b.status||'pending').replace('_',' ').toUpperCase()}</span>
+            ${approveBtn}
+          </div>
+        </div>`;
+      }).join('');
+  } catch(e) { el.innerHTML = '<div style="font-size:12px;color:var(--red);padding:8px">Failed to load bookings</div>'; }
+}
+
+async function setEventStatus(id, status) {
+  try {
+    const d = await apiPut(`/api/admin/events/${id}`, { status });
+    if (d.ok) {
+      adminEvents = adminEvents.map(e => e.id == id ? { ...e, status } : e);
+      renderEventList();
+      showToast(`Event ${status}`, 'success');
+    } else showToast(d.error || 'Failed', 'error');
+  } catch(e) { showToast('Error', 'error'); }
+}
+
+async function deleteEvent(id, title) {
+  if (!confirm(`Delete "${title}" and all its bookings? This cannot be undone.`)) return;
+  try {
+    const d = await apiDelete(`/api/admin/events/${id}`);
+    if (d.ok) {
+      adminEvents = adminEvents.filter(e => e.id != id);
+      renderEventList();
+      showToast('Event deleted', 'success');
+    } else showToast(d.error || 'Failed', 'error');
+  } catch(e) { showToast('Error', 'error'); }
+}
+
+async function updateBookingStatus(eventId, bookingId, status) {
+  try {
+    const d = await apiPut(`/api/admin/events/${eventId}/bookings/${bookingId}`, { status });
+    if (d.ok) {
+      // Refresh bookings panel
+      const el = document.getElementById(`ev-bookings-${eventId}`);
+      if (el) el.style.display = 'none';
+      await toggleEventBookings(eventId);
+      // Update rsvp count in local state
+      const reloaded = await apiFetch('/api/admin/events');
+      if (reloaded.ok) { adminEvents = reloaded.events || []; }
+      showToast(`Booking ${status}`, 'success');
+    } else showToast(d.error || 'Failed', 'error');
+  } catch(e) { showToast('Error', 'error'); }
+}
+
+// ── TABS ──────────────────────────────────────────────────────
+function switchTab(tab) {
+  activeTab = tab;
+  document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.botnav-tab').forEach(el=>el.classList.remove('active'));
+  const tabEl = document.getElementById(`tab-${tab}`);
+  const btnEl = document.getElementById(`btn-${tab}`);
+  if (tabEl) tabEl.classList.add('active');
+  if (btnEl) btnEl.classList.add('active');
+  if (tab==='vendors') renderVendors();
+  if (tab==='activity') renderActivity();
+  if (tab==='orders') renderOrders();
+  if (tab==='promos') renderPromos();
+  if (tab==='revenue') loadRevenue();
+  if (tab==='invites') loadInvites();
+  if (tab==='events') loadEvents();
+  // Scroll btn into view in bottom nav
+  if (btnEl) btnEl.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+}
+
+// ── TOAST ─────────────────────────────────────────────────────
+function showToast(msg, type='success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = `toast ${type} show`;
+  setTimeout(()=>t.classList.remove('show'), 2800);
+}
+
+// ── UTILS ─────────────────────────────────────────────────────
+function esc(s) {
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── IMPERSONATE TOKEN HANDLER ─────────────────────────────────
+const urlTok = new URLSearchParams(location.search).get('_tok');
+if (urlTok) { localStorage.setItem('wya_vendor_token', urlTok); location.href='/vendor'; }
+
+// ── AUTO LOGIN ────────────────────────────────────────────────
+window.onload = async () => {
+  if (tok) {
+    try {
+      const me = await apiFetch('/api/vendor/me', tok);
+      if (me.vendor?.is_super_admin) {
+        document.getElementById('topnav-user').textContent = me.vendor.name;
+        document.getElementById('login-screen').style.display='none';
+        document.getElementById('app').classList.add('show');
+        loadAll(); return;
+      }
+    } catch(e){}
+  }
+  localStorage.removeItem(KEY); tok='';
+};
+
+// Phase 749: Invite system
+async function sendInvite(){
+  const email=document.getElementById('inv-email').value.trim();
+  if(!email){showToast('Email required','error');return;}
+  try{
+    const d=await apiPost('/api/admin/invite',{
+      email,business_name:document.getElementById('inv-name').value.trim(),phone:document.getElementById('inv-phone').value.trim(),personal_message:document.getElementById('inv-msg').value.trim()
+    });
+    if(d.ok){
+      showToast('Invite sent to '+email);
+      document.getElementById('inv-name').value='';document.getElementById('inv-email').value='';
+      document.getElementById('inv-phone').value='';document.getElementById('inv-msg').value='';
+      loadInvites();
+    }else showToast(d.error||'Failed','error');
+  }catch(e){showToast('Error sending invite','error');}
+}
+async function loadInvites(){
+  try{
+    const d=await apiFetch('/api/admin/invites',tok);
+    if(!d.ok)return;
+    // Stats
+    const s=d.stats;
+    document.getElementById('invite-stats').innerHTML=
+      `<div style="flex:1;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center"><div style="font-size:18px;font-weight:900;color:var(--orange)">${s.total}</div><div style="font-size:11px;color:var(--muted)">Sent</div></div>`+
+      `<div style="flex:1;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center"><div style="font-size:18px;font-weight:900;color:var(--blue)">${s.opened}</div><div style="font-size:11px;color:var(--muted)">Opened</div></div>`+
+      `<div style="flex:1;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:10px;text-align:center"><div style="font-size:18px;font-weight:900;color:var(--green)">${s.registered}</div><div style="font-size:11px;color:var(--muted)">Joined</div></div>`;
+    // List
+    const list=d.invites.map(i=>{
+      const statusColors={pending:'var(--muted)',opened:'var(--blue)',registered:'var(--green)',expired:'var(--red)'};
+      const ts=i.created_at?new Date(i.created_at).toLocaleDateString():'';
+      return `<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)">
+        <div><div style="font-size:14px;font-weight:600">${i.business_name||i.email}</div><div style="font-size:12px;color:var(--muted)">${i.email} · ${ts}</div></div>
+        <span style="font-size:11px;font-weight:700;color:${statusColors[i.status]||'var(--muted)'};text-transform:uppercase">${i.status}</span>
+      </div>`;
+    }).join('');
+    document.getElementById('invite-list').innerHTML=list||'<div style="text-align:center;color:var(--muted);padding:20px">No invites sent yet</div>';
+  }catch(e){ showToast('Failed to load invites','error'); }
+}
+</script>
+<script src="https://static.digisigns.link/soul-theme-toggle.js" defer></script>
+<div style="text-align:center;padding:32px 16px 24px;margin-top:40px;border-top:1px solid rgba(255,255,255,.06)">
+  <div style="font-size:.75rem;color:rgba(255,255,255,.3);margin-bottom:12px;letter-spacing:1px">MORE FROM UNIVERSOUL</div>
+  <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
+    <a href="https://store.digisigns.link" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:.8rem">🛍️ DigiStore</a>
+    <a href="https://book.digisigns.link" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:.8rem">📅 DigiBook</a>
+    <a href="https://tap.digisigns.link" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:.8rem">💳 DigiTap</a>
+    <a href="https://digisigns.link" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:.8rem">🏠 Hub</a>
+  </div>
+  <div style="margin-top:12px;font-size:.65rem;color:rgba(255,255,255,.15)">© Universoul LLC · Santa Barbara, CA</div>
+</div>
+</body>
+</html>

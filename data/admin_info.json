@@ -1,0 +1,19 @@
+{
+  "superadmin": {
+    "email": "gotsigns10@gmail.com",
+    "password": "WyaAdmin2026!SB",
+    "db_id": "SUPERADMIN-001",
+    "is_super_admin": 1,
+    "login_url": "https://wya.digisigns.link/vendor",
+    "admin_panel": "https://wya.digisigns.link/admin"
+  },
+  "admin_panel_auth": {
+    "header": "x-soul-token",
+    "token_env_var": "PORTAL_SECRET"
+  },
+  "test_vendor": {
+    "email": "testvendor@universoul.test",
+    "password": "TestVendor2026!"
+  },
+  "updated": "2026-03-30"
+}

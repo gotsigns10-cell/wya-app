@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vendor Plans — WYA | Where You At</title>
+<meta name="description" content="Join WYA as a vendor. Free map listing for all mobile vendors — food trucks, pop-ups, barbers, artists, and more. Upgrade when you're ready.">
+<meta property="og:title" content="Vendor Plans — WYA | Where You At">
+<meta property="og:description" content="Simple, honest pricing for mobile vendors. Get on the map free — upgrade when you're ready.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://wya.digisigns.link/plans">
+<meta property="og:image" content="https://wya.digisigns.link/icon-512.png">
+<meta name="twitter:card" content="summary">
+<link rel="canonical" href="https://wya.digisigns.link/plans">
+<meta name="theme-color" content="#0A0A0A">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link rel="stylesheet" href="https://static.digisigns.link/soul-ui-v2.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0A0A0A;color:rgba(255,255,255,.92);font-family:'DM Sans',sans-serif;padding-bottom:60px;-webkit-font-smoothing:antialiased}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.07)}
+.topbar a{color:#FF6B35;text-decoration:none;font-size:14px;font-weight:600}
+.logo{font-size:16px;font-weight:800}
+.hero{text-align:center;padding:40px 24px 12px}
+.hero h1{font-size:1.9rem;font-weight:800;line-height:1.15;margin-bottom:10px}
+.hero span{color:#FF6B35}
+.hero p{color:rgba(255,255,255,.55);font-size:15px}
+.founding{text-align:center;padding:12px 24px 24px}
+.founding-box{display:inline-block;background:rgba(252,176,69,.08);border:1.5px solid rgba(252,176,69,.2);border-radius:14px;padding:14px 22px;max-width:520px}
+.founding-box strong{color:#FCB045;font-weight:700}
+.founding-box p{color:rgba(255,255,255,.55);font-size:13px;margin-top:4px;line-height:1.5}
+.social-proof{text-align:center;padding:4px 24px 24px;font-size:13px;color:rgba(255,255,255,.4)}
+.social-proof strong{color:#22C55E;font-weight:700}
+.plans{padding:0 16px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;max-width:960px;margin:0 auto}
+@media(max-width:768px){
+  .plans{grid-template-columns:1fr}
+  .badge{font-size:12px}
+  .pname{font-size:13px}
+  .desc{font-size:13px}
+  .feats li{font-size:13px}
+  .btn{font-size:14px}
+  .sec{font-size:13px}
+  .ctbl thead th{font-size:13px}
+  .ctbl{font-size:14px}
+  .fa{font-size:14px}
+  .cta p{font-size:14px}
+}
+.card{background:#141414;border:1.5px solid rgba(255,255,255,.07);border-radius:20px;padding:22px;position:relative;display:flex;flex-direction:column}
+.card.hot{border-color:#FF6B35;background:linear-gradient(135deg,rgba(255,107,53,.08),#141414)}
+.badge{position:absolute;top:14px;right:14px;background:#FF6B35;color:#fff;font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;text-transform:uppercase}
+.pname{font-size:11px;font-weight:700;color:rgba(255,255,255,.55);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+.price{font-size:2.2rem;font-weight:800;line-height:1}
+.price small{font-size:13px;font-weight:500;color:rgba(255,255,255,.55)}
+.desc{font-size:12.5px;color:rgba(255,255,255,.55);margin:8px 0 14px;line-height:1.5}
+.commission{display:inline-block;font-size:12px;font-weight:700;padding:4px 10px;border-radius:8px;margin-bottom:14px}
+.commission.high{background:rgba(239,68,68,.1);color:#EF4444}
+.commission.mid{background:rgba(255,107,53,.1);color:#FF6B35}
+.commission.low{background:rgba(34,197,94,.1);color:#22C55E}
+.feats{list-style:none;display:flex;flex-direction:column;gap:7px;margin-bottom:18px;flex:1}
+.feats li{display:flex;align-items:center;gap:8px;font-size:12.5px}
+.feats li::before{content:"check";font-family:'Material Icons',serif;color:#22C55E;font-size:18px;flex-shrink:0}
+.feats li.off{color:rgba(255,255,255,.35)}
+.feats li.off::before{content:"remove";color:rgba(255,255,255,.2)}
+.feats li.new::after{content:"NEW";font-size:9px;font-weight:700;background:rgba(34,197,94,.15);color:#22C55E;padding:1px 5px;border-radius:4px;margin-left:auto;flex-shrink:0}
+.btn{width:100%;padding:13px;border-radius:13px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;border:none;transition:all .15s}
+.btn:active{opacity:.8}
+.solid{background:linear-gradient(135deg,#FF6B35,#FD1D1D);color:#fff}
+.ghost{background:transparent;border:1.5px solid rgba(255,255,255,.12);color:rgba(255,255,255,.92)}
+.ghost:hover{border-color:rgba(255,107,53,.4);background:rgba(255,107,53,.04)}
+.sec{text-align:center;padding:36px 24px 16px;font-size:12px;font-weight:700;color:rgba(255,255,255,.4);letter-spacing:.08em;text-transform:uppercase}
+
+/* Comparison Table */
+.compare{margin:0 auto;padding:0 16px;max-width:900px;overflow-x:auto}
+.ctbl{width:100%;border-collapse:collapse;border:1px solid rgba(255,255,255,.07);border-radius:14px;overflow:hidden;font-size:13px}
+.ctbl th,.ctbl td{padding:12px 14px;text-align:center;border-bottom:1px solid rgba(255,255,255,.07)}
+.ctbl th:first-child,.ctbl td:first-child{text-align:left;color:rgba(255,255,255,.6);font-weight:500}
+.ctbl thead th{background:rgba(255,255,255,.03);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.5)}
+.ctbl thead th.hl{color:#FF6B35}
+.ctbl tbody tr:last-child td{border-bottom:none}
+.ctbl .y{color:#22C55E;font-weight:700}
+.ctbl .n{color:rgba(255,255,255,.2)}
+
+/* FAQ Accordion */
+.faq{max-width:600px;margin:0 auto;padding:0 16px}
+.fi{border-bottom:1px solid rgba(255,255,255,.07)}
+.fq{font-size:14px;font-weight:600;padding:16px 0;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none}
+.fq::after{content:"expand_more";font-family:'Material Icons';font-size:20px;color:rgba(255,255,255,.4);transition:transform .2s}
+.fi.open .fq::after{transform:rotate(180deg)}
+.fa{font-size:13px;color:rgba(255,255,255,.5);line-height:1.65;max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s ease;padding:0 0}
+.fi.open .fa{max-height:200px;padding:0 0 16px}
+
+.cta{text-align:center;padding:36px 24px}
+.cta p{color:rgba(255,255,255,.4);font-size:13px;margin-top:10px}
+.cta a{color:#FF6B35;text-decoration:none;font-weight:600}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <a href="/">&#8592; Back</a>
+  <div class="logo">WHERE YOU AT</div>
+  <a href="/vendor">Sign In</a>
+</div>
+<div class="hero">
+  <h1>Simple, <span>honest</span> pricing</h1>
+  <p>Get on the map free. Upgrade when you're ready to grow.</p>
+</div>
+<div class="founding">
+  <div class="founding-box">
+    <strong>Founding Vendor Guarantee</strong>
+    <p>No monthly fee until WYA delivers your first 5 paid orders. We eat what we cook.</p>
+  </div>
+</div>
+<div class="social-proof" id="socialProof"></div>
+<div class="plans">
+  <!-- Free -->
+  <div class="card">
+    <div class="pname">Free</div>
+    <div class="price">$0 <small>/ mo</small></div>
+    <div class="desc">Get on the map. Start getting discovered by customers nearby.</div>
+    <div class="commission high">12% per order</div>
+    <ul class="feats">
+      <li>Live location pin on the map</li>
+      <li>Basic vendor storefront</li>
+      <li>Up to 10 menu items</li>
+      <li>Customer follows</li>
+      <li>Guest checkout orders</li>
+      <li class="off">No scheduled locations</li>
+      <li class="off">No analytics</li>
+    </ul>
+    <button class="btn ghost" onclick="location='/vendor'">Get Started Free</button>
+  </div>
+  <!-- Pro -->
+  <div class="card hot">
+    <div class="badge">Most Popular</div>
+    <div class="pname">Pro</div>
+    <div class="price">$29 <small>/ mo</small></div>
+    <div class="desc">Everything to run and grow your mobile business.</div>
+    <div class="commission mid">6% per order</div>
+    <ul class="feats">
+      <li>Everything in Free</li>
+      <li>Unlimited menu items</li>
+      <li class="new">Scheduled locations &amp; hours</li>
+      <li class="new">Follower alerts when you go live</li>
+      <li>Full analytics dashboard</li>
+      <li>Promo codes &amp; specials</li>
+      <li>Order management tools</li>
+    </ul>
+    <button class="btn solid" onclick="goToPlan('pro')">Start Pro &mdash; $29/mo</button>
+  </div>
+  <!-- Growth -->
+  <div class="card">
+    <div class="pname">Growth</div>
+    <div class="price">$59 <small>/ mo</small></div>
+    <div class="desc">Maximum visibility and the lowest fees for high-volume vendors.</div>
+    <div class="commission low">3% per order</div>
+    <ul class="feats">
+      <li>Everything in Pro</li>
+      <li>Priority map placement</li>
+      <li>Delivery zone support</li>
+      <li class="new">Loyalty &amp; repeat customer tools</li>
+      <li>Multi-staff logins</li>
+      <li>Ambassador program (20-25%)</li>
+      <li>Custom branding</li>
+    </ul>
+    <button class="btn ghost" onclick="goToPlan('growth')">Start Growth &mdash; $59/mo</button>
+  </div>
+</div>
+
+<div class="sec">Feature Comparison</div>
+<div class="compare">
+<table class="ctbl">
+<thead>
+  <tr><th></th><th>Free</th><th class="hl">Pro</th><th>Growth</th></tr>
+</thead>
+<tbody>
+  <tr><td>Monthly price</td><td>$0</td><td>$29</td><td>$59</td></tr>
+  <tr><td>Commission per order</td><td>12%</td><td>6%</td><td>3%</td></tr>
+  <tr><td>Map listing</td><td class="y">&#10003;</td><td class="y">&#10003;</td><td class="y">&#10003;</td></tr>
+  <tr><td>Vendor storefront</td><td class="y">&#10003;</td><td class="y">&#10003;</td><td class="y">&#10003;</td></tr>
+  <tr><td>Menu items</td><td>10</td><td>Unlimited</td><td>Unlimited</td></tr>
+  <tr><td>Scheduled locations</td><td class="n">&mdash;</td><td class="y">&#10003;</td><td class="y">&#10003;</td></tr>
+  <tr><td>Follower go-live alerts</td><td class="n">&mdash;</td><td class="y">&#10003;</td><td class="y">&#10003;</td></tr>
+  <tr><td>Order management</td><td class="y">&#10003;</td><td class="y">&#10003;</td><td class="y">&#10003;</td></tr>
+  <tr><td>Promo codes</td><td class="n">&mdash;</td><td class="y">&#10003;</td><td class="y">&#10003;</td></tr>
+  <tr><td>Analytics dashboard</td><td class="n">&mdash;</td><td class="y">&#10003;</td><td class="y">&#10003;</td></tr>
+  <tr><td>Priority placement</td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="y">&#10003;</td></tr>
+  <tr><td>Delivery support</td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="y">&#10003;</td></tr>
+  <tr><td>Loyalty tools</td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="y">&#10003;</td></tr>
+  <tr><td>Multi-staff logins</td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="y">&#10003;</td></tr>
+  <tr><td>Ambassador program</td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="y">&#10003;</td></tr>
+  <tr><td>Custom branding</td><td class="n">&mdash;</td><td class="n">&mdash;</td><td class="y">&#10003;</td></tr>
+  <tr><td>Payouts</td><td>Weekly</td><td>Weekly</td><td>Priority</td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="sec">Common Questions</div>
+<div class="faq">
+  <div class="fi"><div class="fq">Can I cancel anytime?</div><div class="fa">Yes. Cancel from your vendor dashboard anytime. No contracts, no cancellation fees. Your listing stays active on the free tier.</div></div>
+  <div class="fi"><div class="fq">Is the free plan really free?</div><div class="fa">Yes, always. You pay a 12% commission only on completed, paid orders. No monthly fee, no credit card needed to start.</div></div>
+  <div class="fi"><div class="fq">What's the Founding Vendor Guarantee?</div><div class="fa">If you sign up for Pro or Growth now, you won't be charged a monthly fee until WYA delivers your first 5 real paid orders. We don't make money until you make money.</div></div>
+  <div class="fi"><div class="fq">What is the Ambassador program?</div><div class="fa">Refer other vendors to WYA and earn 20-25% monthly recurring commission on every active referral. Available on the Growth plan.</div></div>
+  <div class="fi"><div class="fq">When do I get paid?</div><div class="fa">Payouts are processed every week via Stripe, direct to your bank account. Growth vendors get priority processing.</div></div>
+  <div class="fi"><div class="fq">Can I upgrade or downgrade anytime?</div><div class="fa">Yes. Upgrade instantly from your dashboard. Downgrade at the end of your billing cycle. Prorated credits for mid-cycle changes.</div></div>
+  <div class="fi"><div class="fq">Do customers need to download an app?</div><div class="fa">No. WYA is a web app that works on any phone browser. Customers find you on the map instantly — no download needed.</div></div>
+  <div class="fi"><div class="fq">Is WYA only for food trucks?</div><div class="fa">No. WYA is for all mobile and pop-up vendors — food trucks, barbers, tattoo artists, craft vendors, mobile detailers, market sellers, event vendors, and more. Anyone who sets up shop temporarily.</div></div>
+</div>
+
+<div class="cta">
+  <button class="btn solid" style="max-width:340px;margin:0 auto;display:block" onclick="location='/vendor'">Create Your Free Account</button>
+  <p>Already a vendor? <a href="/vendor">Sign in here</a></p>
+</div>
+
+<script>
+// Social proof — dynamic vendor count
+fetch('/api/public/stats').then(r=>r.json()).then(d=>{
+  const el=document.getElementById('socialProof');
+  if(d.ok&&d.stats){
+    const v=d.stats.total_vendors||0;
+    const o=d.stats.total_orders||0;
+    let parts=[];
+    if(v>0) parts.push('<strong>'+v+' vendors</strong> on the platform');
+    if(o>0) parts.push('<strong>'+o+'</strong> orders placed');
+    if(parts.length) el.innerHTML=parts.join(' &middot; ');
+  }
+}).catch(()=>{});
+
+// FAQ accordion
+document.querySelectorAll('.fq').forEach(q=>{
+  q.addEventListener('click',()=>{
+    const item=q.parentElement;
+    const wasOpen=item.classList.contains('open');
+    document.querySelectorAll('.fi.open').forEach(fi=>fi.classList.remove('open'));
+    if(!wasOpen) item.classList.add('open');
+  });
+});
+
+// Plan selection — logged-in vendors go straight to Stripe checkout
+async function goToPlan(tier){
+  var t=localStorage.getItem('wya_vendor_token');
+  if(!t){location='/vendor?plan='+tier;return;}
+  var btns=document.querySelectorAll('.plans .btn');
+  btns.forEach(function(b){b.disabled=true;b.style.opacity='0.5';b.style.pointerEvents='none';});
+  var clicked=event&&event.target;
+  var origText=clicked?clicked.textContent:'';
+  if(clicked)clicked.textContent='Redirecting to payment...';
+  for(var attempt=0;attempt<2;attempt++){
+    try{
+      var ac=new AbortController();
+      var tm=setTimeout(function(){ac.abort();},45000);
+      if(attempt>0&&clicked)clicked.textContent='Retrying payment...';
+      var r=await fetch('/api/vendor/subscribe',{method:'POST',headers:{'Content-Type':'application/json','x-auth-token':t},body:JSON.stringify({tier:tier}),signal:ac.signal});
+      clearTimeout(tm);
+      var d=await r.json();
+      if(d.url){window.location.href=d.url;return;}
+      if(d.error){showToast(d.error);btns.forEach(function(b){b.disabled=false;b.style.opacity='';b.style.pointerEvents='';});if(clicked)clicked.textContent=origText;return;}
+      if(attempt===0)continue;
+      showToast('Payment system error — please try again.');
+    }catch(e){
+      if(attempt===0)continue;
+      var msg=e.name==='AbortError'?'Request timed out. Please try again.':'Payment system unavailable. Please try again.';
+      showToast(msg);
+    }
+  }
+  btns.forEach(function(b){b.disabled=false;b.style.opacity='';b.style.pointerEvents='';});
+  if(clicked)clicked.textContent=origText;
+}
+function showToast(msg){
+  var t=document.createElement('div');
+  t.textContent=msg;
+  t.style.cssText='position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#333;color:#fff;padding:12px 24px;border-radius:12px;font-size:14px;font-weight:600;z-index:9999;animation:fadeIn .2s';
+  document.body.appendChild(t);
+  setTimeout(function(){t.remove();},3000);
+}
+</script>
+<script src="https://static.digisigns.link/soul-theme-toggle.js" defer></script>
+<div style="text-align:center;padding:32px 16px 24px;margin-top:40px;border-top:1px solid rgba(255,255,255,.06)">
+  <div style="font-size:.75rem;color:rgba(255,255,255,.3);margin-bottom:12px;letter-spacing:1px">MORE FROM UNIVERSOUL</div>
+  <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
+    <a href="https://store.digisigns.link" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:.8rem;padding:8px 4px">DigiStore</a>
+    <a href="https://book.digisigns.link" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:.8rem;padding:8px 4px">DigiBook</a>
+    <a href="https://tap.digisigns.link" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:.8rem;padding:8px 4px">DigiTap</a>
+    <a href="https://digisigns.link" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:.8rem;padding:8px 4px">Hub</a>
+  </div>
+  <div style="margin-top:12px;font-size:.65rem;color:rgba(255,255,255,.15)">&copy; Universoul LLC &middot; Santa Barbara, CA</div>
+</div>
+</body>
+</html>

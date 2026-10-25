@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0A0A0A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="icon" href="/icon.svg" type="image/svg+xml">
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<title>WYA — My Account</title>
+<meta name="description" content="Track your orders, save your favorite vendors, and manage your account.">
+<meta property="og:title" content="WYA — My Account">
+<meta property="og:description" content="Track orders and find live vendors near you.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://wya.digisigns.link/account">
+<meta property="og:image" content="https://wya.digisigns.link/icon-512.png">
+<meta name="twitter:card" content="summary_large_image">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://static.digisigns.link/soul-ui-v2.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{--orange:#FF6B35;--green:#22C55E;--red:#EF4444;--blue:#4CC9F0;--dark:#0A0A0A;--card:#141414;--border:rgba(255,255,255,0.06);--border2:rgba(255,255,255,0.1);--text:rgba(255,255,255,0.92);--muted:rgba(255,255,255,0.6);--gold:#FCB045}
+html,body{height:100%;overflow-x:hidden}
+body{font-family:'DM Sans',sans-serif;background:var(--dark);color:var(--text);min-height:100vh;min-height:-webkit-fill-available}
+.screen{display:none;min-height:100vh;flex-direction:column}
+.screen.active{display:flex}
+
+/* AUTH */
+.auth-bg{flex:1;display:flex;flex-direction:column;justify-content:flex-end;background:radial-gradient(ellipse at 50% 20%,rgba(255,107,53,.12) 0%,var(--dark) 60%)}
+.auth-top{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 24px 40px;text-align:center}
+.auth-logo{width:64px;height:64px;background:linear-gradient(135deg,var(--orange),#FD1D1D);border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:32px;margin-bottom:20px;box-shadow:0 12px 40px rgba(255,107,53,.3)}
+.auth-title{font-family:'Bebas Neue',sans-serif;font-size:34px;letter-spacing:.05em;margin-bottom:8px}
+.auth-title span{background:linear-gradient(135deg,var(--orange),#FD1D1D);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.auth-sub{font-size:15px;color:var(--muted);line-height:1.5;max-width:280px}
+.auth-sheet{background:var(--card);border:1px solid var(--border2);border-radius:28px 28px 0 0;padding:28px 24px;padding-bottom:calc(28px + env(safe-area-inset-bottom));backdrop-filter:blur(20px)}
+.tabs{display:flex;background:var(--dark);border-radius:12px;padding:4px;margin-bottom:28px}
+.tab{flex:1;padding:10px;text-align:center;font-size:14px;font-weight:600;color:var(--muted);border-radius:9px;cursor:pointer;transition:.2s}
+.tab.on{background:var(--card);color:var(--text);border:1px solid var(--border2)}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:11px;font-weight:600;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+.field input{width:100%;padding:13px 16px;background:var(--dark);border:1.5px solid var(--border2);border-radius:12px;color:var(--text);font-size:15px;outline:none;font-family:inherit;transition:border-color .2s;-webkit-appearance:none}
+.field input:focus{border-color:var(--orange)}
+.btn-main{width:100%;padding:16px;background:linear-gradient(135deg,#FF6B35,#FD1D1D);color:#fff;border:none;border-radius:14px;font-size:16px;font-weight:700;cursor:pointer;margin-top:8px;transition:.15s;font-family:inherit;display:flex;align-items:center;justify-content:center;box-sizing:border-box;user-select:none}
+.btn-main:active{transform:scale(.97);opacity:.9}
+.btn-main:disabled{opacity:.5;cursor:not-allowed}
+.err{color:var(--red);font-size:13px;margin-top:10px;display:none;padding:10px 14px;background:rgba(239,68,68,.1);border-radius:10px;border:1px solid rgba(239,68,68,.2)}
+.back-link{text-align:center;margin-top:20px;font-size:14px;color:var(--muted)}.back-link a{color:var(--orange);text-decoration:none;font-weight:600}
+
+/* ACCOUNT SCREEN */
+.acct-nav{padding:14px 20px;display:flex;align-items:center;justify-content:space-between;background:var(--card);border-bottom:1px solid var(--border);flex-shrink:0}
+.acct-brand{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.05em}
+.acct-brand span{background:linear-gradient(135deg,var(--orange),#FD1D1D);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.acct-user{display:flex;align-items:center;gap:8px}
+.acct-name{font-size:13px;color:var(--muted);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.logout-btn{background:transparent;border:1px solid var(--border2);border-radius:8px;color:var(--muted);font-size:12px;padding:6px 10px;cursor:pointer;font-family:inherit}
+.acct-body{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px;padding-bottom:calc(80px + env(safe-area-inset-bottom))}
+
+/* BOTTOM TABS */
+.bottom-tabs{position:fixed;bottom:0;left:0;right:0;background:var(--card);border-top:1px solid var(--border);display:flex;padding-bottom:env(safe-area-inset-bottom);z-index:50}
+.btab{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 8px;cursor:pointer;transition:.15s;color:var(--muted);font-size:11px;font-weight:600;border:none;background:none;font-family:inherit}
+.btab.on{color:var(--orange)}
+.btab-icon{font-size:22px;line-height:1}
+
+/* TAB PANELS */
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+/* ORDER CARDS */
+.order-card{background:var(--card);border:1px solid var(--border);border-radius:18px;overflow:hidden;margin-bottom:12px}
+.order-head{padding:14px 16px;display:flex;align-items:flex-start;justify-content:space-between;cursor:pointer;gap:12px}
+.order-head:active{background:rgba(255,255,255,.02)}
+.order-vendor{font-size:15px;font-weight:700;margin-bottom:4px}
+.order-meta{font-size:12px;color:var(--muted)}
+.order-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0}
+.order-total{font-size:15px;font-weight:700;color:var(--orange)}
+.status-pill{display:inline-block;border-radius:100px;padding:3px 10px;font-size:11px;font-weight:700;letter-spacing:.3px}
+.pill-pending{background:rgba(76,201,240,.15);color:var(--blue);border:1px solid rgba(76,201,240,.25)}
+.pill-active{background:rgba(255,107,53,.15);color:var(--orange);border:1px solid rgba(255,107,53,.25)}
+.pill-ready{background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.25)}
+.pill-done{background:rgba(255,255,255,.06);color:var(--muted);border:1px solid var(--border)}
+.pill-cancelled{background:rgba(239,68,68,.12);color:var(--red);border:1px solid rgba(239,68,68,.2)}
+.order-detail{display:none;padding:0 16px 14px;border-top:1px solid var(--border)}
+.order-detail.open{display:block}
+.order-items{list-style:none;margin:10px 0}
+.order-items li{display:flex;justify-content:space-between;font-size:13px;padding:5px 0;border-bottom:1px solid var(--border)}
+.order-items li:last-child{border-bottom:none}
+.order-item-name{color:var(--text)}
+.order-item-price{color:var(--muted)}
+.rate-btn{margin-top:10px;padding:10px 20px;background:rgba(252,176,69,.1);border:1.5px solid rgba(252,176,69,.25);border-radius:10px;color:var(--gold);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+.rate-btn:active{background:rgba(252,176,69,.2)}
+
+/* FAVORITES GRID */
+.fav-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fav-card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;cursor:pointer;transition:.15s;position:relative}
+.fav-card:active{transform:scale(.97)}
+.fav-thumb{width:100%;height:90px;display:flex;align-items:center;justify-content:center;font-size:40px;background:linear-gradient(135deg,rgba(255,107,53,.08),rgba(253,29,29,.08))}
+.fav-thumb img{width:100%;height:100%;object-fit:cover}
+.fav-info{padding:10px 12px 12px}
+.fav-name{font-size:14px;font-weight:700;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fav-cat{font-size:11px;color:var(--muted);margin-bottom:6px}
+.fav-row{display:flex;align-items:center;justify-content:space-between}
+.open-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:100px}
+.badge-open{background:rgba(34,197,94,.15);color:var(--green);border:1px solid rgba(34,197,94,.2)}
+.badge-closed{background:rgba(255,255,255,.06);color:var(--muted);border:1px solid var(--border)}
+.stars-sm{font-size:11px;color:var(--gold)}
+.unfav-btn{position:absolute;top:8px;right:8px;width:32px;height:32px;background:rgba(0,0,0,.55);border:none;border-radius:50%;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:.15s}
+.unfav-btn:active{background:rgba(239,68,68,.3)}
+
+/* PROFILE CARD */
+.profile-card{background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden}
+.profile-header{padding:14px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.profile-header h3{font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.profile-row{padding:12px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border);font-size:14px;cursor:pointer;transition:.15s;min-height:48px}
+.profile-row.no-edit{cursor:default}
+.profile-row:last-child{border-bottom:none}
+.profile-row:active{background:rgba(255,255,255,.02)}
+.profile-row.no-edit:active{background:none}
+.profile-key{color:var(--muted);font-weight:500;flex-shrink:0}
+.profile-val{color:var(--text);font-weight:600;text-align:right;max-width:60%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.profile-val.placeholder{color:var(--muted);font-weight:400;font-style:italic}
+.profile-input{background:var(--dark);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-size:14px;padding:6px 10px;font-family:inherit;outline:none;width:60%;text-align:right}
+.profile-input:focus{border-color:var(--orange)}
+
+/* EMPTY STATES */
+.empty-state{text-align:center;padding:60px 24px}
+.empty-icon{font-size:48px;margin-bottom:16px;display:block}
+.empty-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.05em;margin-bottom:8px}
+.empty-sub{font-size:14px;color:var(--muted);line-height:1.5;margin-bottom:20px}
+.empty-btn{display:inline-block;padding:12px 24px;background:linear-gradient(135deg,#FF6B35,#FD1D1D);color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none;font-family:inherit}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:flex-end;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal-sheet{background:var(--card);border:1px solid var(--border2);border-radius:24px 24px 0 0;padding:28px 24px;padding-bottom:calc(28px + env(safe-area-inset-bottom));width:100%;max-width:480px}
+.modal-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:.05em;margin-bottom:6px}
+.modal-sub{font-size:13px;color:var(--muted);margin-bottom:20px}
+.stars-row{display:flex;gap:8px;margin-bottom:20px}
+.star-btn{font-size:36px;background:none;border:none;cursor:pointer;padding:4px;transition:.1s;opacity:.3;line-height:1}
+.star-btn.on{opacity:1}
+.star-btn:active{transform:scale(.88)}
+.review-textarea{width:100%;background:var(--dark);border:1.5px solid var(--border2);border-radius:12px;color:var(--text);font-size:14px;padding:12px 14px;font-family:inherit;outline:none;resize:none;height:90px;transition:border-color .2s}
+.review-textarea:focus{border-color:var(--orange)}
+.modal-actions{display:flex;gap:10px;margin-top:14px}
+.btn-cancel{flex:1;padding:14px;background:transparent;border:1.5px solid var(--border2);color:var(--muted);border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit}
+.btn-cancel:active{background:rgba(255,255,255,.04)}
+.btn-submit{flex:2;padding:14px;background:linear-gradient(135deg,#FF6B35,#FD1D1D);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:inherit;transition:.15s}
+.btn-submit:active{transform:scale(.97);opacity:.9}
+.btn-submit:disabled{opacity:.5;cursor:not-allowed}
+
+/* SECTION LABEL */
+.section-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px}
+
+/* TOAST */
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);background:rgba(34,197,94,.15);border:1px solid rgba(34,197,94,.3);color:var(--green);padding:10px 24px;border-radius:12px;font-size:13px;font-weight:600;opacity:0;transition:.3s;z-index:999;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1}
+.toast.err{background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.3);color:var(--red)}
+
+@media (max-width: 640px) {
+  .field label { font-size: 13px; }
+  .acct-name { font-size: 14px; }
+  .logout-btn { font-size: 13px; }
+  .btab { font-size: 13px; }
+  .order-meta { font-size: 13px; }
+  .status-pill { font-size: 12px; }
+  .order-items li { font-size: 14px; }
+  .rate-btn { font-size: 14px; }
+  .fav-cat { font-size: 13px; }
+  .open-badge { font-size: 12px; }
+  .stars-sm { font-size: 13px; }
+  .modal-sub { font-size: 14px; }
+  .err { font-size: 14px; }
+}
+
+/* LOADING SPINNER */
+.spinner{width:32px;height:32px;border:3px solid var(--border2);border-top-color:var(--orange);border-radius:50%;animation:spin .7s linear infinite;margin:40px auto;display:block}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+<style>
+button.btn-main,.btn-main{background:#FF6B35!important;color:#000!important;-webkit-appearance:none!important;appearance:none!important;border:none!important}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     AUTH SCREEN
+════════════════════════════════════════════ -->
+<div class="screen active" id="s-auth">
+  <div class="auth-bg">
+    <div class="auth-top">
+      <div class="auth-logo">📍</div>
+      <div class="auth-title">WHERE <span>YOU</span> AT</div>
+      <p class="auth-sub">Track your orders, save your favorites, and find what's open near you.</p>
+    </div>
+    <div class="auth-sheet">
+      <div class="tabs">
+        <div class="tab on" id="tab-in" onclick="switchTab('in')">Sign In</div>
+        <div class="tab" id="tab-reg" onclick="switchTab('reg')">Register</div>
+      </div>
+
+      <!-- SIGN IN -->
+      <div id="f-in">
+        <div class="field"><label>Email</label><input type="email" id="i-email" placeholder="you@example.com" autocomplete="email" inputmode="email"></div>
+        <div class="field"><label>Password</label><input type="password" id="i-pw" placeholder="Your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+        <button class="btn-main" id="btn-in" onclick="doLogin()">Sign In</button>
+        <div class="err" id="in-err"></div>
+      </div>
+
+      <!-- REGISTER -->
+      <div id="f-reg" style="display:none">
+        <div class="field"><label>Your Name</label><input type="text" id="r-name" placeholder="Jane Smith" autocomplete="name"></div>
+        <div class="field"><label>Email</label><input type="email" id="r-email" placeholder="you@example.com" autocomplete="email" inputmode="email"></div>
+        <div class="field"><label>Phone</label><input type="tel" id="r-phone" placeholder="(805) 555-0100" autocomplete="tel" inputmode="tel"></div>
+        <div class="field"><label>Password</label><input type="password" id="r-pw" placeholder="Create a password" autocomplete="new-password"><div style="font-size:11px;color:#888;margin-top:4px">8+ characters, at least 1 letter and 1 number</div></div>
+        <button class="btn-main" id="btn-reg" onclick="doRegister()">Create Account</button>
+        <div class="err" id="reg-err"></div>
+      </div>
+
+      <div class="back-link"><a href="/customer">Just browsing? → Find Vendors</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     ACCOUNT SCREEN
+════════════════════════════════════════════ -->
+<div class="screen" id="s-account">
+  <div class="acct-nav">
+    <div class="acct-brand">WHERE <span>YOU</span> AT</div>
+    <div class="acct-user">
+      <div class="acct-name" id="acct-username"></div>
+      <button class="logout-btn" onclick="logout()">Out</button>
+    </div>
+  </div>
+
+  <div class="acct-body">
+
+    <!-- Phase 752: Email verification banner -->
+    <div id="verify-banner" style="display:none;background:rgba(252,176,69,.1);border:1.5px solid rgba(252,176,69,.25);border-radius:16px;padding:16px 20px;margin-bottom:12px">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px">
+        <span style="font-size:20px">&#9993;</span>
+        <div>
+          <div style="font-size:14px;font-weight:700;color:var(--gold)">Verify your email for order receipts and updates</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px">Check your inbox for a verification link</div>
+        </div>
+      </div>
+      <button id="resend-verify-btn" onclick="resendVerification()" style="width:100%;padding:10px;background:rgba(252,176,69,.12);border:1.5px solid rgba(252,176,69,.3);border-radius:10px;color:var(--gold);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">Resend Verification Email</button>
+    </div>
+
+    <!-- LOYALTY POINTS CARD -->
+    <div id="loyalty-card" style="background:linear-gradient(135deg,rgba(255,107,53,.1),rgba(253,29,29,.05));border:1.5px solid rgba(255,107,53,.2);border-radius:18px;padding:20px;margin-bottom:16px;display:flex;align-items:center;gap:16px">
+      <div style="text-align:center">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:36px;color:var(--orange)" id="loyalty-points">0</div>
+        <div style="font-size:11px;color:var(--muted);font-weight:600">POINTS</div>
+      </div>
+      <div style="flex:1">
+        <div style="font-size:14px;font-weight:700;margin-bottom:4px">Loyalty Rewards</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.4">Earn 1pt per $1. Redeem 100pts for $5 off!</div>
+      </div>
+      <button id="redeem-btn" onclick="redeemPoints()" style="padding:10px 16px;background:rgba(255,107,53,.12);border:1.5px solid rgba(255,107,53,.3);border-radius:10px;color:var(--orange);font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;white-space:nowrap;display:none">Redeem</button>
+    </div>
+
+    <!-- ORDERS TAB -->
+    <div class="tab-panel active" id="acct-orders">
+      <div class="section-label">Your Orders</div>
+      <div id="orders-list"><span class="spinner"></span></div>
+    </div>
+
+    <!-- FAVORITES TAB -->
+    <div class="tab-panel" id="acct-favorites">
+      <div class="section-label">Saved Vendors</div>
+      <div class="fav-grid" id="favs-grid"></div>
+      <div id="favs-empty" style="display:none">
+        <div class="empty-state">
+          <span class="empty-icon">❤️</span>
+          <div class="empty-title">No Favorites Yet</div>
+          <p class="empty-sub">Tap the heart on any vendor to save them here.</p>
+          <a href="/customer" class="empty-btn">Browse Vendors</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROFILE TAB -->
+    <div class="tab-panel" id="acct-profile">
+      <div class="profile-card">
+        <div class="profile-header"><h3>My Profile</h3></div>
+        <div class="profile-row" onclick="editField(this,'name')"><span class="profile-key">Name</span><span class="profile-val placeholder" id="p-name">—</span></div>
+        <div class="profile-row no-edit"><span class="profile-key">Email</span><span class="profile-val" id="p-email">—</span></div>
+        <div class="profile-row" onclick="editField(this,'phone')"><span class="profile-key">Phone</span><span class="profile-val placeholder" id="p-phone">—</span></div>
+        <div class="profile-row" onclick="editField(this,'default_address')"><span class="profile-key">Address</span><span class="profile-val placeholder" id="p-address">—</span></div>
+      </div>
+
+      <!-- DANGER ZONE -->
+      <div style="margin-top:24px;background:rgba(239,68,68,.05);border:1.5px solid rgba(239,68,68,.15);border-radius:16px;padding:20px">
+        <div style="font-size:13px;font-weight:700;color:var(--red);margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px">Danger Zone</div>
+        <p style="font-size:13px;color:var(--muted);line-height:1.5;margin-bottom:14px">Permanently delete your account and all associated data. This action cannot be undone.</p>
+        <button onclick="confirmDeleteAccount()" style="width:100%;padding:14px;background:rgba(239,68,68,.12);border:1.5px solid rgba(239,68,68,.3);border-radius:12px;color:var(--red);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">Delete My Account</button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- BOTTOM TAB BAR -->
+  <div class="bottom-tabs">
+    <button class="btab on" id="btab-orders" onclick="showTab('orders')">
+      <span class="btab-icon">🧾</span>Orders
+    </button>
+    <button class="btab" id="btab-favorites" onclick="showTab('favorites')">
+      <span class="btab-icon">❤️</span>Favorites
+    </button>
+    <button class="btab" id="btab-profile" onclick="showTab('profile')">
+      <span class="btab-icon">👤</span>Profile
+    </button>
+  </div>
+</div>
+
+<!-- RATING MODAL -->
+<div class="modal-overlay" id="rating-modal" onclick="closeRatingModal(event)">
+  <div class="modal-sheet" onclick="event.stopPropagation()">
+    <div class="modal-title">Rate Your Order</div>
+    <div class="modal-sub" id="rating-vendor-name">How was your experience?</div>
+    <div class="stars-row" id="stars-row">
+      <button class="star-btn" data-v="1" onclick="setStar(1)">⭐</button>
+      <button class="star-btn" data-v="2" onclick="setStar(2)">⭐</button>
+      <button class="star-btn" data-v="3" onclick="setStar(3)">⭐</button>
+      <button class="star-btn" data-v="4" onclick="setStar(4)">⭐</button>
+      <button class="star-btn" data-v="5" onclick="setStar(5)">⭐</button>
+    </div>
+    <textarea class="review-textarea" id="review-text" placeholder="Tell others what you loved (optional)..."></textarea>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeRatingModal()">Cancel</button>
+      <button class="btn-submit" id="btn-submit-rating" onclick="submitRating()">Submit</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">Saved</div>
+
+<script>
+const KEY = 'wya_cust_tok';
+let tok = localStorage.getItem(KEY) || '';
+let customer = null;
+let activeTab = 'orders';
+let ratingOrderId = null;
+let ratingStars = 0;
+
+// ─── AUTH ────────────────────────────────────────────────────
+
+function switchTab(t) {
+  document.getElementById('f-in').style.display = t === 'in' ? 'block' : 'none';
+  document.getElementById('f-reg').style.display = t === 'reg' ? 'block' : 'none';
+  document.getElementById('tab-in').className = 'tab' + (t === 'in' ? ' on' : '');
+  document.getElementById('tab-reg').className = 'tab' + (t === 'reg' ? ' on' : '');
+}
+
+function showErr(id, msg) {
+  const e = document.getElementById(id);
+  e.style.display = 'block';
+  e.textContent = msg;
+  setTimeout(() => e.style.display = 'none', 4000);
+}
+
+function showToast(msg, isErr) {
+  const t = document.getElementById('toast');
+  t.textContent = msg || 'Saved';
+  t.className = 'toast' + (isErr ? ' err' : '');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+async function doLogin() {
+  const b = document.getElementById('btn-in');
+  b.style.opacity = '0.5'; b.style.pointerEvents = 'none'; b.textContent = 'Signing in...';
+  try {
+    const res = await fetch('/api/customer/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email: document.getElementById('i-email').value.trim(),
+        password: document.getElementById('i-pw').value
+      })
+    });
+    const d = await res.json();
+    if (d.token) {
+      tok = d.token;
+      localStorage.setItem(KEY, tok);
+      await loadAccount();
+    } else {
+      showErr('in-err', d.error || 'Login failed');
+    }
+  } catch (e) {
+    showErr('in-err', 'Network error');
+  }
+  b.style.opacity = '1'; b.style.pointerEvents = 'auto'; b.textContent = 'Sign In';
+}
+
+async function doRegister() {
+  const b = document.getElementById('btn-reg');
+  b.style.opacity = '0.5'; b.style.pointerEvents = 'none'; b.textContent = 'Creating account...';
+  try {
+    const res = await fetch('/api/customer/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: document.getElementById('r-name').value.trim(),
+        email: document.getElementById('r-email').value.trim(),
+        phone: document.getElementById('r-phone').value.trim(),
+        password: document.getElementById('r-pw').value
+      })
+    });
+    const d = await res.json();
+    if (d.token) {
+      tok = d.token;
+      localStorage.setItem(KEY, tok);
+      await loadAccount();
+    } else {
+      showErr('reg-err', d.error || 'Registration failed');
+    }
+  } catch (e) {
+    showErr('reg-err', 'Network error');
+  }
+  b.style.opacity = '1'; b.style.pointerEvents = 'auto'; b.textContent = 'Create Account';
+}
+
+async function resendVerification() {
+  const btn = document.getElementById('resend-verify-btn');
+  btn.textContent = 'Sending...'; btn.disabled = true;
+  try {
+    const r = await fetch('/api/customer/resend-verification', { method: 'POST', headers: { 'x-cust-token': tok } });
+    const d = await r.json();
+    btn.textContent = d.ok ? 'Sent! Check your inbox' : (d.error || 'Failed');
+    if (d.message === 'Already verified') { document.getElementById('verify-banner').style.display = 'none'; }
+  } catch(e) { btn.textContent = 'Failed — try again'; }
+  setTimeout(() => { btn.disabled = false; btn.textContent = 'Resend Verification Email'; }, 5000);
+}
+
+function logout() {
+  localStorage.removeItem(KEY);
+  tok = '';
+  customer = null;
+  document.getElementById('s-auth').className = 'screen active';
+  document.getElementById('s-account').className = 'screen';
+}
+
+// ─── ACCOUNT LOAD ────────────────────────────────────────────
+
+async function loadAccount() {
+  try {
+    const res = await fetch('/api/customer/me', { headers: { 'x-cust-token': tok } });
+    const d = await res.json();
+    if (!d.ok || !d.customer) { logout(); return; }
+    customer = d.customer;
+    document.getElementById('acct-username').textContent = customer.name || customer.email;
+    // Phase 752: Show verification banner if unverified
+    const vb = document.getElementById('verify-banner');
+    if (vb) vb.style.display = customer.email_verified ? 'none' : 'block';
+    // Check for verify=success in URL
+    if (location.search.includes('verify=success') && vb) { vb.style.display = 'none'; customer.email_verified = 1; }
+    renderProfile();
+    document.getElementById('s-auth').className = 'screen';
+    document.getElementById('s-account').className = 'screen active';
+    loadOrders();
+    loadFavorites();
+    loadLoyalty();
+  } catch (e) {
+    logout();
+  }
+}
+
+async function loadLoyalty() {
+  try {
+    const r = await fetch('/api/customer/loyalty', { headers: { 'x-cust-token': tok } });
+    const d = await r.json();
+    if (d.ok) {
+      document.getElementById('loyalty-points').textContent = d.points || 0;
+      if (d.points >= 100) document.getElementById('redeem-btn').style.display = 'block';
+    }
+  } catch(e) {}
+}
+
+async function redeemPoints() {
+  try {
+    const r = await fetch('/api/customer/loyalty/redeem', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-cust-token': tok } });
+    const d = await r.json();
+    if (d.ok) {
+      showToast(`Promo code: ${d.code} — $${d.discount} off your next order!`);
+      document.getElementById('loyalty-points').textContent = d.remaining_points;
+      if (d.remaining_points < 100) document.getElementById('redeem-btn').style.display = 'none';
+    } else { showToast(d.error || 'Failed to redeem', true); }
+  } catch(e) { showToast('Network error', true); }
+}
+
+// ─── TABS ────────────────────────────────────────────────────
+
+function showTab(name) {
+  activeTab = name;
+  ['orders', 'favorites', 'profile'].forEach(t => {
+    document.getElementById('acct-' + t).className = 'tab-panel' + (t === name ? ' active' : '');
+    document.getElementById('btab-' + t).className = 'btab' + (t === name ? ' on' : '');
+  });
+}
+
+// ─── ORDERS ──────────────────────────────────────────────────
+
+const STATUS_MAP = {
+  pending: { label: 'Pending', cls: 'pill-pending' },
+  confirmed: { label: 'Confirmed', cls: 'pill-active' },
+  preparing: { label: 'Preparing', cls: 'pill-active' },
+  ready: { label: 'Ready', cls: 'pill-ready' },
+  picked_up: { label: 'Picked Up', cls: 'pill-done' },
+  delivered: { label: 'Delivered', cls: 'pill-done' },
+  cancelled: { label: 'Cancelled', cls: 'pill-cancelled' }
+};
+
+async function loadOrders() {
+  const el = document.getElementById('orders-list');
+  el.innerHTML = '<span class="spinner"></span>';
+  try {
+    const res = await fetch('/api/customer/orders', { headers: { 'x-cust-token': tok } });
+    const d = await res.json();
+    const orders = d.orders || [];
+    if (!orders.length) {
+      el.innerHTML = `
+        <div class="empty-state">
+          <span class="empty-icon">🧾</span>
+          <div class="empty-title">No Orders Yet</div>
+          <p class="empty-sub">When you place an order from a vendor, it'll show up here.</p>
+          <a href="/customer" class="empty-btn">Find Vendors</a>
+        </div>`;
+      return;
+    }
+    el.innerHTML = orders.map(o => renderOrderCard(o)).join('');
+  } catch (e) {
+    el.innerHTML = '<div class="empty-state"><span class="empty-icon">⚠️</span><div class="empty-title">Couldn\'t load orders</div></div>';
+  }
+}
+
+function renderOrderCard(o) {
+  const st = STATUS_MAP[o.status] || { label: o.status, cls: 'pill-done' };
+  const isDone = ['picked_up', 'delivered'].includes(o.status);
+  let items = [];
+  try { items = typeof o.items_json === 'string' ? JSON.parse(o.items_json) : (o.items_json || []); } catch(e) {}
+  const summary = items.length
+    ? items.slice(0, 2).map(i => i.name || i.title || '').filter(Boolean).join(', ') + (items.length > 2 ? ` +${items.length - 2} more` : '')
+    : 'Order';
+  const date = o.created_at ? new Date(o.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : '';
+  const itemsHtml = items.length
+    ? `<ul class="order-items">${items.map(i => `<li><span class="order-item-name">${esc(i.name||i.title||'Item')}${i.qty > 1 ? ` ×${i.qty}` : ''}</span><span class="order-item-price">${i.price ? '$' + Number(i.price).toFixed(2) : ''}</span></li>`).join('')}</ul>`
+    : '';
+  const rateBtn = isDone && !o.has_review
+    ? `<button class="rate-btn" onclick="openRatingModal(${o.id},'${esc(o.vendor_name||'this vendor')}')">⭐ Rate This Order</button>`
+    : (o.has_review ? `<div style="font-size:12px;color:var(--muted);margin-top:10px">✓ You left a review</div>` : '');
+  return `
+    <div class="order-card" id="order-${o.id}">
+      <div class="order-head" onclick="toggleOrder(${o.id})">
+        <div>
+          <div class="order-vendor">${esc(o.vendor_name || 'Vendor')}</div>
+          <div class="order-meta">${summary}${date ? ' · ' + date : ''}</div>
+        </div>
+        <div class="order-right">
+          <div class="order-total">${o.total ? '$' + Number(o.total).toFixed(2) : ''}</div>
+          <span class="status-pill ${st.cls}">${st.label}</span>
+        </div>
+      </div>
+      <div class="order-detail" id="od-${o.id}">
+        ${itemsHtml}
+        ${rateBtn}
+      </div>
+    </div>`;
+}
+
+function toggleOrder(id) {
+  const el = document.getElementById('od-' + id);
+  if (el) el.className = 'order-detail' + (el.classList.contains('open') ? '' : ' open');
+}
+
+// ─── FAVORITES ───────────────────────────────────────────────
+
+async function loadFavorites() {
+  const grid = document.getElementById('favs-grid');
+  const empty = document.getElementById('favs-empty');
+  grid.innerHTML = '<span class="spinner" style="grid-column:1/-1"></span>';
+  try {
+    const res = await fetch('/api/customer/favorites', { headers: { 'x-cust-token': tok } });
+    const d = await res.json();
+    const favs = d.favorites || [];
+    if (!favs.length) {
+      grid.innerHTML = '';
+      empty.style.display = 'block';
+      return;
+    }
+    empty.style.display = 'none';
+    grid.innerHTML = favs.map(v => renderFavCard(v)).join('');
+  } catch (e) {
+    grid.innerHTML = '';
+    empty.style.display = 'block';
+  }
+}
+
+function renderFavCard(v) {
+  const isOpen = !!v.is_open;
+  const stars = v.avg_rating ? renderStars(v.avg_rating) : '';
+  const thumb = v.photo_url
+    ? `<img src="${esc(v.photo_url)}" onerror="this.parentElement.innerHTML='<span style=\\'font-size:40px\\'>${getCategoryEmoji(v.category)}</span>'">`
+    : `<span style="font-size:40px">${getCategoryEmoji(v.category)}</span>`;
+  return `
+    <div class="fav-card" onclick="goToVendor('${esc(v.id||v.vendor_id)}')">
+      <button class="unfav-btn" onclick="unfavorite(event,${v.id||v.vendor_id})" title="Remove favorite">🤍</button>
+      <div class="fav-thumb">${thumb}</div>
+      <div class="fav-info">
+        <div class="fav-name">${esc(v.name)}</div>
+        <div class="fav-cat">${getCategoryLabel(v.category)}</div>
+        <div class="fav-row">
+          <span class="open-badge ${isOpen ? 'badge-open' : 'badge-closed'}">${isOpen ? 'OPEN' : 'CLOSED'}</span>
+          ${stars ? `<span class="stars-sm">${stars}</span>` : ''}
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderStars(rating) {
+  const full = Math.round(rating);
+  return '★'.repeat(full) + '☆'.repeat(5 - full);
+}
+
+async function unfavorite(e, vendorId) {
+  e.stopPropagation();
+  try {
+    await fetch(`/api/customer/favorites/${vendorId}`, {
+      method: 'DELETE',
+      headers: { 'x-cust-token': tok }
+    });
+    showToast('Removed from favorites');
+    loadFavorites();
+  } catch (err) {
+    showToast('Could not remove', true);
+  }
+}
+
+function goToVendor(id) {
+  window.location.href = `/customer${id ? '?vendor=' + encodeURIComponent(id) : ''}`;
+}
+
+function getCategoryEmoji(cat) {
+  const MAP = { food_truck:'🚚', farmers_market:'🌽', pop_up_shop:'🏪', art_vendor:'🎨', coffee:'☕', bakery:'🥐', flowers:'🌸', retail:'🛍️', beauty:'💅', clothing:'👕', jewelry:'💍', music:'🎵', home_services:'🔧', auto_services:'🚗' };
+  return MAP[cat] || '📍';
+}
+
+function getCategoryLabel(cat) {
+  const MAP = { food_truck:'Food Truck', farmers_market:"Farmer's Market", pop_up_shop:'Pop-Up Shop', art_vendor:'Art & Crafts', coffee:'Coffee & Drinks', bakery:'Bakery', flowers:'Flowers', retail:'Retail', beauty:'Beauty', clothing:'Clothing', jewelry:'Jewelry', music:'Music', home_services:'Home Services', auto_services:'Auto' };
+  return MAP[cat] || 'Vendor';
+}
+
+// ─── PROFILE ─────────────────────────────────────────────────
+
+function renderProfile() {
+  if (!customer) return;
+  const setVal = (id, val, placeholder) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = val || placeholder || '—';
+    el.className = 'profile-val' + (val ? '' : ' placeholder');
+  };
+  setVal('p-name', customer.name, 'Add name');
+  const emailEl = document.getElementById('p-email');
+  if (emailEl) { emailEl.textContent = customer.email || '—'; emailEl.className = 'profile-val'; }
+  setVal('p-phone', customer.phone, 'Add phone');
+  setVal('p-address', customer.default_address, 'Add delivery address');
+}
+
+function editField(row, field) {
+  if (field === 'email') return; // read-only
+  if (row.querySelector('.profile-input')) return;
+  const valEl = row.querySelector('.profile-val');
+  const current = (customer && customer[field]) || '';
+  const input = document.createElement('input');
+  input.className = 'profile-input';
+  input.value = current;
+  input.placeholder = 'Enter ' + field.replace(/_/g, ' ');
+  valEl.style.display = 'none';
+  row.appendChild(input);
+  input.focus();
+  const save = async () => {
+    const v = input.value.trim();
+    if (v !== current) {
+      try {
+        const body = {};
+        body[field] = v || '';
+        const res = await fetch('/api/customer/profile', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', 'x-cust-token': tok },
+          body: JSON.stringify(body)
+        });
+        const d = await res.json();
+        if (d.ok) {
+          if (customer) customer[field] = v;
+          if (field === 'name') document.getElementById('acct-username').textContent = v || customer.email;
+          showToast('Saved');
+        } else {
+          showToast(d.error || 'Could not save', true);
+        }
+      } catch (e) {
+        showToast('Network error', true);
+      }
+    }
+    input.remove();
+    valEl.style.display = '';
+    renderProfile();
+  };
+  input.addEventListener('blur', save);
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); input.blur(); } });
+  row.onclick = null;
+  setTimeout(() => { row.onclick = () => editField(row, field); }, 500);
+}
+
+// ─── RATING MODAL ────────────────────────────────────────────
+
+function openRatingModal(orderId, vendorName) {
+  ratingOrderId = orderId;
+  ratingStars = 0;
+  document.getElementById('rating-vendor-name').textContent = vendorName || 'How was your experience?';
+  document.getElementById('review-text').value = '';
+  setStar(0);
+  document.getElementById('rating-modal').className = 'modal-overlay open';
+}
+
+function closeRatingModal(e) {
+  if (e && e.target !== document.getElementById('rating-modal')) return;
+  document.getElementById('rating-modal').className = 'modal-overlay';
+  ratingOrderId = null;
+}
+
+function setStar(n) {
+  ratingStars = n;
+  document.querySelectorAll('.star-btn').forEach(btn => {
+    btn.className = 'star-btn' + (parseInt(btn.dataset.v) <= n ? ' on' : '');
+  });
+}
+
+async function submitRating() {
+  if (!ratingStars) { showToast('Please select a star rating', true); return; }
+  if (!ratingOrderId) return;
+  const btn = document.getElementById('btn-submit-rating');
+  btn.disabled = true; btn.textContent = 'Submitting...';
+  try {
+    const res = await fetch(`/api/orders/${ratingOrderId}/review`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-cust-token': tok },
+      body: JSON.stringify({ rating: ratingStars, review_text: document.getElementById('review-text').value.trim() })
+    });
+    const d = await res.json();
+    if (d.ok) {
+      showToast('Review submitted!');
+      document.getElementById('rating-modal').className = 'modal-overlay';
+      ratingOrderId = null;
+      loadOrders();
+    } else {
+      showToast(d.error || 'Could not submit review', true);
+    }
+  } catch (e) {
+    showToast('Network error', true);
+  }
+  btn.disabled = false; btn.textContent = 'Submit';
+}
+
+// ─── UTILS ───────────────────────────────────────────────────
+
+function esc(str) {
+  return String(str || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+
+// ─── BOOT ────────────────────────────────────────────────────
+
+(async function init() {
+  // Check for order completion points toast
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('order_complete') === '1') {
+    const pts = params.get('points');
+    if (pts) setTimeout(() => showToast(`+${pts} points earned!`), 500);
+    window.history.replaceState({}, '', window.location.pathname);
+  }
+
+  if (tok) {
+    try {
+      const res = await fetch('/api/customer/me', { headers: { 'x-cust-token': tok } });
+      const d = await res.json();
+      if (d.ok && d.customer) {
+        customer = d.customer;
+        document.getElementById('acct-username').textContent = customer.name || customer.email;
+        renderProfile();
+        document.getElementById('s-auth').className = 'screen';
+        document.getElementById('s-account').className = 'screen active';
+        loadOrders();
+        loadFavorites();
+        return;
+      }
+    } catch (e) {}
+    localStorage.removeItem(KEY);
+    tok = '';
+  }
+})();
+
+// ─── ACCOUNT DELETION ───────────────────────────────────────
+
+let _deleteModalOpen = false;
+function confirmDeleteAccount() {
+  if (_deleteModalOpen) return;
+  _deleteModalOpen = true;
+  const overlay = document.createElement('div');
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
+  overlay.innerHTML = `<div style="background:#1a1a1a;border:1px solid #333;border-radius:12px;padding:24px;max-width:360px;width:100%">
+    <h3 style="color:#ef4444;margin:0 0 8px;font-size:1.1rem">Delete Account</h3>
+    <p style="color:#aaa;font-size:.85rem;margin:0 0 16px">This cannot be undone. Enter your password to confirm.</p>
+    <input type="password" id="del-pw" placeholder="Your password" style="width:100%;padding:10px;background:#111;border:1px solid #333;border-radius:8px;color:#fff;font-size:14px;margin-bottom:8px">
+    <div id="del-err" style="color:#ef4444;font-size:12px;margin-bottom:8px;display:none"></div>
+    <div style="display:flex;gap:8px">
+      <button id="del-cancel" style="flex:1;padding:10px;border-radius:8px;background:#333;color:#fff;border:none;cursor:pointer">Cancel</button>
+      <button id="del-confirm" style="flex:1;padding:10px;border-radius:8px;background:#ef4444;color:#fff;border:none;cursor:pointer;font-weight:600">Delete</button>
+    </div>
+  </div>`;
+  document.body.appendChild(overlay);
+  const close = () => { overlay.remove(); _deleteModalOpen = false; };
+  overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
+  document.getElementById('del-cancel').onclick = close;
+  document.getElementById('del-confirm').onclick = async () => {
+    const pw = document.getElementById('del-pw').value;
+    if (!pw) { const err = document.getElementById('del-err'); err.textContent = 'Password required'; err.style.display = 'block'; return; }
+    const btn = document.getElementById('del-confirm');
+    btn.disabled = true; btn.textContent = 'Deleting...';
+    try {
+      const res = await fetch('/api/customer/account', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json', 'x-cust-token': tok },
+        body: JSON.stringify({ password: pw })
+      });
+      const d = await res.json();
+      if (d.ok) { close(); localStorage.removeItem(KEY); window.location.href = '/'; }
+      else { const err = document.getElementById('del-err'); err.textContent = d.error || 'Failed to delete account'; err.style.display = 'block'; btn.disabled = false; btn.textContent = 'Delete'; }
+    } catch(e) { const err = document.getElementById('del-err'); err.textContent = 'Network error'; err.style.display = 'block'; btn.disabled = false; btn.textContent = 'Delete'; }
+  };
+}
+
+// ─── SERVICE WORKER ──────────────────────────────────────────
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js').catch(() => {});
+}
+</script>
+<script src="https://static.digisigns.link/soul-theme-toggle.js" defer></script>
+<div style="text-align:center;padding:32px 16px 24px;margin-top:40px;border-top:1px solid rgba(255,255,255,.06)">
+  <div style="font-size:.75rem;color:rgba(255,255,255,.3);margin-bottom:12px;letter-spacing:1px">MORE FROM UNIVERSOUL</div>
+  <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
+    <a href="https://store.digisigns.link" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:.8rem">🛍️ DigiStore</a>
+    <a href="https://book.digisigns.link" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:.8rem">📅 DigiBook</a>
+    <a href="https://tap.digisigns.link" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:.8rem">💳 DigiTap</a>
+    <a href="https://digisigns.link" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:.8rem">🏠 Hub</a>
+  </div>
+  <div style="margin-top:12px;font-size:.65rem;color:rgba(255,255,255,.15)">© Universoul LLC · Santa Barbara, CA</div>
+</div>
+</body>
+</html>

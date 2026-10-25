@@ -1,0 +1,22 @@
+{
+  "appId": "com.universoul.wya",
+  "appName": "WYA",
+  "webDir": "public",
+  "server": {
+    "url": "https://wya.digisigns.link",
+    "cleartext": false
+  },
+  "ios": {
+    "contentInset": "automatic",
+    "backgroundColor": "#0a0a0a",
+    "preferredContentMode": "mobile"
+  },
+  "plugins": {
+    "Geolocation": {
+      "permissionRequests": ["always"]
+    },
+    "PushNotifications": {
+      "presentationOptions": ["badge", "sound", "alert"]
+    }
+  }
+}

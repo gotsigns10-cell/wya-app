@@ -1,0 +1,40 @@
+{
+  "name": "WYA — Where You At",
+  "short_name": "WYA",
+  "description": "Find local vendors, food trucks, and pop-ups near you in Santa Barbara",
+  "start_url": "/customer",
+  "display": "standalone",
+  "background_color": "#0a0a0a",
+  "theme_color": "#ff6b35",
+  "orientation": "portrait",
+  "id": "com.universoultattoo.wya",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["food", "lifestyle", "shopping"],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Find Vendors",
+      "url": "/customer",
+      "icons": [{"src": "/icon-192.png", "sizes": "192x192"}]
+    },
+    {
+      "name": "Vendor Dashboard",
+      "url": "/vendor",
+      "icons": [{"src": "/icon-192.png", "sizes": "192x192"}]
+    }
+  ]
+}
