@@ -39,10 +39,16 @@
             <string>$(PRODUCT_MODULE_NAME).SceneDelegate</string>
             <key>UISceneStoryboardFile</key>
             <string>Main</string>
-        </dict>
+<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+</dict>
       </array>
-    </dict>
-	</dict>
+<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+</dict>
+<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+</dict>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -78,5 +84,7 @@
 		<string>fetch</string>
 		<string>remote-notification</string>
 	</array>
+<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 </dict>
 </plist>
