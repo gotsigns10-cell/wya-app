@@ -3,7 +3,12 @@
   "version": "1.0.0",
   "description": "WYA (Where You At) — Hyperlocal vendor discovery for Santa Barbara",
   "main": "server.js",
+  "scripts": {
+    "start": "node index.js",
+    "build": "echo 'No build step required - webDir points to public/, app loads from remote server'"
+  },
   "dependencies": {
+    "@capacitor/android": "^8.6.0",
     "@capacitor/cli": "^8.5.3",
     "@capacitor/core": "^8.5.3",
     "@capacitor/geolocation": "^8.2.4",
