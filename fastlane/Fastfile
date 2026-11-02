@@ -1,0 +1,75 @@
+default_platform(:ios)
+
+platform :ios do
+  desc "Build and upload to TestFlight"
+  lane :beta do
+    # Setup App Store Connect API
+    app_store_connect_api_key(
+      key_id: ENV["ASC_KEY_ID"],
+      issuer_id: ENV["ASC_ISSUER_ID"],
+      key_content: ENV["ASC_KEY_CONTENT"],
+      is_key_content_base64: false,
+      in_house: false
+    )
+
+    # Build the app
+    build_app(
+      workspace: nil,
+      project: "ios/App/App.xcodeproj",
+      scheme: "App",
+      configuration: "Release",
+      export_method: "app-store",
+      export_options: {
+        provisioningProfiles: {
+          "com.universoul.wya" => "match AppStore com.universoul.wya"
+        }
+      },
+      skip_profile_detection: true,
+      xcargs: "-allowProvisioningUpdates"
+    )
+
+    # Upload to TestFlight
+    upload_to_testflight(
+      skip_waiting_for_build_processing: true,
+      apple_id: "6829488221"
+    )
+  end
+
+  desc "Build and upload using automatic signing"
+  lane :beta_auto do
+    # Setup App Store Connect API
+    api_key = app_store_connect_api_key(
+      key_id: ENV["ASC_KEY_ID"],
+      issuer_id: ENV["ASC_ISSUER_ID"],
+      key_content: ENV["ASC_KEY_CONTENT"],
+      is_key_content_base64: false,
+      in_house: false
+    )
+
+    # Update code signing to use automatic
+    update_code_signing_settings(
+      use_automatic_signing: true,
+      path: "ios/App/App.xcodeproj",
+      team_id: ENV["TEAM_ID"],
+      profile_name: nil,
+      code_sign_identity: "Apple Distribution"
+    )
+
+    # Build with automatic code signing via API key
+    build_app(
+      project: "ios/App/App.xcodeproj",
+      scheme: "App",
+      configuration: "Release",
+      export_method: "app-store",
+      export_xcargs: "-authenticationKeyPath #{ENV['ASC_KEY_PATH']} -authenticationKeyID #{ENV['ASC_KEY_ID']} -authenticationKeyIssuerID #{ENV['ASC_ISSUER_ID']} -allowProvisioningUpdates",
+      xcargs: "-authenticationKeyPath #{ENV['ASC_KEY_PATH']} -authenticationKeyID #{ENV['ASC_KEY_ID']} -authenticationKeyIssuerID #{ENV['ASC_ISSUER_ID']} -allowProvisioningUpdates"
+    )
+
+    # Upload to TestFlight
+    upload_to_testflight(
+      skip_waiting_for_build_processing: true,
+      apple_id: "6829488221",
+      api_key: api_key
+    )
+  end
+end
