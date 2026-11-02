@@ -1,0 +1,68 @@
+name: iOS TestFlight Deploy
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  build-ios:
+    runs-on: macos-14
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Sync Capacitor
+      run: npx cap sync ios
+
+    - name: Setup App Store Connect API
+      env:
+        ASC_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_KEY }}
+        ASC_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+      run: |
+        mkdir -p ~/private_keys
+        echo "$ASC_KEY_CONTENT" > ~/private_keys/AuthKey_${ASC_KEY_ID}.p8
+
+    - name: Build and Upload to TestFlight
+      env:
+        ASC_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
+        ASC_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+      run: |
+        cd ios/App
+
+        # Build archive
+        xcodebuild -workspace App.xcworkspace \
+          -scheme App \
+          -sdk iphoneos \
+          -configuration Release \
+          -archivePath $PWD/build/App.xcarchive \
+          archive \
+          -allowProvisioningUpdates \
+          -authenticationKeyPath ~/private_keys/AuthKey_${ASC_KEY_ID}.p8 \
+          -authenticationKeyID ${ASC_KEY_ID} \
+          -authenticationKeyIssuerID ${ASC_ISSUER_ID}
+
+        # Export IPA
+        xcodebuild -exportArchive \
+          -archivePath $PWD/build/App.xcarchive \
+          -exportPath $PWD/build \
+          -exportOptionsPlist $PWD/exportOptions.plist \
+          -allowProvisioningUpdates \
+          -authenticationKeyPath ~/private_keys/AuthKey_${ASC_KEY_ID}.p8 \
+          -authenticationKeyID ${ASC_KEY_ID} \
+          -authenticationKeyIssuerID ${ASC_ISSUER_ID}
+
+        # Upload to TestFlight
+        xcrun altool --upload-app \
+          -f $PWD/build/App.ipa \
+          -t ios \
+          --apiKey ${ASC_KEY_ID} \
+          --apiIssuer ${ASC_ISSUER_ID}
