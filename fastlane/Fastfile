@@ -46,23 +46,17 @@ platform :ios do
       in_house: false
     )
 
-    # Update code signing to use automatic
-    update_code_signing_settings(
-      use_automatic_signing: true,
-      path: "ios/App/App.xcodeproj",
-      team_id: ENV["TEAM_ID"],
-      profile_name: nil,
-      code_sign_identity: "Apple Distribution"
-    )
-
-    # Build with automatic code signing via API key
+    # Build with automatic code signing - let Xcode handle identity
     build_app(
       project: "ios/App/App.xcodeproj",
       scheme: "App",
       configuration: "Release",
       export_method: "app-store",
-      export_xcargs: "-authenticationKeyPath #{ENV['ASC_KEY_PATH']} -authenticationKeyID #{ENV['ASC_KEY_ID']} -authenticationKeyIssuerID #{ENV['ASC_ISSUER_ID']} -allowProvisioningUpdates",
-      xcargs: "-authenticationKeyPath #{ENV['ASC_KEY_PATH']} -authenticationKeyID #{ENV['ASC_KEY_ID']} -authenticationKeyIssuerID #{ENV['ASC_ISSUER_ID']} -allowProvisioningUpdates"
+      export_options: {
+        signingStyle: "automatic",
+        teamID: ENV["TEAM_ID"] || "9V74TT48MV"
+      },
+      xcargs: "-allowProvisioningUpdates -authenticationKeyPath '#{ENV['ASC_KEY_PATH']}' -authenticationKeyID #{ENV['ASC_KEY_ID']} -authenticationKeyIssuerID #{ENV['ASC_ISSUER_ID']}"
     )
 
     # Upload to TestFlight
