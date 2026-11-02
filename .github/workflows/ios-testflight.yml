@@ -26,83 +26,32 @@ jobs:
     - name: Sync Capacitor
       run: npx cap sync ios
 
+    - name: Setup Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: '3.2'
+        bundler-cache: true
+
+    - name: Install Fastlane
+      run: |
+        cd fastlane
+        bundle install
+
     - name: Setup App Store Connect API Key
       env:
         ASC_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_KEY }}
-        ASC_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
       run: |
         mkdir -p ~/private_keys
-        echo "$ASC_KEY_CONTENT" > ~/private_keys/AuthKey_${ASC_KEY_ID}.p8
-        chmod 600 ~/private_keys/AuthKey_${ASC_KEY_ID}.p8
+        echo "$ASC_KEY_CONTENT" > ~/private_keys/AuthKey.p8
+        chmod 600 ~/private_keys/AuthKey.p8
 
-    - name: Build and Archive with Automatic Signing
+    - name: Build and Upload with Fastlane
       env:
         ASC_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
         ASC_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
+        ASC_KEY_PATH: ~/private_keys/AuthKey.p8
+        ASC_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_KEY }}
+        TEAM_ID: 9V74TT48MV
       run: |
-        cd ios/App
-
-        # Build archive using automatic signing with API key
-        xcodebuild -project App.xcodeproj \
-          -scheme App \
-          -sdk iphoneos \
-          -configuration Release \
-          -archivePath $PWD/build/App.xcarchive \
-          archive \
-          CODE_SIGN_STYLE=Automatic \
-          DEVELOPMENT_TEAM=9V74TT48MV \
-          -allowProvisioningUpdates \
-          -authenticationKeyPath ~/private_keys/AuthKey_${ASC_KEY_ID}.p8 \
-          -authenticationKeyID ${ASC_KEY_ID} \
-          -authenticationKeyIssuerID ${ASC_ISSUER_ID}
-
-    - name: Create Export Options Plist
-      run: |
-        cat > ios/App/exportOptions.plist << 'EOF'
-        <?xml version="1.0" encoding="UTF-8"?>
-        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-        <plist version="1.0">
-        <dict>
-          <key>method</key>
-          <string>app-store-connect</string>
-          <key>destination</key>
-          <string>upload</string>
-          <key>signingStyle</key>
-          <string>automatic</string>
-          <key>teamID</key>
-          <string>9V74TT48MV</string>
-          <key>uploadSymbols</key>
-          <true/>
-          <key>manageAppVersionAndBuildNumber</key>
-          <true/>
-        </dict>
-        </plist>
-        EOF
-
-    - name: Export IPA
-      env:
-        ASC_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
-        ASC_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
-      run: |
-        cd ios/App
-
-        xcodebuild -exportArchive \
-          -archivePath $PWD/build/App.xcarchive \
-          -exportPath $PWD/build \
-          -exportOptionsPlist $PWD/exportOptions.plist \
-          -allowProvisioningUpdates \
-          -authenticationKeyPath ~/private_keys/AuthKey_${ASC_KEY_ID}.p8 \
-          -authenticationKeyID ${ASC_KEY_ID} \
-          -authenticationKeyIssuerID ${ASC_ISSUER_ID}
-
-    - name: Upload to TestFlight
-      env:
-        ASC_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
-        ASC_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
-      run: |
-        cd ios/App
-        xcrun altool --upload-app \
-          -f $PWD/build/App.ipa \
-          -t ios \
-          --apiKey ${ASC_KEY_ID} \
-          --apiIssuer ${ASC_ISSUER_ID}
+        cd fastlane
+        bundle exec fastlane beta_auto
