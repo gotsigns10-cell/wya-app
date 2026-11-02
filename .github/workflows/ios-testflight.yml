@@ -38,8 +38,8 @@ jobs:
       run: |
         cd ios/App
 
-        # Build archive
-        xcodebuild -workspace App.xcworkspace \
+        # Build archive (use xcodeproj, no CocoaPods)
+        xcodebuild -project App.xcodeproj \
           -scheme App \
           -sdk iphoneos \
           -configuration Release \
