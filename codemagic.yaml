@@ -5,14 +5,11 @@ workflows:
     instance_type: mac_mini_m2
 
     environment:
-      ios_signing:
-        distribution_type: app_store
-        bundle_identifier: com.universoul.wya
-
       vars:
-        XCODE_WORKSPACE: "App.xcworkspace"
-        XCODE_SCHEME: "App"
         BUNDLE_ID: "com.universoul.wya"
+        TEAM_ID: "9V74TT48MV"
+        CERTIFICATE_PASSWORD: "wya2026"
+        PROVISIONING_PROFILE_UUID: "866843c3-81a5-4817-b415-d5fb313c6106"
         APP_STORE_CONNECT_KEY_IDENTIFIER: "6T7FMU83Q3"
         APP_STORE_CONNECT_ISSUER_ID: "54717bff-71a1-46bc-a578-a94db1886499"
         APP_STORE_CONNECT_PRIVATE_KEY: |
@@ -25,7 +22,6 @@ workflows:
 
       xcode: 16.0
       node: 20
-      cocoapods: default
 
     triggering:
       events:
@@ -42,43 +38,148 @@ workflows:
 
     scripts:
       - name: Install npm dependencies
-        script: |
-          npm ci
+        script: npm ci
 
       - name: Build web assets
-        script: |
-          npm run build
+        script: npm run build
 
       - name: Sync Capacitor iOS
         script: |
+          gem install cocoapods || true
           npx cap sync ios
+          cd ios/App && pod install --repo-update
 
-      - name: Install CocoaPods
+      - name: Install code signing
         script: |
-          cd ios/App && pod install
+          # Initialize Codemagic keychain
+          keychain initialize
 
-      - name: Set up code signing
-        script: |
-          xcode-project use-profiles
+          # Decode and install distribution certificate
+          echo "Installing distribution certificate..."
+          base64 -d ios/signing/dist-cert.p12.b64 > /tmp/dist-cert.p12
+          keychain add-certificates --certificate /tmp/dist-cert.p12 --certificate-password "$CERTIFICATE_PASSWORD"
+
+          # Decode and install provisioning profile
+          echo "Installing provisioning profile..."
+          mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
+          base64 -d ios/signing/WYA_App_Store.mobileprovision.b64 > "$HOME/Library/MobileDevice/Provisioning Profiles/$PROVISIONING_PROFILE_UUID.mobileprovision"
+
+          # Verify installation
+          echo "Verifying signing identities..."
+          security find-identity -v -p codesigning
+          echo ""
+          echo "Installed profiles:"
+          ls -la "$HOME/Library/MobileDevice/Provisioning Profiles/"
 
       - name: Increment build number
         script: |
           cd ios/App
-          LATEST_BUILD=$(app-store-connect get-latest-testflight-build-number "$BUNDLE_ID" || echo "0")
-          agvtool new-version -all $((LATEST_BUILD + 1))
+          LATEST_BUILD=$(app-store-connect get-latest-testflight-build-number "$BUNDLE_ID" 2>/dev/null || echo "0")
+          NEW_BUILD=$((LATEST_BUILD + 1))
+          echo "Setting build number to $NEW_BUILD"
+          agvtool new-version -all $NEW_BUILD
 
-      - name: Build IPA
+      - name: Build Archive
         script: |
+          set -e
           cd ios/App
-          xcode-project build-ipa \
-            --workspace "$XCODE_WORKSPACE" \
-            --scheme "$XCODE_SCHEME" \
-            --archive-flags="-destination 'generic/platform=iOS'"
+
+          echo "=== Build Environment ==="
+          echo "Xcode version:"
+          xcodebuild -version
+          echo ""
+          echo "Signing identities:"
+          security find-identity -v -p codesigning
+          echo ""
+          echo "Profiles:"
+          ls -la "$HOME/Library/MobileDevice/Provisioning Profiles/"
+          echo ""
+
+          # Get signing identity from keychain
+          SIGN_IDENTITY=$(security find-identity -v -p codesigning | grep "iPhone Distribution" | head -1 | sed 's/.*"\(.*\)"/\1/')
+          echo "Using signing identity: $SIGN_IDENTITY"
+
+          echo "=== Starting xcodebuild archive ==="
+          xcodebuild archive \
+            -workspace App.xcworkspace \
+            -scheme App \
+            -archivePath "$CM_BUILD_DIR/WYA.xcarchive" \
+            -destination "generic/platform=iOS" \
+            CODE_SIGN_STYLE=Manual \
+            CODE_SIGN_IDENTITY="$SIGN_IDENTITY" \
+            DEVELOPMENT_TEAM="$TEAM_ID" \
+            PROVISIONING_PROFILE="$PROVISIONING_PROFILE_UUID" \
+            PROVISIONING_PROFILE_SPECIFIER="" \
+            2>&1 | tee /tmp/xcodebuild-archive.log
+
+          echo "Archive complete. Checking result..."
+          ls -la "$CM_BUILD_DIR/"
+
+          if [ ! -d "$CM_BUILD_DIR/WYA.xcarchive" ]; then
+            echo "ERROR: Archive not found!"
+            tail -100 /tmp/xcodebuild-archive.log
+            exit 1
+          fi
+
+      - name: Export IPA
+        script: |
+          set -e
+
+          # Create export options plist for App Store
+          cat > /tmp/ExportOptions.plist << EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>app-store</string>
+            <key>teamID</key>
+            <string>$TEAM_ID</string>
+            <key>uploadSymbols</key>
+            <true/>
+            <key>signingStyle</key>
+            <string>manual</string>
+            <key>provisioningProfiles</key>
+            <dict>
+              <key>$BUNDLE_ID</key>
+              <string>$PROVISIONING_PROFILE_UUID</string>
+            </dict>
+          </dict>
+          </plist>
+          EOF
+
+          echo "=== Export Options ==="
+          cat /tmp/ExportOptions.plist
+          echo ""
+
+          echo "=== Exporting IPA ==="
+          xcodebuild -exportArchive \
+            -archivePath "$CM_BUILD_DIR/WYA.xcarchive" \
+            -exportPath "$CM_BUILD_DIR/ipa" \
+            -exportOptionsPlist /tmp/ExportOptions.plist \
+            2>&1 | tee /tmp/xcodebuild-export.log
+
+          echo "=== Checking for IPA ==="
+          ls -la "$CM_BUILD_DIR/ipa/" || true
+
+          IPA_FILE=$(find "$CM_BUILD_DIR/ipa" -name "*.ipa" -print -quit 2>/dev/null)
+          if [ -z "$IPA_FILE" ]; then
+            echo "ERROR: No IPA file created"
+            tail -50 /tmp/xcodebuild-export.log
+            exit 1
+          fi
+
+          echo "IPA created: $IPA_FILE"
+
+          # Copy to standard location for Codemagic
+          mkdir -p build/ios/ipa
+          cp "$IPA_FILE" build/ios/ipa/
 
     artifacts:
       - build/ios/ipa/*.ipa
-      - /tmp/xcodebuild_logs/*.log
-      - ios/App/build/Reports/*.xml
+      - "$CM_BUILD_DIR/*.xcarchive"
+      - "$CM_BUILD_DIR/ipa/*.ipa"
+      - /tmp/xcodebuild-*.log
 
     publishing:
       app_store_connect:
