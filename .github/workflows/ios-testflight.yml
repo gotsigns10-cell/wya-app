@@ -49,10 +49,10 @@ jobs:
         echo "$ASC_KEY_CONTENT" > ~/private_keys/AuthKey.p8
         chmod 600 ~/private_keys/AuthKey.p8
 
-    - name: Install CocoaPods
+    - name: Resolve Swift Package Dependencies
       run: |
         cd ios/App
-        pod install --repo-update
+        xcodebuild -resolvePackageDependencies -project App.xcodeproj -scheme App
 
     - name: Build and Upload with Fastlane
       env:

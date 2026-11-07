@@ -47,9 +47,9 @@ platform :ios do
     )
 
     # Build with automatic code signing - let Xcode handle identity
-    # Path is relative to repo root (fastlane runs from repo root by default)
+    # Using xcodeproj directly (SPM-based project, no CocoaPods)
     build_app(
-      workspace: "../ios/App/App.xcworkspace",
+      project: "../ios/App/App.xcodeproj",
       scheme: "App",
       configuration: "Release",
       export_method: "app-store",
