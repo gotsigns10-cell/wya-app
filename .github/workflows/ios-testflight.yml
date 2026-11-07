@@ -61,5 +61,6 @@ jobs:
         ASC_KEY_PATH: ~/private_keys/AuthKey.p8
         ASC_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_KEY }}
         TEAM_ID: 9V74TT48MV
-      working-directory: fastlane
-      run: bundle exec fastlane beta_auto
+      run: |
+        cd fastlane
+        bundle exec fastlane beta_auto
