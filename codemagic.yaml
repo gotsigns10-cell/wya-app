@@ -94,15 +94,61 @@ workflows:
 
       - name: Build IPA
         script: |
-          xcode-project build-ipa \
-            --project "$XCODE_PROJECT" \
-            --scheme "$XCODE_SCHEME" \
-            --archive-flags="-destination 'generic/platform=iOS'"
+          # Get provisioning profile UUID
+          PROFILE_UUID=$(security cms -D -i "$HOME/Library/MobileDevice/Provisioning Profiles/WYA_App_Store.mobileprovision" 2>/dev/null | plutil -extract UUID raw -)
+          echo "Using provisioning profile UUID: $PROFILE_UUID"
+
+          cd ios/App
+
+          # Archive
+          xcodebuild archive \
+            -project App.xcodeproj \
+            -scheme App \
+            -archivePath build/App.xcarchive \
+            -destination "generic/platform=iOS" \
+            CODE_SIGN_STYLE=Manual \
+            CODE_SIGN_IDENTITY="iPhone Distribution" \
+            PROVISIONING_PROFILE_SPECIFIER="" \
+            PROVISIONING_PROFILE="$PROFILE_UUID" \
+            DEVELOPMENT_TEAM=9V74TT48MV \
+            -allowProvisioningUpdates
+
+          # Create ExportOptions.plist
+          cat > build/ExportOptions.plist << 'EXPORTEOF'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key>
+            <string>app-store</string>
+            <key>teamID</key>
+            <string>9V74TT48MV</string>
+            <key>signingStyle</key>
+            <string>manual</string>
+            <key>provisioningProfiles</key>
+            <dict>
+              <key>com.universoul.wya</key>
+              <string>WYA App Store Distribution</string>
+            </dict>
+            <key>uploadSymbols</key>
+            <true/>
+          </dict>
+          </plist>
+          EXPORTEOF
+
+          # Export IPA
+          xcodebuild -exportArchive \
+            -archivePath build/App.xcarchive \
+            -exportPath build/ipa \
+            -exportOptionsPlist build/ExportOptions.plist
+
+          echo "IPA built successfully"
+          ls -la build/ipa/
 
     artifacts:
-      - build/ios/ipa/*.ipa
+      - ios/App/build/ipa/*.ipa
+      - ios/App/build/App.xcarchive/
       - /tmp/xcodebuild_logs/*.log
-      - ios/App/build/Reports/*.xml
 
     publishing:
       app_store_connect:
