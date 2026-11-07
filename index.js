@@ -19,6 +19,7 @@ const QRCode = require('qrcode');
 // Brain OS 3.0: Lazy-load brain-ingest for business event recording
 const _brainIngest = (() => { try { return require('/root/universoul-ecosystem/lib/brain-ingest'); } catch { return null; } })();
 const webpush = require('web-push');
+const apn = require('@parse/node-apn');
 const multer = require('multer');
 const bcrypt = require('bcrypt');
 const { healthResponse } = require('../lib/health-contract');
@@ -142,6 +143,31 @@ setInterval(() => {
     try { webpush.setVapidDetails('mailto:hello@digisigns.link', _vPub, _vPriv); console.log('[WYA-APP] VAPID keys refreshed from env'); } catch (e) { console.error('[WYA-APP] VAPID refresh failed:', e.message); }
   }
 }, 300000);
+
+// ── APNs provider for iOS push notifications ────────────────
+// Requires: WYA_APNS_KEY_ID, WYA_APNS_KEY (base64), WYA_APNS_TEAM_ID
+let apnProvider = null;
+const APNS_KEY_ID = process.env.WYA_APNS_KEY_ID || '';
+const APNS_KEY_B64 = process.env.WYA_APNS_KEY || '';
+const APNS_TEAM_ID = process.env.WYA_APNS_TEAM_ID || '9V74TT48MV';
+const APNS_BUNDLE_ID = 'com.universoul.wya';
+
+if (APNS_KEY_ID && APNS_KEY_B64) {
+  try {
+    const apnsKey = Buffer.from(APNS_KEY_B64, 'base64').toString('utf-8');
+    apnProvider = new apn.Provider({
+      token: {
+        key: apnsKey,
+        keyId: APNS_KEY_ID,
+        teamId: APNS_TEAM_ID
+      },
+      production: true // App Store / TestFlight
+    });
+    console.log('[WYA-APP] APNs provider initialized for', APNS_BUNDLE_ID);
+  } catch (e) {
+    console.error('[WYA-APP] APNs provider init failed:', e.message);
+  }
+}
 
 app.use((req, res, next) => {
   if (req.path === '/api/stripe/webhook') return next();
@@ -2374,18 +2400,42 @@ app.get('/api/live-stats', (req, res) => {
 });
 
 // Phase v4.0: iOS APNs device token registration
-db.exec("CREATE TABLE IF NOT EXISTS apns_tokens (id INTEGER PRIMARY KEY AUTOINCREMENT, token TEXT UNIQUE NOT NULL, platform TEXT DEFAULT 'ios', customer_id TEXT, created_at TEXT DEFAULT (datetime('now')), last_seen TEXT DEFAULT (datetime('now')))");
+db.exec("CREATE TABLE IF NOT EXISTS apns_tokens (id INTEGER PRIMARY KEY AUTOINCREMENT, token TEXT UNIQUE NOT NULL, platform TEXT DEFAULT 'ios', device_id TEXT, customer_id TEXT, created_at TEXT DEFAULT (datetime('now')), last_seen TEXT DEFAULT (datetime('now')))");
+// Add device_id column if missing (migration)
+try { db.exec("ALTER TABLE apns_tokens ADD COLUMN device_id TEXT"); } catch {}
 
 app.post('/api/ios/register-apns', (req, res) => {
   try {
-    const { token, platform, customer_id } = req.body;
+    const { token, platform, device_id, customer_id } = req.body;
     if (!token) return res.status(400).json({ error: 'token required' });
-    db.prepare("INSERT INTO apns_tokens (token, platform, customer_id, last_seen) VALUES (?, ?, ?, datetime('now')) ON CONFLICT(token) DO UPDATE SET last_seen=datetime('now'), customer_id=COALESCE(excluded.customer_id, customer_id)").run(token, platform || 'ios', customer_id || null);
-    console.log(`[WYA-iOS] APNs token registered: ${token.substring(0, 8)}...`);
+    db.prepare(`INSERT INTO apns_tokens (token, platform, device_id, customer_id, last_seen)
+      VALUES (?, ?, ?, ?, datetime('now'))
+      ON CONFLICT(token) DO UPDATE SET
+        last_seen=datetime('now'),
+        device_id=COALESCE(excluded.device_id, device_id),
+        customer_id=COALESCE(excluded.customer_id, customer_id)`
+    ).run(token, platform || 'ios', device_id || null, customer_id || null);
+    console.log(`[WYA-iOS] APNs token registered: ${token.substring(0, 8)}... device=${device_id?.substring(0,8)||'?'}`);
     res.json({ ok: true });
   } catch (e) {
     console.error('[WYA-iOS] APNs register error:', e.message);
     res.status(500).json({ error: 'registration failed' });
+  }
+});
+
+// Phase v4.0: Associate APNs token with logged-in customer
+app.post('/api/ios/associate-apns', (req, res) => {
+  try {
+    const cust = getCustomerByToken(req.headers['x-cust-token']);
+    if (!cust) return res.status(401).json({ error: 'Login required' });
+    const { device_id } = req.body;
+    if (!device_id) return res.status(400).json({ error: 'device_id required' });
+    db.prepare("UPDATE apns_tokens SET customer_id=? WHERE device_id=?").run(cust.id, device_id);
+    console.log(`[WYA-iOS] APNs associated: customer=${cust.id} device=${device_id.substring(0,8)}...`);
+    res.json({ ok: true });
+  } catch (e) {
+    console.error('[WYA-iOS] APNs associate error:', e.message);
+    res.status(500).json({ error: 'association failed' });
   }
 });
 
@@ -4241,7 +4291,7 @@ app.post('/api/vendor/toggle', (req, res) => {
         try {
           const followers = db.prepare('SELECT customer_id FROM vendor_followers WHERE vendor_id=? AND active=1').all(vendor.id);
           for (const f of followers) {
-            sendPushNotification(f.customer_id, 'customer', vendor.name, `${vendor.name} is now open near you!`, `https://wya.digisigns.link/customer?vendor=${vendor.id}`);
+            sendPushNotification(f.customer_id, 'customer', vendor.name, `${vendor.name} is now open near you!`, `https://wya.digisigns.link/customer?vendor=${vendor.id}`, { category: 'vendor_live', vendorId: vendor.id });
           }
           if (followers.length) console.log(`[WYA-FOLLOW] Notified ${followers.length} followers that ${vendor.name} went live`);
         } catch(e) { console.warn('[WYA-FOLLOW] Error notifying followers:', e.message); }
@@ -6612,7 +6662,7 @@ app.put('/api/vendor/orders/:id/status', (req, res) => {
       const msgs = { confirmed:'Your order has been confirmed!', preparing:'Your order is being prepared!', ready:'Your order is ready for pickup!', picked_up:'Your order has been picked up!', delivered:'Your order has been delivered!', cancelled:'Your order has been cancelled.' };
       if (msgs[status]) {
         sendEmail(cust.email, `WYA Order Update`, `<div style="font-family:-apple-system,sans-serif;max-width:480px;padding:24px;background:#050505;color:#f5f5f5"><div style="font-size:18px;font-weight:900;color:#FF5E1A;margin-bottom:8px">${msgs[status]}</div><p style="color:#9ca3af">Order from ${vendor.name} — $${order.total.toFixed(2)}</p></div>`).catch(()=>{});
-        sendPushNotification(cust.id, 'customer', `Order ${status}`, msgs[status], `https://wya.digisigns.link/account`);
+        sendPushNotification(cust.id, 'customer', `Order ${status}`, msgs[status], `https://wya.digisigns.link/account`, { category: status === 'ready' ? 'order_ready' : 'order_update', orderId: order.id });
       }
     }
     // Award loyalty + record commission on completion
@@ -7875,15 +7925,50 @@ app.get('/api/push/vapid-key', (req, res) => {
   }
 });
 
-// Push notification helper
-function sendPushNotification(userId, userType, title, body, url) {
-  if (!VAPID_PUBLIC || !VAPID_PRIVATE) return;
-  const subs = db.prepare('SELECT * FROM push_subscriptions WHERE user_id=? AND user_type=?').all(userId, userType);
-  for (const sub of subs) {
-    const pushSub = { endpoint:sub.endpoint, keys:{ p256dh:sub.p256dh, auth:sub.auth } };
-    webpush.sendNotification(pushSub, JSON.stringify({ title, body, url })).catch(() => {
-      db.prepare('DELETE FROM push_subscriptions WHERE id=?').run(sub.id);
-    });
+// Push notification helper — sends to both web push and APNs
+function sendPushNotification(userId, userType, title, body, url, options = {}) {
+  // Web push (VAPID)
+  if (VAPID_PUBLIC && VAPID_PRIVATE) {
+    const subs = db.prepare('SELECT * FROM push_subscriptions WHERE user_id=? AND user_type=?').all(userId, userType);
+    for (const sub of subs) {
+      const pushSub = { endpoint:sub.endpoint, keys:{ p256dh:sub.p256dh, auth:sub.auth } };
+      webpush.sendNotification(pushSub, JSON.stringify({ title, body, url })).catch(() => {
+        db.prepare('DELETE FROM push_subscriptions WHERE id=?').run(sub.id);
+      });
+    }
+  }
+
+  // APNs (iOS native push)
+  if (apnProvider) {
+    // Find APNs tokens for this user — check both customer_id column and device association
+    const tokens = db.prepare('SELECT token FROM apns_tokens WHERE customer_id=?').all(userId);
+    if (tokens.length === 0) return;
+
+    // Build APNs notification
+    const notification = new apn.Notification();
+    notification.alert = { title, body };
+    notification.sound = 'default';
+    notification.badge = 1;
+    notification.topic = APNS_BUNDLE_ID;
+    notification.payload = { url, path: url?.replace('https://wya.digisigns.link', '') || '/' };
+
+    // Set category for actionable notifications
+    if (options.category) notification.category = options.category;
+    if (options.orderId) notification.payload.order_id = options.orderId;
+    if (options.vendorId) notification.payload.vendor_id = options.vendorId;
+
+    for (const t of tokens) {
+      apnProvider.send(notification, t.token).then(result => {
+        // Remove invalid tokens
+        if (result.failed?.length > 0) {
+          for (const fail of result.failed) {
+            if (fail.status === '410' || fail.response?.reason === 'Unregistered') {
+              db.prepare('DELETE FROM apns_tokens WHERE token=?').run(fail.device);
+            }
+          }
+        }
+      }).catch(e => console.error('[WYA-APP] APNs send error:', e.message));
+    }
   }
 }
 
