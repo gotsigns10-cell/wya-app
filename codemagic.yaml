@@ -98,17 +98,26 @@ workflows:
           SIGN_IDENTITY=$(security find-identity -v -p codesigning | grep "iPhone Distribution" | head -1 | sed 's/.*"\(.*\)"/\1/')
           echo "Using signing identity: $SIGN_IDENTITY"
 
+          # Resolve SPM dependencies first
+          echo "=== Resolving Swift Package Dependencies ==="
+          xcodebuild -resolvePackageDependencies \
+            -project App.xcodeproj \
+            -scheme App \
+            -clonedSourcePackagesDirPath "$CM_BUILD_DIR/SourcePackages"
+
           echo "=== Starting xcodebuild archive ==="
           xcodebuild archive \
             -project App.xcodeproj \
             -scheme App \
             -archivePath "$CM_BUILD_DIR/WYA.xcarchive" \
             -destination "generic/platform=iOS" \
+            -clonedSourcePackagesDirPath "$CM_BUILD_DIR/SourcePackages" \
             CODE_SIGN_STYLE=Manual \
             CODE_SIGN_IDENTITY="$SIGN_IDENTITY" \
             DEVELOPMENT_TEAM="$TEAM_ID" \
             PROVISIONING_PROFILE="$PROVISIONING_PROFILE_UUID" \
             PROVISIONING_PROFILE_SPECIFIER="" \
+            COMPILER_INDEX_STORE_ENABLE=NO \
             2>&1 | tee /tmp/xcodebuild-archive.log
 
           echo "Archive complete. Checking result..."
