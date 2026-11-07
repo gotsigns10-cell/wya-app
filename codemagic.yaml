@@ -96,9 +96,15 @@ workflows:
           echo "Project schemes:"
           xcodebuild -project App.xcodeproj -list
           echo ""
+
+          # Write API key for automatic signing
+          echo "Setting up App Store Connect authentication..."
+          mkdir -p ~/.private_keys
+          echo "$APP_STORE_CONNECT_PRIVATE_KEY" > ~/.private_keys/AuthKey_${APP_STORE_CONNECT_KEY_IDENTIFIER}.p8
+
           echo "=== Starting iOS Archive Build ==="
 
-          # Run xcodebuild and capture output
+          # Run xcodebuild with API authentication for automatic signing
           set +e
           xcodebuild archive \
             -project App.xcodeproj \
@@ -108,6 +114,9 @@ workflows:
             CODE_SIGN_STYLE=Automatic \
             DEVELOPMENT_TEAM=9V74TT48MV \
             -allowProvisioningUpdates \
+            -authenticationKeyPath ~/.private_keys/AuthKey_${APP_STORE_CONNECT_KEY_IDENTIFIER}.p8 \
+            -authenticationKeyID "$APP_STORE_CONNECT_KEY_IDENTIFIER" \
+            -authenticationKeyIssuerID "$APP_STORE_CONNECT_ISSUER_ID" \
             2>&1 | tee /tmp/xcodebuild.log
           BUILD_RESULT=${PIPESTATUS[0]}
           set -e
