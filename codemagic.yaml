@@ -94,8 +94,7 @@ workflows:
             CODE_SIGN_STYLE=Manual \
             CODE_SIGN_IDENTITY="iPhone Distribution" \
             PROVISIONING_PROFILE="$PROVISIONING_PROFILE_UUID" \
-            DEVELOPMENT_TEAM=9V74TT48MV \
-            | xcpretty || true
+            DEVELOPMENT_TEAM=9V74TT48MV
 
           echo "=== Archive Complete ==="
           ls -la "$CM_BUILD_DIR/"
