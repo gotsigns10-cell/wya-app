@@ -10,7 +10,7 @@ workflows:
         bundle_identifier: com.universoul.wya
 
       vars:
-        XCODE_WORKSPACE: "ios/App/App.xcworkspace"
+        XCODE_PROJECT: "ios/App/App.xcodeproj"
         XCODE_SCHEME: "App"
         BUNDLE_ID: "com.universoul.wya"
 
@@ -21,7 +21,6 @@ workflows:
 
       xcode: 15.4
       node: 20
-      cocoapods: default
 
     triggering:
       events:
@@ -49,10 +48,6 @@ workflows:
         script: |
           npx cap sync ios
 
-      - name: Install CocoaPods
-        script: |
-          cd ios/App && pod install
-
       - name: Set up code signing
         script: |
           xcode-project use-profiles
@@ -66,7 +61,7 @@ workflows:
       - name: Build IPA
         script: |
           xcode-project build-ipa \
-            --workspace "ios/App/$XCODE_WORKSPACE" \
+            --project "$XCODE_PROJECT" \
             --scheme "$XCODE_SCHEME" \
             --archive-flags="-destination 'generic/platform=iOS'"
 
