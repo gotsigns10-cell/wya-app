@@ -11,6 +11,11 @@
     "backgroundColor": "#0a0a0a",
     "preferredContentMode": "mobile"
   },
+  "android": {
+    "backgroundColor": "#0a0a0a",
+    "allowMixedContent": false,
+    "webContentsDebuggingEnabled": false
+  },
   "plugins": {
     "Geolocation": {
       "permissionRequests": ["always"]

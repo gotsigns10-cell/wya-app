@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Google Assistant App Actions for WYA (Soul)
+  (c) Universoul LLC | Santa Barbara, CA | 2026-11-03
+
+  These actions enable Google Assistant voice commands like:
+  - "Hey Google, ask WYA to remind me..."
+  - "Hey Google, schedule meeting with WYA"
+  - "Hey Google, add task with WYA"
+-->
+<actions>
+    <!-- Ask Soul anything -->
+    <action intentName="actions.intent.OPEN_APP_FEATURE">
+        <fulfillment urlTemplate="wya://chat?message={message}">
+            <parameter-mapping
+                intentParameter="feature"
+                urlParameter="message" />
+        </fulfillment>
+    </action>
+
+    <!-- Create Reminder -->
+    <action intentName="actions.intent.CREATE_REMINDER">
+        <fulfillment urlTemplate="wya://reminder?text={reminderText}&amp;time={triggerTime}">
+            <parameter-mapping
+                intentParameter="reminderText"
+                urlParameter="text" />
+            <parameter-mapping
+                intentParameter="triggerTime"
+                urlParameter="time" />
+        </fulfillment>
+        <parameter name="reminderText" type="schema.org/Text" />
+        <parameter name="triggerTime" type="schema.org/Time" />
+    </action>
+
+    <!-- Create Calendar Event -->
+    <action intentName="actions.intent.CREATE_CALENDAR_EVENT">
+        <fulfillment urlTemplate="wya://calendar?title={title}&amp;date={date}&amp;duration={duration}">
+            <parameter-mapping
+                intentParameter="eventName"
+                urlParameter="title" />
+            <parameter-mapping
+                intentParameter="eventDate"
+                urlParameter="date" />
+            <parameter-mapping
+                intentParameter="eventDuration"
+                urlParameter="duration" />
+        </fulfillment>
+        <parameter name="eventName" type="schema.org/Text" />
+        <parameter name="eventDate" type="schema.org/DateTime" />
+        <parameter name="eventDuration" type="schema.org/Duration" />
+    </action>
+
+    <!-- Quick Task -->
+    <action intentName="actions.intent.CREATE_TASK">
+        <fulfillment urlTemplate="wya://task?text={taskName}">
+            <parameter-mapping
+                intentParameter="taskName"
+                urlParameter="text" />
+        </fulfillment>
+        <parameter name="taskName" type="schema.org/Text" />
+    </action>
+
+    <!-- Get Today's Schedule -->
+    <action intentName="actions.intent.GET_AGENDA">
+        <fulfillment urlTemplate="wya://schedule?date=today" />
+    </action>
+
+    <!-- Check In (Custom Action) -->
+    <action intentName="custom.actions.intent.CHECK_IN">
+        <fulfillment urlTemplate="wya://checkin?context={context}">
+            <parameter-mapping
+                intentParameter="context"
+                urlParameter="context" />
+        </fulfillment>
+        <parameter name="context" type="schema.org/Text" />
+    </action>
+
+    <!-- Prepare Payment (Custom Action - requires app approval) -->
+    <action intentName="custom.actions.intent.PREPARE_PAYMENT">
+        <fulfillment urlTemplate="wya://payment/prepare?amount={amount}&amp;recipient={recipient}">
+            <parameter-mapping
+                intentParameter="amount"
+                urlParameter="amount" />
+            <parameter-mapping
+                intentParameter="recipient"
+                urlParameter="recipient" />
+        </fulfillment>
+        <parameter name="amount" type="schema.org/Number" />
+        <parameter name="recipient" type="schema.org/Text" />
+    </action>
+</actions>

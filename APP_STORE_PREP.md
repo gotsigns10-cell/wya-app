@@ -3,7 +3,7 @@
 ## App Store Metadata
 
 ### App Name
-**WYA — Where You At**
+**WYA - Live Vendor Map**
 
 ### Subtitle (30 chars)
 Find Local Vendors Near You
@@ -149,7 +149,7 @@ vnc://100.95.83.27:5900
 3. Click **+ New App** (blue plus button top right)
 4. Fill form:
    - Platform: iOS
-   - Name: WYA — Where You At
+   - Name: WYA - Live Vendor Map
    - Primary Language: English (U.S.)
    - Bundle ID: com.universoul.wya (should appear in dropdown)
    - SKU: WYA-2026
@@ -167,3 +167,27 @@ E2E: ✅ All automated tests passing
 ---
 *Prepared: 2026-10-23*
 *Updated: 2026-11-01 (Session 376)*
+
+---
+
+## Session 376 FINAL (2026-11-01)
+
+### App Store Connect - CREATED ✅
+- **App Name:** WYA - Live Vendor Map
+- **Bundle ID:** com.universoul.wya
+- **SKU:** WYA-2026
+- **Created by:** Sergio (manual, VNC blocked)
+
+### Codemagic Build - TRIGGERED ✅
+- Commit: fd92686
+- Workflow: ios-release
+- ETA: ~15-20 min for TestFlight
+
+### Next Steps
+1. Wait for TestFlight email
+2. Install on iPhone via TestFlight
+3. Test GPS as vendor (drive around)
+4. Add 5 screenshots to App Store Connect
+5. Submit for App Store review
+
+---
