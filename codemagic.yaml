@@ -21,7 +21,7 @@ workflows:
           -----END PRIVATE KEY-----
 
       xcode: 16.0
-      node: 20
+      node: 22
 
     triggering:
       events:
