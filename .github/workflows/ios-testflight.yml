@@ -5,9 +5,13 @@ on:
     branches: [main, master]
   workflow_dispatch:
 
+concurrency:
+  group: ios-build
+  cancel-in-progress: true
+
 jobs:
   build-ios:
-    runs-on: macos-13
+    runs-on: macos-latest
 
     steps:
     - uses: actions/checkout@v4
@@ -15,7 +19,7 @@ jobs:
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '22'
+        node-version: '20'
 
     - name: Install dependencies
       run: npm ci
@@ -45,6 +49,11 @@ jobs:
         echo "$ASC_KEY_CONTENT" > ~/private_keys/AuthKey.p8
         chmod 600 ~/private_keys/AuthKey.p8
 
+    - name: Install CocoaPods
+      run: |
+        cd ios/App
+        pod install --repo-update
+
     - name: Build and Upload with Fastlane
       env:
         ASC_KEY_ID: ${{ secrets.APP_STORE_CONNECT_KEY_ID }}
@@ -52,6 +61,5 @@ jobs:
         ASC_KEY_PATH: ~/private_keys/AuthKey.p8
         ASC_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_KEY }}
         TEAM_ID: 9V74TT48MV
-      run: |
-        cd fastlane
-        bundle exec fastlane beta_auto
+      working-directory: fastlane
+      run: bundle exec fastlane beta_auto
