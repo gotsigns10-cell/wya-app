@@ -45,9 +45,8 @@ workflows:
 
       - name: Sync Capacitor iOS
         script: |
-          gem install cocoapods || true
+          # Project uses Swift Package Manager (SPM), not CocoaPods
           npx cap sync ios
-          cd ios/App && pod install --repo-update
 
       - name: Install code signing
         script: |
@@ -101,7 +100,7 @@ workflows:
 
           echo "=== Starting xcodebuild archive ==="
           xcodebuild archive \
-            -workspace App.xcworkspace \
+            -project App.xcodeproj \
             -scheme App \
             -archivePath "$CM_BUILD_DIR/WYA.xcarchive" \
             -destination "generic/platform=iOS" \
