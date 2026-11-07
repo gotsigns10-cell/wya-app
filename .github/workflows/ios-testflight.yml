@@ -13,6 +13,12 @@ jobs:
   build-ios:
     runs-on: macos-latest
 
+    env:
+      CERTIFICATE_PASSWORD: "wya2026"
+      PROVISIONING_PROFILE_UUID: "866843c3-81a5-4817-b415-d5fb313c6106"
+      TEAM_ID: "9V74TT48MV"
+      BUNDLE_ID: "com.universoul.wya"
+
     steps:
     - uses: actions/checkout@v4
 
@@ -49,6 +55,35 @@ jobs:
         echo "$ASC_KEY_CONTENT" > ~/private_keys/AuthKey.p8
         chmod 600 ~/private_keys/AuthKey.p8
 
+    - name: Install code signing
+      run: |
+        # Create temporary keychain
+        KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+        KEYCHAIN_PASSWORD=$(openssl rand -base64 32)
+
+        security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+        security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+        security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+        security list-keychains -d user -s $KEYCHAIN_PATH
+
+        # Decode and import certificate
+        echo "Installing distribution certificate..."
+        base64 -d ios/signing/dist-cert.p12.b64 > $RUNNER_TEMP/dist-cert.p12
+        security import $RUNNER_TEMP/dist-cert.p12 -P "$CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+        security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+
+        # Install provisioning profile
+        echo "Installing provisioning profile..."
+        mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+        base64 -d ios/signing/WYA_App_Store.mobileprovision.b64 > ~/Library/MobileDevice/Provisioning\ Profiles/$PROVISIONING_PROFILE_UUID.mobileprovision
+
+        # Verify
+        echo "Signing identities:"
+        security find-identity -v -p codesigning
+        echo ""
+        echo "Installed profiles:"
+        ls -la ~/Library/MobileDevice/Provisioning\ Profiles/
+
     - name: Resolve Swift Package Dependencies
       run: |
         cd ios/App
@@ -60,7 +95,7 @@ jobs:
         ASC_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_ISSUER_ID }}
         ASC_KEY_PATH: ~/private_keys/AuthKey.p8
         ASC_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_KEY }}
-        TEAM_ID: 9V74TT48MV
+        PROFILE_UUID: ${{ env.PROVISIONING_PROFILE_UUID }}
       run: |
         cd fastlane
-        bundle exec fastlane beta_auto
+        bundle exec fastlane beta_manual
