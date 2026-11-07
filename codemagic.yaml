@@ -98,6 +98,8 @@ workflows:
           echo ""
           echo "=== Starting iOS Archive Build ==="
 
+          # Run xcodebuild and capture output
+          set +e
           xcodebuild archive \
             -project App.xcodeproj \
             -scheme App \
@@ -108,9 +110,25 @@ workflows:
             PROVISIONING_PROFILE="$PROVISIONING_PROFILE_UUID" \
             DEVELOPMENT_TEAM=9V74TT48MV \
             2>&1 | tee /tmp/xcodebuild.log
+          BUILD_RESULT=${PIPESTATUS[0]}
+          set -e
 
-          echo "=== Archive Complete ==="
-          ls -la "$CM_BUILD_DIR/"
+          echo "=== Archive Build Result: $BUILD_RESULT ==="
+          ls -la "$CM_BUILD_DIR/" || true
+
+          if [ $BUILD_RESULT -ne 0 ]; then
+            echo "ERROR: xcodebuild archive failed with exit code $BUILD_RESULT"
+            echo "Last 50 lines of build log:"
+            tail -50 /tmp/xcodebuild.log
+            exit $BUILD_RESULT
+          fi
+
+          # Verify archive was created
+          if [ ! -d "$CM_BUILD_DIR/WYA.xcarchive" ]; then
+            echo "ERROR: Archive not created"
+            exit 1
+          fi
+          echo "Archive created successfully"
 
       - name: Export IPA
         script: |
