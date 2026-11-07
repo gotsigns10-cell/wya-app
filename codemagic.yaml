@@ -81,10 +81,22 @@ workflows:
           set -e
           cd ios/App
 
+          echo "=== Diagnostics ==="
+          echo "CM_BUILD_DIR: $CM_BUILD_DIR"
+          echo "PROVISIONING_PROFILE_UUID: $PROVISIONING_PROFILE_UUID"
+          echo "Xcode version:"
+          xcodebuild -version
+          echo ""
+          echo "Available signing identities:"
+          security find-identity -v -p codesigning
+          echo ""
+          echo "Installed profiles:"
+          ls -la "$HOME/Library/MobileDevice/Provisioning Profiles/" 2>/dev/null || echo "No profiles dir"
+          echo ""
+          echo "Project schemes:"
+          xcodebuild -project App.xcodeproj -list
+          echo ""
           echo "=== Starting iOS Archive Build ==="
-          echo "Project: App.xcodeproj"
-          echo "Scheme: App"
-          echo "Profile UUID: $PROVISIONING_PROFILE_UUID"
 
           xcodebuild archive \
             -project App.xcodeproj \
@@ -94,7 +106,8 @@ workflows:
             CODE_SIGN_STYLE=Manual \
             CODE_SIGN_IDENTITY="iPhone Distribution" \
             PROVISIONING_PROFILE="$PROVISIONING_PROFILE_UUID" \
-            DEVELOPMENT_TEAM=9V74TT48MV
+            DEVELOPMENT_TEAM=9V74TT48MV \
+            2>&1 | tee /tmp/xcodebuild.log
 
           echo "=== Archive Complete ==="
           ls -la "$CM_BUILD_DIR/"
@@ -138,6 +151,7 @@ workflows:
     artifacts:
       - "*.xcarchive"
       - ipa/*.ipa
+      - /tmp/xcodebuild.log
       - /tmp/xcodebuild_logs/*.log
 
     publishing:
