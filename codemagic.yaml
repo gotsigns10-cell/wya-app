@@ -5,6 +5,8 @@ workflows:
     instance_type: mac_mini_m2
 
     environment:
+      groups:
+        - app_store_connect
       ios_signing:
         distribution_type: app_store
         bundle_identifier: com.universoul.wya
@@ -13,12 +15,14 @@ workflows:
         XCODE_PROJECT: "ios/App/App.xcodeproj"
         XCODE_SCHEME: "App"
         BUNDLE_ID: "com.universoul.wya"
-
-      # These are set in Codemagic UI (Settings → Environment variables)
-      # Build triggered: 2026-11-07
-      # APP_STORE_CONNECT_PRIVATE_KEY: contents of .p8 file
-      # APP_STORE_CONNECT_KEY_IDENTIFIER: 6T7FMU83Q3
-      # APP_STORE_CONNECT_ISSUER_ID: 54717bff-71a1-46bc-a578-a94db1886499
+        # Private key added directly since UI paste had issues
+        APP_STORE_CONNECT_PRIVATE_KEY: |
+          -----BEGIN PRIVATE KEY-----
+          MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgr8Ier4/TD6/oyPXE
+          fumV4tzFCYLoX5uuo4Yf4a0HX9egCgYIKoZIzj0DAQehRANCAASt9jLutcwMCKfU
+          e6l59TvOamTeWGzPvGNca9JD+yamgv62eAn8s52frJQ3j/bpoE1ieQk2w/G5Uoi5
+          BF4SYVO1
+          -----END PRIVATE KEY-----
 
       xcode: 15.4
       node: 20
