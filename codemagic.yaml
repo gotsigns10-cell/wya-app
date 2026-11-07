@@ -5,6 +5,10 @@ workflows:
     instance_type: mac_mini_m2
 
     environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.universoul.wya
+
       vars:
         XCODE_PROJECT: "ios/App/App.xcodeproj"
         XCODE_SCHEME: "App"
@@ -18,7 +22,7 @@ workflows:
           e6l59TvOamTeWGzPvGNca9JD+yamgv62eAn8s52frJQ3j/bpoE1ieQk2w/G5Uoi5
           BF4SYVO1
           -----END PRIVATE KEY-----
-        # Certificate password for manual signing
+        # Manual cert for fallback
         CERTIFICATE_PASSWORD: "wya2026"
 
       xcode: 16.0
@@ -48,43 +52,21 @@ workflows:
 
       - name: Sync Capacitor iOS
         script: |
-          # Install CocoaPods if needed
           gem install cocoapods || true
-
-          # Sync Capacitor
           npx cap sync ios
-
-          # Install pods explicitly
           cd ios/App
           if [ -f Podfile ]; then
             pod install --repo-update
           fi
-          cd ../..
-
           echo "Capacitor sync complete"
 
-      - name: Install code signing assets
+      - name: Set up code signing
         script: |
-          # Create keychain
-          KEYCHAIN_PATH="$HOME/Library/Keychains/build.keychain-db"
-          KEYCHAIN_PASSWORD="build123"
-
-          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
-          security set-keychain-settings -lut 3600 "$KEYCHAIN_PATH"
-          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
-          security list-keychains -d user -s "$KEYCHAIN_PATH" $(security list-keychains -d user | tr -d '"')
-          security default-keychain -s "$KEYCHAIN_PATH"
-
-          # Decode and import certificate from repo
-          base64 -d ios/signing/dist-cert.p12.b64 > /tmp/dist-cert.p12
-          security import /tmp/dist-cert.p12 -k "$KEYCHAIN_PATH" -P "$CERTIFICATE_PASSWORD" -T /usr/bin/codesign -T /usr/bin/security
-          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
-
-          # Decode and install provisioning profile
-          mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
-          base64 -d ios/signing/WYA_App_Store.mobileprovision.b64 > "$HOME/Library/MobileDevice/Provisioning Profiles/WYA_App_Store.mobileprovision"
-
-          echo "Code signing assets installed successfully"
+          # Use Codemagic's automatic signing via App Store Connect
+          keychain initialize
+          app-store-connect fetch-signing-files "$BUNDLE_ID" --type IOS_APP_STORE --create
+          keychain add-certificates
+          xcode-project use-profiles
 
       - name: Increment build number
         script: |
@@ -94,61 +76,15 @@ workflows:
 
       - name: Build IPA
         script: |
-          # Get provisioning profile UUID
-          PROFILE_UUID=$(security cms -D -i "$HOME/Library/MobileDevice/Provisioning Profiles/WYA_App_Store.mobileprovision" 2>/dev/null | plutil -extract UUID raw -)
-          echo "Using provisioning profile UUID: $PROFILE_UUID"
-
-          cd ios/App
-
-          # Archive
-          xcodebuild archive \
-            -project App.xcodeproj \
-            -scheme App \
-            -archivePath build/App.xcarchive \
-            -destination "generic/platform=iOS" \
-            CODE_SIGN_STYLE=Manual \
-            CODE_SIGN_IDENTITY="iPhone Distribution" \
-            PROVISIONING_PROFILE_SPECIFIER="" \
-            PROVISIONING_PROFILE="$PROFILE_UUID" \
-            DEVELOPMENT_TEAM=9V74TT48MV \
-            -allowProvisioningUpdates
-
-          # Create ExportOptions.plist
-          cat > build/ExportOptions.plist << 'EXPORTEOF'
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0">
-          <dict>
-            <key>method</key>
-            <string>app-store</string>
-            <key>teamID</key>
-            <string>9V74TT48MV</string>
-            <key>signingStyle</key>
-            <string>manual</string>
-            <key>provisioningProfiles</key>
-            <dict>
-              <key>com.universoul.wya</key>
-              <string>WYA App Store Distribution</string>
-            </dict>
-            <key>uploadSymbols</key>
-            <true/>
-          </dict>
-          </plist>
-          EXPORTEOF
-
-          # Export IPA
-          xcodebuild -exportArchive \
-            -archivePath build/App.xcarchive \
-            -exportPath build/ipa \
-            -exportOptionsPlist build/ExportOptions.plist
-
-          echo "IPA built successfully"
-          ls -la build/ipa/
+          xcode-project build-ipa \
+            --project "$XCODE_PROJECT" \
+            --scheme "$XCODE_SCHEME" \
+            --archive-flags="-destination 'generic/platform=iOS'"
 
     artifacts:
-      - ios/App/build/ipa/*.ipa
-      - ios/App/build/App.xcarchive/
+      - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
+      - ios/App/build/Reports/*.xml
 
     publishing:
       app_store_connect:
