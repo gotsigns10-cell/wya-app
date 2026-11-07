@@ -114,10 +114,14 @@ workflows:
 
       - name: Export IPA
         script: |
-          set -e
+          echo "=== Export IPA Diagnostics ==="
+          echo "Looking for archive..."
+          find "$CM_BUILD_DIR" -name "*.xcarchive" -type d 2>/dev/null || echo "No archive found in CM_BUILD_DIR"
+          ls -la "$CM_BUILD_DIR/" || true
+          echo ""
 
-          # Create export options
-          cat > /tmp/ExportOptions.plist << 'EOF'
+          # Use the profile UUID directly instead of name
+          cat > /tmp/ExportOptions.plist << EOF
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
           <plist version="1.0">
@@ -133,25 +137,31 @@ workflows:
             <key>provisioningProfiles</key>
             <dict>
               <key>com.universoul.wya</key>
-              <string>WYA App Store Distribution</string>
+              <string>$PROVISIONING_PROFILE_UUID</string>
             </dict>
           </dict>
           </plist>
           EOF
 
+          echo "ExportOptions.plist:"
+          cat /tmp/ExportOptions.plist
+          echo ""
+
           echo "=== Exporting IPA ==="
           xcodebuild -exportArchive \
             -archivePath "$CM_BUILD_DIR/WYA.xcarchive" \
             -exportPath "$CM_BUILD_DIR/ipa" \
-            -exportOptionsPlist /tmp/ExportOptions.plist
+            -exportOptionsPlist /tmp/ExportOptions.plist \
+            2>&1 | tee /tmp/export.log
 
           echo "=== IPA Export Complete ==="
-          ls -la "$CM_BUILD_DIR/ipa/"
+          ls -la "$CM_BUILD_DIR/ipa/" || echo "ipa dir not found"
 
     artifacts:
       - "*.xcarchive"
       - ipa/*.ipa
       - /tmp/xcodebuild.log
+      - /tmp/export.log
       - /tmp/xcodebuild_logs/*.log
 
     publishing:
