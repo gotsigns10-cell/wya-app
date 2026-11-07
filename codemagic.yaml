@@ -105,10 +105,9 @@ workflows:
             -scheme App \
             -archivePath "$CM_BUILD_DIR/WYA.xcarchive" \
             -destination "generic/platform=iOS" \
-            CODE_SIGN_STYLE=Manual \
-            CODE_SIGN_IDENTITY="iPhone Distribution: Sergio Barragan (9V74TT48MV)" \
-            PROVISIONING_PROFILE="$PROVISIONING_PROFILE_UUID" \
+            CODE_SIGN_STYLE=Automatic \
             DEVELOPMENT_TEAM=9V74TT48MV \
+            -allowProvisioningUpdates \
             2>&1 | tee /tmp/xcodebuild.log
           BUILD_RESULT=${PIPESTATUS[0]}
           set -e
@@ -157,12 +156,7 @@ workflows:
             <key>uploadSymbols</key>
             <true/>
             <key>signingStyle</key>
-            <string>manual</string>
-            <key>provisioningProfiles</key>
-            <dict>
-              <key>com.universoul.wya</key>
-              <string>$PROVISIONING_PROFILE_UUID</string>
-            </dict>
+            <string>automatic</string>
           </dict>
           </plist>
           EOF
