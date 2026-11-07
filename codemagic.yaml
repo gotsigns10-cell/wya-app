@@ -15,6 +15,7 @@ workflows:
         BUNDLE_ID: "com.universoul.wya"
 
       # These are set in Codemagic UI (Settings → Environment variables)
+      # Build triggered: 2026-11-07
       # APP_STORE_CONNECT_PRIVATE_KEY: contents of .p8 file
       # APP_STORE_CONNECT_KEY_IDENTIFIER: 6T7FMU83Q3
       # APP_STORE_CONNECT_ISSUER_ID: 54717bff-71a1-46bc-a578-a94db1886499
