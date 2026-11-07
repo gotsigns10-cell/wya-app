@@ -114,13 +114,19 @@ workflows:
 
       - name: Export IPA
         script: |
-          echo "=== Export IPA Diagnostics ==="
-          echo "Looking for archive..."
-          find "$CM_BUILD_DIR" -name "*.xcarchive" -type d 2>/dev/null || echo "No archive found in CM_BUILD_DIR"
-          ls -la "$CM_BUILD_DIR/" || true
-          echo ""
+          set -e
 
-          # Use the profile UUID directly instead of name
+          echo "=== Export IPA ==="
+          echo "Looking for archive..."
+          ls -la "$CM_BUILD_DIR/" || true
+
+          # Check if archive exists
+          if [ ! -d "$CM_BUILD_DIR/WYA.xcarchive" ]; then
+            echo "ERROR: Archive not found at $CM_BUILD_DIR/WYA.xcarchive"
+            exit 1
+          fi
+
+          # Create export options
           cat > /tmp/ExportOptions.plist << EOF
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -143,26 +149,33 @@ workflows:
           </plist>
           EOF
 
-          echo "ExportOptions.plist:"
-          cat /tmp/ExportOptions.plist
-          echo ""
-
-          echo "=== Exporting IPA ==="
+          # Export IPA
           xcodebuild -exportArchive \
             -archivePath "$CM_BUILD_DIR/WYA.xcarchive" \
             -exportPath "$CM_BUILD_DIR/ipa" \
-            -exportOptionsPlist /tmp/ExportOptions.plist \
-            2>&1 | tee /tmp/export.log
+            -exportOptionsPlist /tmp/ExportOptions.plist
 
-          echo "=== IPA Export Complete ==="
-          ls -la "$CM_BUILD_DIR/ipa/" || echo "ipa dir not found"
+          # Verify IPA was created
+          echo "=== Checking for IPA ==="
+          IPA_FILE=$(find "$CM_BUILD_DIR/ipa" -name "*.ipa" -print -quit)
+          if [ -z "$IPA_FILE" ]; then
+            echo "ERROR: No IPA file created"
+            exit 1
+          fi
+
+          echo "IPA created: $IPA_FILE"
+          ls -la "$CM_BUILD_DIR/ipa/"
+
+          # Copy to build/ios/ipa for Codemagic to find
+          mkdir -p build/ios/ipa
+          cp "$IPA_FILE" build/ios/ipa/
 
     artifacts:
       - "*.xcarchive"
       - ipa/*.ipa
+      - build/ios/ipa/*.ipa
       - /tmp/xcodebuild.log
       - /tmp/export.log
-      - /tmp/xcodebuild_logs/*.log
 
     publishing:
       app_store_connect:
