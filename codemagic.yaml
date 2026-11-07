@@ -76,52 +76,19 @@ workflows:
           LATEST_BUILD=$(app-store-connect get-latest-testflight-build-number "$BUNDLE_ID" || echo "0")
           agvtool new-version -all $((LATEST_BUILD + 1))
 
-      - name: Build archive
+      - name: Build IPA
         script: |
-          cd ios/App
-          xcodebuild archive \
-            -project App.xcodeproj \
-            -scheme App \
-            -archivePath "$CM_BUILD_DIR/build/App.xcarchive" \
-            -destination "generic/platform=iOS" \
-            CODE_SIGN_STYLE=Manual \
-            CODE_SIGN_IDENTITY="iPhone Distribution: Sergio Barragan (9V74TT48MV)" \
-            PROVISIONING_PROFILE="$PROVISIONING_PROFILE_UUID" \
-            DEVELOPMENT_TEAM=9V74TT48MV
+          # Use xcode-project CLI which handles signing automatically
+          xcode-project use-profiles --project "$XCODE_PROJECT"
 
-      - name: Export IPA
-        script: |
-          cat > /tmp/ExportOptions.plist << EOF
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0">
-          <dict>
-            <key>method</key>
-            <string>app-store</string>
-            <key>teamID</key>
-            <string>9V74TT48MV</string>
-            <key>signingStyle</key>
-            <string>manual</string>
-            <key>signingCertificate</key>
-            <string>iPhone Distribution</string>
-            <key>provisioningProfiles</key>
-            <dict>
-              <key>com.universoul.wya</key>
-              <string>$PROVISIONING_PROFILE_UUID</string>
-            </dict>
-            <key>uploadSymbols</key>
-            <true/>
-          </dict>
-          </plist>
-          EOF
+          xcode-project build-ipa \
+            --project "$XCODE_PROJECT" \
+            --scheme "$XCODE_SCHEME" \
+            --archive-flags="-destination 'generic/platform=iOS' CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM=9V74TT48MV"
 
-          xcodebuild -exportArchive \
-            -archivePath "$CM_BUILD_DIR/build/App.xcarchive" \
-            -exportPath "$CM_BUILD_DIR/build/ipa" \
-            -exportOptionsPlist /tmp/ExportOptions.plist
-
-          echo "IPA built:"
-          ls -la "$CM_BUILD_DIR/build/ipa/"
+          echo "Build complete"
+          find . -name "*.ipa" 2>/dev/null || echo "No IPA found in current dir"
+          find "$CM_BUILD_DIR" -name "*.ipa" 2>/dev/null || echo "No IPA found in CM_BUILD_DIR"
 
     artifacts:
       - build/ipa/*.ipa
