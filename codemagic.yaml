@@ -21,7 +21,7 @@ workflows:
         # Certificate password for manual signing
         CERTIFICATE_PASSWORD: "wya2026"
 
-      xcode: 15.4
+      xcode: 16.0
       node: 20
 
     triggering:
