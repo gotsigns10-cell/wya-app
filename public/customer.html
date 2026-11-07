@@ -761,9 +761,11 @@ function setCat(c){
 }
 
 // ============ MAP PINS ============
-function makePin(iconHtml='<span class="icon icon-truck" style="width:20px;height:20px"></span>',isLive=false){
+function makePin(iconHtml='<span class="icon icon-truck" style="width:20px;height:20px"></span>',isLive=false,heading=null){
   const pulse=isLive?'<div class="vendor-pulse"></div>':'';
-  return L.divIcon({className:'',html:`<div style="position:relative;width:44px;height:44px">${pulse}<div style="width:44px;height:44px;background:var(--accent);border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:3px solid #fff;box-shadow:0 4px 20px rgba(0,212,170,.5);display:flex;align-items:center;justify-content:center"><span style="transform:rotate(45deg);font-size:20px;display:flex;align-items:center;justify-content:center">${iconHtml}</span></div></div>`,iconSize:[44,44],iconAnchor:[10,44],popupAnchor:[12,-44]});
+  // Phase v4.0: Add heading arrow for moving vendors (Uber-style)
+  const arrow=heading!==null?`<div class="vendor-heading-arrow" style="position:absolute;top:-12px;left:50%;transform:translateX(-50%) rotate(${heading}deg);width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:10px solid var(--accent);filter:drop-shadow(0 1px 2px rgba(0,0,0,.3))"></div>`:'';
+  return L.divIcon({className:'',html:`<div style="position:relative;width:44px;height:44px" data-heading="${heading||0}">${arrow}${pulse}<div style="width:44px;height:44px;background:var(--accent);border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:3px solid #fff;box-shadow:0 4px 20px rgba(0,212,170,.5);display:flex;align-items:center;justify-content:center"><span style="transform:rotate(45deg);font-size:20px;display:flex;align-items:center;justify-content:center">${iconHtml}</span></div></div>`,iconSize:[44,44],iconAnchor:[10,44],popupAnchor:[12,-44]});
 }
 function userPin(){
   return L.divIcon({className:'',html:`<div style="width:18px;height:18px;background:#4CC9F0;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 6px rgba(76,201,240,.2)"></div>`,iconSize:[18,18],iconAnchor:[9,9]});
@@ -1907,6 +1909,21 @@ function connectSSE(){
             const dy=(target.lng-start.lng)/steps;
             const anim=()=>{step++;m.setLatLng([start.lat+dx*step,start.lng+dy*step]);if(step<steps)requestAnimationFrame(anim);};
             requestAnimationFrame(anim);
+            // Phase v4.0: Update heading arrow rotation (GPS-04)
+            const el=m.getElement();
+            if(el){
+              const arrow=el.querySelector('.vendor-heading-arrow');
+              if(d.speed>0&&d.heading!==null){
+                if(!arrow){
+                  const newArrow=document.createElement('div');
+                  newArrow.className='vendor-heading-arrow';
+                  newArrow.style.cssText='position:absolute;top:-12px;left:50%;transform:translateX(-50%) rotate('+d.heading+'deg);width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:10px solid var(--accent);filter:drop-shadow(0 1px 2px rgba(0,0,0,.3))';
+                  el.querySelector('div').prepend(newArrow);
+                }else{
+                  arrow.style.transform='translateX(-50%) rotate('+d.heading+'deg)';
+                }
+              }else if(arrow&&d.speed<=0){arrow.remove();}
+            }
           } else { renderMarkers(); }
         }
       }
