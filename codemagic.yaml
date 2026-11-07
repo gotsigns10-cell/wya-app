@@ -48,7 +48,20 @@ workflows:
 
       - name: Sync Capacitor iOS
         script: |
+          # Install CocoaPods if needed
+          gem install cocoapods || true
+
+          # Sync Capacitor
           npx cap sync ios
+
+          # Install pods explicitly
+          cd ios/App
+          if [ -f Podfile ]; then
+            pod install --repo-update
+          fi
+          cd ../..
+
+          echo "Capacitor sync complete"
 
       - name: Install code signing assets
         script: |
