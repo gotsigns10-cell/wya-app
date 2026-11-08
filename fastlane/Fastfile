@@ -60,7 +60,7 @@ platform :ios do
           "com.universoul.wya" => profile_uuid
         }
       },
-      xcargs: "CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM=9V74TT48MV PROVISIONING_PROFILE='#{profile_uuid}' PROVISIONING_PROFILE_SPECIFIER=''"
+      xcargs: "CODE_SIGN_STYLE=Manual CODE_SIGN_IDENTITY='iPhone Distribution' DEVELOPMENT_TEAM=9V74TT48MV PROVISIONING_PROFILE='#{profile_uuid}' PROVISIONING_PROFILE_SPECIFIER=''"
     )
 
     # Upload to TestFlight
