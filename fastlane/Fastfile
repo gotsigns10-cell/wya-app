@@ -47,6 +47,7 @@ platform :ios do
     )
 
     # Build with manual code signing using pre-installed certificate and profile
+    profile_uuid = ENV["PROFILE_UUID"] || "866843c3-81a5-4817-b415-d5fb313c6106"
     build_app(
       project: "ios/App/App.xcodeproj",
       scheme: "App",
@@ -56,10 +57,10 @@ platform :ios do
         signingStyle: "manual",
         teamID: ENV["TEAM_ID"] || "9V74TT48MV",
         provisioningProfiles: {
-          "com.universoul.wya" => ENV["PROFILE_UUID"] || "866843c3-81a5-4817-b415-d5fb313c6106"
+          "com.universoul.wya" => profile_uuid
         }
       },
-      xcargs: "CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM=9V74TT48MV"
+      xcargs: "CODE_SIGN_STYLE=Manual DEVELOPMENT_TEAM=9V74TT48MV PROVISIONING_PROFILE='#{profile_uuid}' PROVISIONING_PROFILE_SPECIFIER=''"
     )
 
     # Upload to TestFlight
