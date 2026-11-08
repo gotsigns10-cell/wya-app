@@ -66,16 +66,16 @@ jobs:
         security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
         security list-keychains -d user -s $KEYCHAIN_PATH
 
-        # Decode and import certificate
+        # Decode and import certificate (macOS uses -D for decode)
         echo "Installing distribution certificate..."
-        base64 -d ios/signing/dist-cert.p12.b64 > $RUNNER_TEMP/dist-cert.p12
+        base64 -D -i ios/signing/dist-cert.p12.b64 -o $RUNNER_TEMP/dist-cert.p12
         security import $RUNNER_TEMP/dist-cert.p12 -P "$CERTIFICATE_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
         security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
 
-        # Install provisioning profile
+        # Install provisioning profile (macOS uses -D for decode)
         echo "Installing provisioning profile..."
         mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-        base64 -d ios/signing/WYA_App_Store.mobileprovision.b64 > ~/Library/MobileDevice/Provisioning\ Profiles/$PROVISIONING_PROFILE_UUID.mobileprovision
+        base64 -D -i ios/signing/WYA_App_Store.mobileprovision.b64 -o ~/Library/MobileDevice/Provisioning\ Profiles/$PROVISIONING_PROFILE_UUID.mobileprovision
 
         # Verify
         echo "Signing identities:"
