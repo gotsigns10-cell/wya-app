@@ -835,8 +835,8 @@ function renderMarkers(){
   comingSoonMarkers={};
   comingSoonVendors.forEach(v=>{
     if(!v.lat||!v.lng)return;
-    const em=catEmoji[v.category]||'📍';
-    const grayIcon=L.divIcon({className:'',html:`<div style="background:#999;color:#fff;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:16px;border:2px solid #777;opacity:0.7">${em}</div>`,iconSize:[32,32],iconAnchor:[16,32]});
+    const iconHtml=catIcon(v.category,'16px');
+    const grayIcon=L.divIcon({className:'',html:`<div style="background:#999;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:2px solid #777;opacity:0.7">${iconHtml}</div>`,iconSize:[32,32],iconAnchor:[16,32]});
     const m=L.marker([v.lat,v.lng],{icon:grayIcon}).addTo(map);
     m.bindPopup(`<b style="font-family:'DM Sans',sans-serif">${esc(v.name)}</b><br><span style="color:#999;font-size:12px">Coming Soon</span><br><span style="color:#888;font-size:12px">${esc(v.description||v.category||'')}</span>`);
     comingSoonMarkers[v.id]=m;
