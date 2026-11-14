@@ -6,13 +6,13 @@
 
 ## Current State (Quantified)
 
-| Issue | Count | Target |
-|-------|-------|--------|
-| Emoji instances | 79 | 0 (replace with SVG icons) |
-| Gradient declarations | 31 | 3-4 (primary, secondary, accent, disabled) |
-| Border-radius values | 18 different | 4 (sm: 4px, md: 8px, lg: 16px, full: 9999px) |
-| Keyframe animations | 21 | 5-6 max (enter, exit, pulse, spin, slide, fade) |
-| Visible tabs (vendor) | 13+ | 5 + overflow menu |
+| Issue | Count | Target | Status |
+|-------|-------|--------|--------|
+| Emoji instances | 79 → 6 | 0 (replace with SVG icons) | ✅ Done (6 remaining are data/rating chars) |
+| Gradient declarations | 31 | 3-4 (primary, secondary, accent, disabled) | In progress |
+| Border-radius values | 18 different | 4 (sm: 4px, md: 8px, lg: 16px, full: 9999px) | In progress |
+| Keyframe animations | 21 | 5-6 max (enter, exit, pulse, spin, slide, fade) | In progress |
+| Visible tabs (vendor) | 13+ → 5 | 5 + overflow menu | ✅ Done |
 
 ---
 
@@ -173,7 +173,7 @@ Remove:
 | Deliverable | Status |
 |-------------|--------|
 | Design tokens CSS file | [x] Completed 2026-11-14 (--radius-*, --space-*, --color-*) |
-| SVG icon set (20+ icons) | [x] Completed 2026-11-14 (35+ icons migrated) |
+| SVG icon set (20+ icons) | [x] Completed 2026-11-14 (40+ icons: +trophy, heart, heart-outline, utensils) |
 | Vendor card component redesign | [x] Completed (bottom sheet solid dark) |
 | Navigation consolidation | [x] Completed 2026-11-14 (5 tabs + overflow) |
 | Bottom sheet redesign | [x] Completed (solid #1A1F26 bg) |
