@@ -63,6 +63,8 @@
 .icon-orders{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%2300D4AA' viewBox='0 0 24 24'%3E%3Cpath d='M8.1 13.34l2.83-2.83L3.91 3.5c-1.56 1.56-1.56 4.09 0 5.66l4.19 4.18zm6.78-1.81c1.53.71 3.68.21 5.27-1.38 1.91-1.91 2.28-4.65.81-6.12-1.46-1.46-4.2-1.1-6.12.81-1.59 1.59-2.09 3.74-1.38 5.27L3.7 19.87l1.41 1.41L12 14.41l6.88 6.88 1.41-1.41L13.41 13l1.47-1.47z'/%3E%3C/svg%3E") center/contain no-repeat}
 .icon-list{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%2300D4AA' viewBox='0 0 24 24'%3E%3Cpath d='M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z'/%3E%3C/svg%3E") center/contain no-repeat}
 .icon-card{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%2300D4AA' viewBox='0 0 24 24'%3E%3Cpath d='M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z'/%3E%3C/svg%3E") center/contain no-repeat}
+.icon-chat{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%2300D4AA' viewBox='0 0 24 24'%3E%3Cpath d='M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z'/%3E%3C/svg%3E") center/contain no-repeat}
+.icon-utensils{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%2300D4AA' viewBox='0 0 24 24'%3E%3Cpath d='M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z'/%3E%3C/svg%3E") center/contain no-repeat}
 html,body{height:100%;overflow-x:hidden}
 body{font-family:'DM Sans',sans-serif;background:var(--dark);color:var(--text);min-height:100vh;min-height:-webkit-fill-available}
 .screen{display:none;min-height:100vh;flex-direction:column}
@@ -586,25 +588,25 @@ button.toggle-btn.stop {
     </div>
 
     <div class="profile-card">
-      <div class="profile-header"><h3>🔗 Connect Your Socials</h3><span style="font-size:11px;color:var(--muted)">More links = higher Social Score = more visibility</span></div>
+      <div class="profile-header"><h3><span class="icon icon-globe" style="width:16px;height:16px;display:inline-block;vertical-align:middle;margin-right:6px"></span>Connect Your Socials</h3><span style="font-size:11px;color:var(--muted)">More links = higher Social Score = more visibility</span></div>
       <div id="social-score-preview" style="padding:8px 16px;display:none"></div>
-      <div class="profile-row" onclick="editField(this,'website')"><span class="profile-key">🌐 Website</span><span class="profile-val" id="p-website">—</span></div>
-      <div class="profile-row" onclick="editField(this,'instagram')"><span class="profile-key">📸 Instagram</span><span class="profile-val" id="p-instagram">—</span></div>
-      <div class="profile-row" onclick="editField(this,'tiktok')"><span class="profile-key">🎵 TikTok</span><span class="profile-val" id="p-tiktok">—</span></div>
-      <div class="profile-row" onclick="editField(this,'youtube')"><span class="profile-key">🎬 YouTube</span><span class="profile-val" id="p-youtube">—</span></div>
-      <div class="profile-row" onclick="editField(this,'facebook')"><span class="profile-key">👤 Facebook</span><span class="profile-val" id="p-facebook">—</span></div>
+      <div class="profile-row" onclick="editField(this,'website')"><span class="profile-key"><span class="icon icon-globe" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:6px"></span>Website</span><span class="profile-val" id="p-website">—</span></div>
+      <div class="profile-row" onclick="editField(this,'instagram')"><span class="profile-key"><span class="icon icon-camera" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:6px"></span>Instagram</span><span class="profile-val" id="p-instagram">—</span></div>
+      <div class="profile-row" onclick="editField(this,'tiktok')"><span class="profile-key"><span class="icon icon-music" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:6px"></span>TikTok</span><span class="profile-val" id="p-tiktok">—</span></div>
+      <div class="profile-row" onclick="editField(this,'youtube')"><span class="profile-key"><span class="icon icon-video" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:6px"></span>YouTube</span><span class="profile-val" id="p-youtube">—</span></div>
+      <div class="profile-row" onclick="editField(this,'facebook')"><span class="profile-key"><span class="icon icon-user" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:6px"></span>Facebook</span><span class="profile-val" id="p-facebook">—</span></div>
     </div>
     <div class="profile-card">
-      <div class="profile-header"><h3>🚚 Delivery Platforms</h3><span style="font-size:11px;color:var(--muted)">Let customers order through their favorite app</span></div>
-      <div class="profile-row" onclick="editField(this,'doordash_url')"><span class="profile-key">🔴 DoorDash URL</span><span class="profile-val" id="p-doordash_url">—</span></div>
-      <div class="profile-row" onclick="editField(this,'ubereats_url')"><span class="profile-key">🟢 UberEats URL</span><span class="profile-val" id="p-ubereats_url">—</span></div>
-      <div class="profile-row" onclick="editField(this,'grubhub_url')"><span class="profile-key">🟠 Grubhub URL</span><span class="profile-val" id="p-grubhub_url">—</span></div>
+      <div class="profile-header"><h3><span class="icon icon-truck" style="width:16px;height:16px;display:inline-block;vertical-align:middle;margin-right:6px"></span>Delivery Platforms</h3><span style="font-size:11px;color:var(--muted)">Let customers order through their favorite app</span></div>
+      <div class="profile-row" onclick="editField(this,'doordash_url')"><span class="profile-key"><span style="display:inline-block;width:10px;height:10px;background:#FF3008;border-radius:50%;margin-right:8px"></span>DoorDash URL</span><span class="profile-val" id="p-doordash_url">—</span></div>
+      <div class="profile-row" onclick="editField(this,'ubereats_url')"><span class="profile-key"><span style="display:inline-block;width:10px;height:10px;background:#06C167;border-radius:50%;margin-right:8px"></span>UberEats URL</span><span class="profile-val" id="p-ubereats_url">—</span></div>
+      <div class="profile-row" onclick="editField(this,'grubhub_url')"><span class="profile-key"><span style="display:inline-block;width:10px;height:10px;background:#F63440;border-radius:50%;margin-right:8px"></span>Grubhub URL</span><span class="profile-val" id="p-grubhub_url">—</span></div>
     </div>
     <div class="profile-card">
-      <div class="profile-header"><h3><span class="icon icon-star"></span> Review Platforms</h3><span style="font-size:11px;color:var(--muted)">Link your review profiles for social proof</span></div>
-      <div class="profile-row" onclick="editField(this,'yelp_url')"><span class="profile-key"><span class="icon icon-star"></span> Yelp Page</span><span class="profile-val" id="p-yelp_url">—</span></div>
-      <div class="profile-row" onclick="editField(this,'google_maps_url')"><span class="profile-key"><span class="icon icon-pin"></span> Google Maps</span><span class="profile-val" id="p-google_maps_url">—</span></div>
-      <div class="profile-row" onclick="editField(this,'google_business_url')"><span class="profile-key">🏢 Google Business</span><span class="profile-val" id="p-google_business_url">—</span></div>
+      <div class="profile-header"><h3><span class="icon icon-star" style="width:16px;height:16px;display:inline-block;vertical-align:middle;margin-right:6px"></span>Review Platforms</h3><span style="font-size:11px;color:var(--muted)">Link your review profiles for social proof</span></div>
+      <div class="profile-row" onclick="editField(this,'yelp_url')"><span class="profile-key"><span class="icon icon-star" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:6px"></span>Yelp Page</span><span class="profile-val" id="p-yelp_url">—</span></div>
+      <div class="profile-row" onclick="editField(this,'google_maps_url')"><span class="profile-key"><span class="icon icon-pin" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:6px"></span>Google Maps</span><span class="profile-val" id="p-google_maps_url">—</span></div>
+      <div class="profile-row" onclick="editField(this,'google_business_url')"><span class="profile-key"><span class="icon icon-building" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:6px"></span>Google Business</span><span class="profile-val" id="p-google_business_url">—</span></div>
     </div>
 
     <div class="profile-card">
@@ -740,7 +742,7 @@ button.toggle-btn.stop {
       <button class="cat-pill active" data-cat="all" onclick="filterMenuCat('all',this)">All</button>
     </div>
     <div id="menu-items-list" style="display:flex;flex-direction:column;gap:10px">
-      <div class="empty-state"><div class="es-icon">🍽️</div><div class="es-msg">No menu items yet.<br>Tap + Add Item to get started.</div></div>
+      <div class="empty-state"><div class="es-icon"><span class="icon icon-utensils" style="width:32px;height:32px"></span></div><div class="es-msg">No menu items yet.<br>Tap + Add Item to get started.</div></div>
     </div>
   </div><!-- end tab-menu -->
 
@@ -1690,7 +1692,7 @@ async function checkSubscription(){
     if(d.is_founding_vendor){
       const wrap=document.getElementById('subscribe-wrap');
       wrap.style.display='block';
-      wrap.innerHTML='<div style="background:linear-gradient(135deg,rgba(255,107,0,.15) 0%,rgba(0,212,170,.15) 100%);border:1.5px solid rgba(255,107,0,.4);border-radius:20px;padding:24px;text-align:center;margin-bottom:16px"><div style="font-size:32px;margin-bottom:8px">⭐</div><div style="font-size:18px;font-weight:800;color:#FF5E1A;margin-bottom:6px">Founding Vendor</div><div style="font-size:14px;color:#9CA3AF;line-height:1.5">Free forever — thank you for helping build WYA!</div></div>';
+      wrap.innerHTML='<div style="background:linear-gradient(135deg,rgba(255,107,0,.15) 0%,rgba(0,212,170,.15) 100%);border:1.5px solid rgba(255,107,0,.4);border-radius:20px;padding:24px;text-align:center;margin-bottom:16px"><div style="margin-bottom:8px"><span class="icon icon-star" style="width:32px;height:32px;filter:brightness(0) saturate(100%) invert(50%) sepia(95%) saturate(1000%) hue-rotate(360deg) brightness(100%) contrast(100%)"></span></div><div style="font-size:18px;font-weight:800;color:#FF5E1A;margin-bottom:6px">Founding Vendor</div><div style="font-size:14px;color:#9CA3AF;line-height:1.5">Free forever — thank you for helping build WYA!</div></div>';
     } else if(d.status==='trial'){
       document.getElementById('subscribe-wrap').style.display='block';
       if(d.trial_days_remaining>0){
@@ -1880,13 +1882,14 @@ function renderMenuItems(){
   const list=document.getElementById('menu-items-list');
   const filtered=activeMenuCat==='all'?menuItems:menuItems.filter(i=>i.category===activeMenuCat);
   if(!filtered.length){
-    list.innerHTML='<div class="empty-state"><div class="es-icon">🍽️</div><div class="es-msg">No items in this category.</div></div>';
+    list.innerHTML='<div class="empty-state"><div class="es-icon"><span class="icon icon-utensils" style="width:32px;height:32px"></span></div><div class="es-msg">No items in this category.</div></div>';
     return;
   }
   list.innerHTML=filtered.map(item=>{
+    const fallbackIcon='<span class="icon icon-utensils" style="width:20px;height:20px"></span>';
     const photoHtml=item.photo_url
-      ?`<img src="${item.photo_url}" class="menu-item-photo" onerror="this.textContent='${item.name?item.name[0]:'?'}';" style="display:block">`
-      :`<div class="menu-item-photo">${item.emoji||'🍴'}</div>`;
+      ?`<img src="${item.photo_url}" class="menu-item-photo" onerror="this.outerHTML='<div class=\\'menu-item-photo\\'>${item.emoji||fallbackIcon}</div>'" style="display:block">`
+      :`<div class="menu-item-photo">${item.emoji||fallbackIcon}</div>`;
     const avail=item.available!==false;
     return `<div class="menu-item-card">
       ${photoHtml}
@@ -3371,11 +3374,11 @@ async function loadSocialHub(){
 
     // Connected platforms
     const plEl=document.getElementById('sh-platforms');
-    const platformIcons={instagram:'📸',tiktok:'🎵',youtube:'🎬',facebook:'👤',website:'🌐'};
+    const platformIconClass={instagram:'icon-camera',tiktok:'icon-music',youtube:'icon-video',facebook:'icon-user',website:'icon-globe'};
     if(d.connected.length){
       plEl.innerHTML=d.connected.map(p=>`
         <a href="${esc(p.url)}" target="_blank" style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(255,255,255,.03);border:1px solid var(--border2);border-radius:10px;text-decoration:none;transition:.15s">
-          <span style="font-size:20px">${platformIcons[p.platform]||'🔗'}</span>
+          <span class="icon ${platformIconClass[p.platform]||'icon-globe'}" style="width:20px;height:20px"></span>
           <div style="flex:1">
             <div style="font-size:13px;font-weight:600;color:var(--text)">${esc(p.handle)}</div>
             <div style="font-size:10px;color:var(--muted);text-transform:capitalize">${p.platform}</div>
@@ -3389,11 +3392,15 @@ async function loadSocialHub(){
 
     // Delivery platforms
     const delEl=document.getElementById('sh-delivery');
-    const deliveryIcons={doordash:'🔴',ubereats:'🟢',grubhub:'🟠',yelp:'⭐',google_maps:'📍',google_business:'🏢'};
+    const deliveryColors={doordash:'#FF3008',ubereats:'#06C167',grubhub:'#F63440'};
+    const deliveryIconClass={yelp:'icon-star',google_maps:'icon-pin',google_business:'icon-building'};
     if(d.deliveryPlatforms.length){
-      delEl.innerHTML=d.deliveryPlatforms.map(p=>`
-        <a href="${esc(p.url)}" target="_blank" style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(255,255,255,.03);border:1px solid var(--border2);border-radius:10px;text-decoration:none">
-          <span style="font-size:20px">${deliveryIcons[p.platform]||'🔗'}</span>
+      delEl.innerHTML=d.deliveryPlatforms.map(p=>{
+        const iconHtml=deliveryColors[p.platform]
+          ?`<span style="display:inline-block;width:16px;height:16px;background:${deliveryColors[p.platform]};border-radius:50%"></span>`
+          :`<span class="icon ${deliveryIconClass[p.platform]||'icon-globe'}" style="width:16px;height:16px"></span>`;
+        return `<a href="${esc(p.url)}" target="_blank" style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(255,255,255,.03);border:1px solid var(--border2);border-radius:10px;text-decoration:none">
+          ${iconHtml}
           <div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text)">${esc(p.label)}</div></div>
           <span style="font-size:10px;color:var(--green);font-weight:700">LINKED</span>
         </a>
@@ -3408,25 +3415,25 @@ async function loadSocialHub(){
     const qsEl=document.getElementById('sh-quick-share');
     qsEl.innerHTML=`
       <button onclick="socialShareTo('instagram')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 8px;background:linear-gradient(135deg,rgba(0,212,170,.12),rgba(253,29,29,.08));border:1px solid rgba(0,212,170,.25);border-radius:12px;cursor:pointer;font-family:inherit;color:var(--text)">
-        <span style="font-size:22px">📸</span><span style="font-size:10px;font-weight:600">Instagram</span>
+        <span class="icon icon-camera" style="width:22px;height:22px"></span><span style="font-size:10px;font-weight:600">Instagram</span>
       </button>
       <button onclick="socialShareTo('tiktok')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 8px;background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.15);border-radius:12px;cursor:pointer;font-family:inherit;color:var(--text)">
-        <span style="font-size:22px">🎵</span><span style="font-size:10px;font-weight:600">TikTok</span>
+        <span class="icon icon-music" style="width:22px;height:22px"></span><span style="font-size:10px;font-weight:600">TikTok</span>
       </button>
       <button onclick="socialShareTo('facebook')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 8px;background:rgba(24,119,242,.08);border:1px solid rgba(24,119,242,.2);border-radius:12px;cursor:pointer;font-family:inherit;color:var(--text)">
-        <span style="font-size:22px">👤</span><span style="font-size:10px;font-weight:600">Facebook</span>
+        <span class="icon icon-user" style="width:22px;height:22px"></span><span style="font-size:10px;font-weight:600">Facebook</span>
       </button>
       <button onclick="socialShareTo('twitter')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:12px;cursor:pointer;font-family:inherit;color:var(--text)">
-        <span style="font-size:22px">𝕏</span><span style="font-size:10px;font-weight:600">X / Twitter</span>
+        <span style="font-size:22px;font-weight:800">𝕏</span><span style="font-size:10px;font-weight:600">X / Twitter</span>
       </button>
       <button onclick="socialShareTo('whatsapp')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 8px;background:rgba(37,211,102,.08);border:1px solid rgba(37,211,102,.2);border-radius:12px;cursor:pointer;font-family:inherit;color:var(--text)">
-        <span style="font-size:22px">💬</span><span style="font-size:10px;font-weight:600">WhatsApp</span>
+        <span class="icon icon-chat" style="width:22px;height:22px"></span><span style="font-size:10px;font-weight:600">WhatsApp</span>
       </button>
       <button onclick="socialShareTo('sms')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 8px;background:rgba(76,201,240,.08);border:1px solid rgba(76,201,240,.2);border-radius:12px;cursor:pointer;font-family:inherit;color:var(--text)">
-        <span style="font-size:22px">💬</span><span style="font-size:10px;font-weight:600">SMS</span>
+        <span class="icon icon-chat" style="width:22px;height:22px"></span><span style="font-size:10px;font-weight:600">SMS</span>
       </button>
       <button onclick="socialShareTo('copy')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 8px;background:rgba(252,176,69,.08);border:1px solid rgba(252,176,69,.2);border-radius:12px;cursor:pointer;font-family:inherit;color:var(--text)">
-        <span style="font-size:22px">🔗</span><span style="font-size:10px;font-weight:600">Copy Link</span>
+        <span class="icon icon-globe" style="width:22px;height:22px"></span><span style="font-size:10px;font-weight:600">Copy Link</span>
       </button>
       <button onclick="socialShareTo('native')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 8px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:12px;cursor:pointer;font-family:inherit;color:var(--text)">
         <span class="icon icon-share" style="display:inline-block;width:22px;height:22px"></span><span style="font-size:10px;font-weight:600">More...</span>
@@ -3440,7 +3447,7 @@ async function loadSocialHub(){
     if(templates.instagram){
       const cap=templates.instagram.caption;
       stHtml+=`<div style="background:rgba(0,212,170,.05);border:1px solid rgba(0,212,170,.2);border-radius:12px;padding:14px">
-        <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px"><span style="font-size:14px">📸</span><span style="font-size:13px;font-weight:700;color:#00D4AA">Instagram</span></div>
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px"><span class="icon icon-camera" style="width:14px;height:14px"></span><span style="font-size:13px;font-weight:700;color:#00D4AA">Instagram</span></div>
         <div style="font-size:12px;color:var(--muted);white-space:pre-wrap;line-height:1.5;max-height:80px;overflow:hidden;margin-bottom:10px">${esc(cap)}</div>
         <div style="display:flex;gap:6px">
           <button onclick="copyAndOpen('instagram','${btoa(encodeURIComponent(cap))}')" style="flex:1;padding:8px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit">Post Now</button>
@@ -3451,7 +3458,7 @@ async function loadSocialHub(){
     if(templates.tiktok){
       const cap=templates.tiktok.caption;
       stHtml+=`<div style="background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.12);border-radius:12px;padding:14px">
-        <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px"><span style="font-size:14px">🎵</span><span style="font-size:13px;font-weight:700;color:#fff">TikTok</span></div>
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px"><span class="icon icon-music" style="width:14px;height:14px"></span><span style="font-size:13px;font-weight:700;color:#fff">TikTok</span></div>
         <div style="font-size:12px;color:var(--muted);white-space:pre-wrap;line-height:1.5;max-height:80px;overflow:hidden;margin-bottom:10px">${esc(cap)}</div>
         <div style="display:flex;gap:6px">
           <button onclick="copyAndOpen('tiktok','${btoa(encodeURIComponent(cap))}')" style="flex:1;padding:8px;background:#000;color:#fff;border:1px solid rgba(255,255,255,.2);border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit">Post Now</button>
@@ -3527,9 +3534,10 @@ async function loadSocialHub(){
     // Campaigns
     const campEl=document.getElementById('sh-campaigns');
     if(d.campaigns&&d.campaigns.length){
+      const campIconClass={instagram:'icon-camera',tiktok:'icon-music',youtube:'icon-video'};
       campEl.innerHTML=d.campaigns.map(c=>`
         <div style="display:flex;align-items:center;gap:10px;padding:10px;background:rgba(255,255,255,.03);border:1px solid var(--border2);border-radius:8px">
-          <span style="font-size:16px">${c.platform==='instagram'?'📸':c.platform==='tiktok'?'🎵':'🎬'}</span>
+          <span class="icon ${campIconClass[c.platform]||'icon-globe'}" style="width:16px;height:16px"></span>
           <div style="flex:1">
             <div style="font-size:12px;font-weight:600;color:var(--text)">@${esc(c.influencer_handle)}</div>
             <div style="font-size:10px;color:var(--muted)">${c.clicks||0} clicks · ${c.conversions||0} conversions</div>
@@ -3738,7 +3746,7 @@ async function loadVendorEvents(){
     const r=await fetch('/api/vendor/schedule',{headers:{'x-auth-token':tok}});
     const d=await r.json();
     const events=d.events||[];
-    if(!events.length){el.innerHTML='<div style="text-align:center;color:var(--muted);padding:24px"><div style="font-size:32px;margin-bottom:8px">📅</div><div style="font-size:14px;font-weight:600;margin-bottom:4px">No events yet</div><div style="font-size:12px">Create your first event below to attract customers</div></div>';return;}
+    if(!events.length){el.innerHTML='<div style="text-align:center;color:var(--muted);padding:24px"><div style="margin-bottom:8px"><span class="icon icon-calendar" style="width:32px;height:32px"></span></div><div style="font-size:14px;font-weight:600;margin-bottom:4px">No events yet</div><div style="font-size:12px">Create your first event below to attract customers</div></div>';return;}
     el.innerHTML=events.map(e=>{
       const date=e.event_date?new Date(e.event_date).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}):'—';
       return`<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px;margin-bottom:8px">
@@ -3783,7 +3791,7 @@ async function loadCateringRequests(status){
     const r=await fetch(url,{headers:{'x-auth-token':tok}});
     const d=await r.json();
     const requests=d.requests||[];
-    if(!requests.length){el.innerHTML='<div style="text-align:center;color:var(--muted);padding:24px"><div style="font-size:32px;margin-bottom:8px">🍽</div><div style="font-size:14px;font-weight:600;margin-bottom:4px">No catering requests</div><div style="font-size:12px">When customers request catering, it will appear here</div></div>';return;}
+    if(!requests.length){el.innerHTML='<div style="text-align:center;color:var(--muted);padding:24px"><div style="margin-bottom:8px"><span class="icon icon-utensils" style="width:32px;height:32px"></span></div><div style="font-size:14px;font-weight:600;margin-bottom:4px">No catering requests</div><div style="font-size:12px">When customers request catering, it will appear here</div></div>';return;}
     el.innerHTML=requests.map(r=>{
       const date=r.event_date?new Date(r.event_date).toLocaleDateString('en-US',{month:'short',day:'numeric'}):'—';
       const statusColors={pending:'#FCB045',quoted:'#4CC9F0',accepted:'#22C55E',declined:'#f87171',completed:'#999'};
