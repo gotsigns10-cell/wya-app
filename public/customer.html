@@ -954,11 +954,11 @@ function renderList(list){
   // Phase 1203b: Coming Soon section
   let comingSoonHtml='';
   if(comingSoonVendors.length){
-    comingSoonHtml+=`<div class="discovery-section" style="margin-top:16px"><div class="discovery-title" style="color:#999">🔜 Coming Soon</div>`;
+    comingSoonHtml+=`<div class="discovery-section" style="margin-top:16px"><div class="discovery-title" style="color:#999"><span class="icon icon-clock" style="width:16px;height:16px;margin-right:6px"></span>Coming Soon</div>`;
     comingSoonVendors.forEach(v=>{
-      const em=catEmoji[v.category]||'📍';
+      const iconHtml=catIcon(v.category,'24px');
       const catLabel=(categories[v.category]||{}).label||v.category||'Vendor';
-      const thumb=v.photo_url?`<img class="vcard-thumb" src="${v.photo_url}" alt="Vendor photo" onerror="imgFallback(this,'${em}')">`:`<div class="vcard-thumb">${em}</div>`;
+      const thumb=v.photo_url?`<img class="vcard-thumb" src="${v.photo_url}" alt="Vendor photo" onerror="this.outerHTML='<div class=\\'vcard-thumb\\'>'+catIcon('${v.category}','24px')+'</div>'">`:`<div class="vcard-thumb">${iconHtml}</div>`;
       const csDist=v.distance_mi!=null?`<div class="vcard-dist">${v.distance_mi} mi</div>`:'';
       comingSoonHtml+=`<div class="vcard" style="opacity:0.7;border:1px dashed #ccc">
         ${thumb}
@@ -974,10 +974,10 @@ function renderList(list){
     const ss=window._scheduleStatus;
     const fmtT=t=>{if(!t)return'';const[h,m]=t.split(':');const hr=parseInt(h);return(hr%12||12)+':'+(m||'00')+(hr>=12?' PM':' AM');};
     if(ss.opening_soon&&ss.opening_soon.length){
-      scheduleHtml+=`<div class="discovery-section" style="margin-top:16px"><div class="discovery-title" style="color:#22C55E">⏰ Opening Soon</div>`;
+      scheduleHtml+=`<div class="discovery-section" style="margin-top:16px"><div class="discovery-title" style="color:#22C55E"><span class="icon icon-clock" style="width:16px;height:16px;margin-right:6px"></span>Opening Soon</div>`;
       ss.opening_soon.forEach(v=>{
-        const em=catEmoji[v.category]||'📍';
-        const thumb=v.photo_url?`<img class="vcard-thumb" src="${v.photo_url}" alt="Vendor photo" onerror="imgFallback(this,'${em}')">`:`<div class="vcard-thumb">${em}</div>`;
+        const iconHtml=catIcon(v.category,'24px');
+        const thumb=v.photo_url?`<img class="vcard-thumb" src="${v.photo_url}" alt="Vendor photo" onerror="this.outerHTML='<div class=\\'vcard-thumb\\'>'+catIcon('${v.category}','24px')+'</div>'">`:`<div class="vcard-thumb">${iconHtml}</div>`;
         scheduleHtml+=`<div class="vcard" style="border:1.5px solid rgba(34,197,94,.2);background:rgba(34,197,94,.04)" onclick="openStorePanel('${v.id}')">
           ${thumb}
           <div class="vcard-info"><div class="vcard-name">${esc(v.name)}</div><div class="vcard-desc">Opens at ${fmtT(v.opens_at)} · ${v.minutes_until}min away</div></div>
@@ -987,10 +987,10 @@ function renderList(list){
       scheduleHtml+='</div>';
     }
     if(ss.later_today&&ss.later_today.length){
-      scheduleHtml+=`<div class="discovery-section" style="margin-top:16px"><div class="discovery-title" style="color:#FCB045">📅 Later Today</div>`;
+      scheduleHtml+=`<div class="discovery-section" style="margin-top:16px"><div class="discovery-title" style="color:#FCB045"><span class="icon icon-calendar" style="width:16px;height:16px;margin-right:6px"></span>Later Today</div>`;
       ss.later_today.slice(0,5).forEach(v=>{
-        const em=catEmoji[v.category]||'📍';
-        const thumb=v.photo_url?`<img class="vcard-thumb" src="${v.photo_url}" alt="Vendor photo" onerror="imgFallback(this,'${em}')">`:`<div class="vcard-thumb">${em}</div>`;
+        const iconHtml=catIcon(v.category,'24px');
+        const thumb=v.photo_url?`<img class="vcard-thumb" src="${v.photo_url}" alt="Vendor photo" onerror="this.outerHTML='<div class=\\'vcard-thumb\\'>'+catIcon('${v.category}','24px')+'</div>'">`:`<div class="vcard-thumb">${iconHtml}</div>`;
         scheduleHtml+=`<div class="vcard" style="opacity:0.85" onclick="openStorePanel('${v.id}')">
           ${thumb}
           <div class="vcard-info"><div class="vcard-name">${esc(v.name)}</div><div class="vcard-desc">${fmtT(v.opens_at)} – ${fmtT(v.closes_at)}</div></div>
