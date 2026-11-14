@@ -1,9 +1,9 @@
 name: iOS TestFlight Deploy
 
 on:
-  push:
-    branches: [main, master]
-  workflow_dispatch:
+  workflow_dispatch:  # Manual only until secrets fixed
+  # push:
+  #   branches: [main, master]
 
 concurrency:
   group: ios-build

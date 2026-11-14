@@ -1,14 +1,14 @@
 name: Android Play Store
 
 on:
-  push:
-    branches: [master]
-    paths:
-      - 'src/**'
-      - 'public/**'
-      - 'android/**'
-      - 'capacitor.config.json'
-  workflow_dispatch:
+  workflow_dispatch:  # Manual only until secrets fixed
+  # push:
+  #   branches: [master]
+  #   paths:
+  #     - 'src/**'
+  #     - 'public/**'
+  #     - 'android/**'
+  #     - 'capacitor.config.json'
 
 jobs:
   build:
