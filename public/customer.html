@@ -90,6 +90,10 @@
 .icon-calendar{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%2300D4AA' viewBox='0 0 24 24'%3E%3Cpath d='M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM9 10H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2z'/%3E%3C/svg%3E") center/contain no-repeat}
 .icon-time{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%2300D4AA' viewBox='0 0 24 24'%3E%3Cpath d='M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z'/%3E%3C/svg%3E") center/contain no-repeat}
 .icon-people{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%2300D4AA' viewBox='0 0 24 24'%3E%3Cpath d='M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z'/%3E%3C/svg%3E") center/contain no-repeat}
+.icon-trophy{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23FCB045' viewBox='0 0 24 24'%3E%3Cpath d='M19 5h-2V3H7v2H5c-1.1 0-2 .9-2 2v1c0 2.55 1.92 4.63 4.39 4.94.63 1.5 1.98 2.63 3.61 2.96V19H7v2h10v-2h-4v-3.1c1.63-.33 2.98-1.46 3.61-2.96C19.08 12.63 21 10.55 21 8V7c0-1.1-.9-2-2-2zM5 8V7h2v3.82C5.84 10.4 5 9.3 5 8zm14 0c0 1.3-.84 2.4-2 2.82V7h2v1z'/%3E%3C/svg%3E") center/contain no-repeat}
+.icon-heart{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23EF4444' viewBox='0 0 24 24'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E") center/contain no-repeat}
+.icon-heart-outline{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' stroke='%238B95A1' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/%3E%3C/svg%3E") center/contain no-repeat}
+.icon-utensils{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%2300D4AA' viewBox='0 0 24 24'%3E%3Cpath d='M11 9H9V2H7v7H5V2H3v7c0 2.12 1.66 3.84 3.75 3.97V22h2.5v-9.03C11.34 12.84 13 11.12 13 9V2h-2v7zm5-3v8h2.5v8H21V2c-2.76 0-5 2.24-5 4z'/%3E%3C/svg%3E") center/contain no-repeat}
 html,body{height:100%;overflow:hidden;font-family:'DM Sans',sans-serif;background:var(--dark);color:var(--text)}
 #map{position:fixed;inset:0;z-index:0}
 .leaflet-tile{}
@@ -822,10 +826,10 @@ function renderMarkers(){
     const isLive=v.last_seen?((Date.now()-new Date(v.last_seen).getTime())<300000):true;
     const m=L.marker([v.lat,v.lng],{icon:makePin(iconHtml,isLive)}).addTo(map);
     let popupSocials='';
-    if(v.instagram) popupSocials+=` <a href="https://instagram.com/${v.instagram.replace('@','')}" target="_blank" style="color:var(--accent);text-decoration:none;font-size:12px">📸 IG</a>`;
-    if(v.tiktok) popupSocials+=` <a href="https://tiktok.com/@${v.tiktok.replace('@','')}" target="_blank" style="color:var(--accent);text-decoration:none;font-size:12px">🎵 TT</a>`;
-    if(v.youtube) popupSocials+=` <a href="https://youtube.com/@${v.youtube.replace('@','')}" target="_blank" style="color:var(--accent);text-decoration:none;font-size:12px">🎬 YT</a>`;
-    if(v.website) popupSocials+=` <a href="${v.website.startsWith('http')?v.website:'https://'+v.website}" target="_blank" style="color:var(--accent);text-decoration:none;font-size:12px">🌐</a>`;
+    if(v.instagram) popupSocials+=` <a href="https://instagram.com/${v.instagram.replace('@','')}" target="_blank" style="color:var(--accent);text-decoration:none;font-size:12px;display:inline-flex;align-items:center;gap:3px"><span class="icon icon-camera" style="width:12px;height:12px"></span>IG</a>`;
+    if(v.tiktok) popupSocials+=` <a href="https://tiktok.com/@${v.tiktok.replace('@','')}" target="_blank" style="color:var(--accent);text-decoration:none;font-size:12px;display:inline-flex;align-items:center;gap:3px"><span class="icon icon-music" style="width:12px;height:12px"></span>TT</a>`;
+    if(v.youtube) popupSocials+=` <a href="https://youtube.com/@${v.youtube.replace('@','')}" target="_blank" style="color:var(--accent);text-decoration:none;font-size:12px;display:inline-flex;align-items:center;gap:3px"><span class="icon icon-video" style="width:12px;height:12px"></span>YT</a>`;
+    if(v.website) popupSocials+=` <a href="${v.website.startsWith('http')?v.website:'https://'+v.website}" target="_blank" style="color:var(--accent);text-decoration:none;font-size:12px;display:inline-flex;align-items:center;gap:3px"><span class="icon icon-globe" style="width:12px;height:12px"></span></a>`;
     m.bindPopup(`<b style="font-family:'DM Sans',sans-serif">${esc(v.name)}</b><br><span style="color:#888;font-size:12px">${esc(v.description||v.category||'')}</span>${popupSocials?'<br>'+popupSocials:''}`);
     m.on('click',()=>{selectV(v.id);openStorePanel(v.id)});
     markers[v.id]=m;
@@ -945,7 +949,7 @@ function renderList(list){
     if((i+1)%5===0){
       const sp=list.find(x=>x.is_premium);
       if(sp) html+=`<div class="vcard" style="background:linear-gradient(135deg,rgba(252,176,69,.08),rgba(0,212,170,.05));border:1px solid rgba(252,176,69,.2);cursor:pointer" onclick="selectV('${sp.id}');openStorePanel('${sp.id}')">
-        <div class="vcard-thumb" style="background:rgba(252,176,69,.15);color:#FCB045;font-size:18px">⭐</div>
+        <div class="vcard-thumb" style="background:rgba(252,176,69,.15);display:flex;align-items:center;justify-content:center"><span class="icon icon-star" style="width:18px;height:18px;filter:brightness(0) saturate(100%) invert(76%) sepia(54%) saturate(1000%) hue-rotate(358deg) brightness(102%) contrast(96%)"></span></div>
         <div class="vcard-info"><div class="vcard-name">${esc(sp.name)}</div><div class="vcard-desc">${sp.description||'Premium vendor'}</div></div>
         <div class="vcard-right"><span style="background:rgba(252,176,69,.15);color:#FCB045;font-size:9px;font-weight:700;padding:2px 7px;border-radius:6px">Sponsored</span></div>
       </div>`;
@@ -1184,11 +1188,11 @@ async function submitEventRequest(){
 }
 
 function buildDCard(v,type){
-  const em=catEmoji[v.category]||'📍';
+  const iconHtml=catIcon(v.category,'24px');
   const catLabel=(categories[v.category]||{}).label||v.category||'Vendor';
-  const thumb=v.photo_url?`<img class="dcard-thumb" src="${v.photo_url}" alt="Vendor photo" onerror="imgFallback(this,'${em}')">`:`<div class="dcard-thumb">${em}</div>`;
-  const badge=type==='trending'?'<span class="pill-trending">🔥 Trending</span>':'<span class="pill-new">🆕 New</span>';
-  const followers=v.follower_count>0?`<span class="pill-followers">👥 ${v.follower_count}</span>`:'';
+  const thumb=v.photo_url?`<img class="dcard-thumb" src="${v.photo_url}" alt="Vendor photo" onerror="this.outerHTML='<div class=\\'dcard-thumb\\'>'+catIcon('${v.category}','24px')+'</div>'">`:`<div class="dcard-thumb">${iconHtml}</div>`;
+  const badge=type==='trending'?'<span class="pill-trending"><span class="icon icon-star" style="width:10px;height:10px;margin-right:3px"></span>Trending</span>':'<span class="pill-new"><span class="icon icon-sparkle" style="width:10px;height:10px;margin-right:3px"></span>New</span>';
+  const followers=v.follower_count>0?`<span class="pill-followers"><span class="icon icon-people" style="width:10px;height:10px;margin-right:3px"></span>${v.follower_count}</span>`:'';
   const safeId=String(v.id).replace(/'/g,"\\'");
   return `<div class="dcard" onclick="selectV('${safeId}');openStorePanel('${safeId}')">
     ${thumb}
@@ -1212,8 +1216,8 @@ function buildVCard(v){
   else if(v.auto_open) freshBadge='<span class="live-badge" style="background:rgba(76,201,240,.1);border-color:rgba(76,201,240,.2);color:var(--blue)">● Scheduled hours</span>';
   // Favorite heart
   const isFav=(_customerFavorites||[]).includes(v.id);
-  const heartIcon=isFav?'❤️':'🤍';
-  const heartBtn=`<button class="vcard-share" onclick="event.stopPropagation();toggleFavorite('${String(v.id).replace(/'/g,"\\'")}')" style="padding:4px 8px;font-size:16px;background:transparent;border:none">${heartIcon}</button>`;
+  const heartIcon=isFav?'<span class="icon icon-heart" style="width:18px;height:18px"></span>':'<span class="icon icon-heart-outline" style="width:18px;height:18px"></span>';
+  const heartBtn=`<button class="vcard-share" onclick="event.stopPropagation();toggleFavorite('${String(v.id).replace(/'/g,"\\'")}')" style="padding:4px 8px;background:transparent;border:none;display:flex;align-items:center">${heartIcon}</button>`;
   const hours=(()=>{
     if(!v.business_hours)return'';
     try{
@@ -1289,8 +1293,8 @@ function buildVCard(v){
   }
 
   // Order button
-  const orderBtn=v.accepts_orders?`<button class="btn-order" onclick="event.stopPropagation();openStorePanel('${v.id}')">🛍 Order</button>`:'';
-  const navBtn=v.lat&&v.lng?`<button class="vcard-nav" onclick="event.stopPropagation();navigateToVendor(${v.lat},${v.lng},'${(v.name||'').replace(/'/g,"\\'")}')">🧭 Get Directions</button>`:'';
+  const orderBtn=v.accepts_orders?`<button class="btn-order" onclick="event.stopPropagation();openStorePanel('${v.id}')"><span class="icon icon-bag" style="width:14px;height:14px;margin-right:4px"></span>Order</button>`:'';
+  const navBtn=v.lat&&v.lng?`<button class="vcard-nav" onclick="event.stopPropagation();navigateToVendor(${v.lat},${v.lng},'${(v.name||'').replace(/'/g,"\\'")}')"><span class="icon icon-compass" style="width:14px;height:14px;margin-right:4px"></span>Directions</button>`:'';
 
   const safeId=String(v.id).replace(/'/g,"\\'");
   const safeName=v.name.replace(/'/g,"\\'");
@@ -1303,9 +1307,9 @@ function buildVCard(v){
         <span class="vcard-cat">${catLabel}</span>
         ${ratingHtml?`<span class="vcard-rating">${ratingHtml}</span>`:''}
         ${v.profile_complete?'<span class="pill-verified"><span class="icon icon-check" style="margin-right:2px"></span>Verified</span>':''}
-        ${v.trending?'<span class="pill-trending">🔥 Trending</span>':''}
-        ${v.new_vendor?'<span class="pill-new">🆕 New</span>':''}
-        ${v.follower_count>0?`<span class="pill-followers">👥 ${v.follower_count}</span>`:''}
+        ${v.trending?'<span class="pill-trending"><span class="icon icon-star" style="width:10px;height:10px;margin-right:3px"></span>Trending</span>':''}
+        ${v.new_vendor?'<span class="pill-new"><span class="icon icon-sparkle" style="width:10px;height:10px;margin-right:3px"></span>New</span>':''}
+        ${v.follower_count>0?`<span class="pill-followers"><span class="icon icon-people" style="width:10px;height:10px;margin-right:3px"></span>${v.follower_count}</span>`:''}
       </div>
       <div class="vcard-desc">${v.description||''}</div>
       ${hours}${badges}${deliveryIcons}${socials}${socialBadge}
@@ -1313,7 +1317,7 @@ function buildVCard(v){
     <div class="vcard-right">
       ${heartBtn}
       ${v.is_live===false?'<div class="vcard-badge" style="background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.1);color:var(--muted)"><span>○</span> Closed</div>':'<div class="vcard-badge"><span>●</span> OPEN</div>'}
-      ${v.is_premium?'<span style="background:rgba(252,176,69,.15);border:1px solid rgba(252,176,69,.3);color:#FCB045;font-size:9px;font-weight:700;padding:2px 7px;border-radius:6px">⭐ PREMIUM</span>':''}
+      ${v.is_premium?'<span style="background:rgba(252,176,69,.15);border:1px solid rgba(252,176,69,.3);color:#FCB045;font-size:9px;font-weight:700;padding:2px 7px;border-radius:6px;display:inline-flex;align-items:center;gap:3px"><span class="icon icon-star" style="width:10px;height:10px;filter:brightness(0) saturate(100%) invert(76%) sepia(54%) saturate(1000%) hue-rotate(358deg) brightness(102%) contrast(96%)"></span>PREMIUM</span>':''}
       ${freshBadge}${dist}${tap}
       ${orderBtn}
       ${navBtn}
@@ -1464,7 +1468,7 @@ function showCateringForm(vendorId){
   const sheet=document.createElement('div');
   sheet.style.cssText='width:100%;max-width:500px;background:var(--card);border-radius:20px 20px 0 0;padding:20px;max-height:85vh;overflow-y:auto';
   sheet.innerHTML=`
-    <div style="font-size:17px;font-weight:700;margin-bottom:16px">🍽 Request Catering</div>
+    <div style="font-size:17px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px"><span class="icon icon-utensils" style="width:18px;height:18px"></span>Request Catering</div>
     <div class="field-group"><div class="field-label">Your Name</div><input type="text" class="field-input" id="cat-name" placeholder="Jane Doe"></div>
     <div class="field-group"><div class="field-label">Email</div><input type="email" class="field-input" id="cat-email" placeholder="you@example.com"></div>
     <div class="field-group"><div class="field-label">Phone</div><input type="tel" class="field-input" id="cat-phone" placeholder="(805) 555-1234"></div>
@@ -1572,7 +1576,7 @@ async function loadMyOrders(){
       const loyData=await loyRes.json();
       if(loyData.ok&&loyData.total>0){
         loyaltyHtml=`<div style="margin:12px 16px;padding:14px;background:linear-gradient(135deg,rgba(252,176,69,.08),rgba(0,212,170,.06));border:1px solid rgba(252,176,69,.25);border-radius:14px;display:flex;align-items:center;gap:12px">
-          <span style="font-size:28px">🏆</span>
+          <span class="icon icon-trophy" style="width:28px;height:28px"></span>
           <div style="flex:1"><div style="font-size:15px;font-weight:700;color:#FCB045">${loyData.total} Points</div><div style="font-size:12px;color:var(--muted)">Earn points on every order${loyData.total>=100?' · <span style="color:var(--accent);font-weight:600">Redeem $5 off!</span>':''}</div></div>
           ${loyData.total>=100?'<button onclick="redeemLoyaltyPoints()" style="padding:8px 14px;border-radius:8px;background:rgba(0,212,170,.15);border:1px solid rgba(0,212,170,.3);color:var(--accent);font-size:12px;font-weight:700;cursor:pointer;font-family:inherit">Redeem</button>':''}
         </div>`;
@@ -2201,15 +2205,14 @@ async function openStorePanel(vendorId){
     document.title=v.name+' — WYA';
     document.getElementById('sp-name').textContent=v.name;
     const ratingEl=document.getElementById('sp-rating');
-    const prepSuffix=v.estimated_prep_minutes?` · ⏱ ~${v.estimated_prep_minutes}min`:'';
-    if(v.avg_rating) ratingEl.textContent=`★ ${Number(v.avg_rating).toFixed(1)}${v.review_count?' ('+v.review_count+')':''}${prepSuffix}`;
+    const prepSuffix=v.estimated_prep_minutes?` · ~${v.estimated_prep_minutes}min`:'';
+    if(v.avg_rating) ratingEl.innerHTML=`<span class="icon icon-star" style="width:12px;height:12px;display:inline-block;vertical-align:middle;margin-right:2px"></span>${Number(v.avg_rating).toFixed(1)}${v.review_count?' ('+v.review_count+')':''}${prepSuffix}`;
     else ratingEl.textContent=prepSuffix?prepSuffix.slice(3):'';
     const thumbEl=document.getElementById('sp-thumb');
     if(v.photo_url){
-      thumbEl.innerHTML=`<img src="${v.photo_url}" style="width:44px;height:44px;border-radius:12px;object-fit:cover" alt="" onerror="this.parentElement.textContent='${catEmoji[v.category]||'📍'}'">`;
+      thumbEl.innerHTML=`<img src="${v.photo_url}" style="width:44px;height:44px;border-radius:12px;object-fit:cover" alt="" onerror="this.outerHTML=catIcon('${v.category}','24px')">`;
     } else {
-      thumbEl.textContent=catEmoji[v.category]||'📍';
-      thumbEl.style.fontSize='24px';
+      thumbEl.innerHTML=catIcon(v.category,'24px');
     }
 
     // Navigate button
@@ -2275,11 +2278,11 @@ async function openStorePanel(vendorId){
 
     // Social media links
     const socials=[
-      {key:'instagram',label:'Instagram',icon:'📸',url:v=>v.instagram?`https://instagram.com/${v.instagram.replace('@','')}`:''},
-      {key:'tiktok',label:'TikTok',icon:'🎵',url:v=>v.tiktok?`https://tiktok.com/@${v.tiktok.replace('@','')}`:''},
-      {key:'youtube',label:'YouTube',icon:'🎬',url:v=>v.youtube?`https://youtube.com/@${v.youtube.replace('@','')}`:''},
-      {key:'facebook',label:'Facebook',icon:'user',url:v=>v.facebook?(v.facebook.startsWith('http')?v.facebook:`https://facebook.com/${v.facebook}`):''},
-      {key:'website',label:'Website',icon:'🌐',url:v=>v.website?(v.website.startsWith('http')?v.website:'https://'+v.website):''}
+      {key:'instagram',label:'Instagram',iconClass:'icon-camera',url:v=>v.instagram?`https://instagram.com/${v.instagram.replace('@','')}`:''},
+      {key:'tiktok',label:'TikTok',iconClass:'icon-music',url:v=>v.tiktok?`https://tiktok.com/@${v.tiktok.replace('@','')}`:''},
+      {key:'youtube',label:'YouTube',iconClass:'icon-video',url:v=>v.youtube?`https://youtube.com/@${v.youtube.replace('@','')}`:''},
+      {key:'facebook',label:'Facebook',iconClass:'icon-user',url:v=>v.facebook?(v.facebook.startsWith('http')?v.facebook:`https://facebook.com/${v.facebook}`):''},
+      {key:'website',label:'Website',iconClass:'icon-globe',url:v=>v.website?(v.website.startsWith('http')?v.website:'https://'+v.website):''}
     ];
     const hasSocials=socials.some(s=>v[s.key]);
     const socialBar=document.getElementById('sp-socials');
@@ -2287,7 +2290,7 @@ async function openStorePanel(vendorId){
       let shtml='<span class="platform-bar-label">Follow us</span>';
       socials.forEach(s=>{
         const href=s.url(v);
-        if(href) shtml+=`<a class="platform-link" href="${href}" target="_blank" style="color:var(--accent)">${s.icon} ${s.label}</a>`;
+        if(href) shtml+=`<a class="platform-link" href="${href}" target="_blank" style="color:var(--accent);display:inline-flex;align-items:center;gap:4px"><span class="icon ${s.iconClass}" style="width:14px;height:14px"></span>${s.label}</a>`;
       });
       socialBar.innerHTML=shtml;
       socialBar.style.display='flex';
@@ -2300,8 +2303,8 @@ async function openStorePanel(vendorId){
     const hasExtReviews=v.yelp_url||v.google_maps_url||v.google_business_url;
     if(hasExtReviews){
       let rbHtml='';
-      if(v.yelp_url) rbHtml+=`<a class="review-badge review-badge-yelp" href="${v.yelp_url}" target="_blank">⭐ Read Yelp Reviews</a>`;
-      if(v.google_maps_url||v.google_business_url) rbHtml+=`<a class="review-badge review-badge-google" href="${v.google_maps_url||v.google_business_url}" target="_blank">📍 Google Reviews</a>`;
+      if(v.yelp_url) rbHtml+=`<a class="review-badge review-badge-yelp" href="${v.yelp_url}" target="_blank"><span class="icon icon-star" style="width:12px;height:12px;margin-right:4px"></span>Read Yelp Reviews</a>`;
+      if(v.google_maps_url||v.google_business_url) rbHtml+=`<a class="review-badge review-badge-google" href="${v.google_maps_url||v.google_business_url}" target="_blank"><span class="icon icon-pin" style="width:12px;height:12px;margin-right:4px"></span>Google Reviews</a>`;
       reviewBadgesEl.innerHTML=rbHtml;
       reviewBadgesEl.style.display='flex';
     } else {
@@ -2355,7 +2358,7 @@ async function openStorePanel(vendorId){
     document.getElementById('sp-menu-body').parentNode.insertBefore(d,document.getElementById('sp-menu-body'));return d;
   })();
   if(v&&v.accepts_orders){
-    cateringContainer.innerHTML=`<button onclick="showCateringForm('${String(vendorId).replace(/'/g,"\\'")}')" style="width:100%;padding:12px;border-radius:12px;background:rgba(76,201,240,.08);border:1.5px solid rgba(76,201,240,.25);color:var(--blue);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">🍽 Request Catering</button>`;
+    cateringContainer.innerHTML=`<button onclick="showCateringForm('${String(vendorId).replace(/'/g,"\\'")}')" style="width:100%;padding:12px;border-radius:12px;background:rgba(76,201,240,.08);border:1.5px solid rgba(76,201,240,.25);color:var(--blue);font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px"><span class="icon icon-utensils" style="width:16px;height:16px;filter:brightness(0) saturate(100%) invert(66%) sepia(59%) saturate(4068%) hue-rotate(166deg) brightness(103%) contrast(92%)"></span>Request Catering</button>`;
     cateringContainer.style.display='block';
   } else cateringContainer.style.display='none';
 
@@ -2385,7 +2388,7 @@ async function openStorePanel(vendorId){
     menuData=await res.json();
     renderMenu(menuData);
   }catch(e){
-    menuBody.innerHTML='<div class="store-error"><div style="font-size:32px;margin-bottom:10px">🍽️</div><div style="color:var(--text);font-weight:600;margin-bottom:6px">Menu unavailable</div><div style="font-size:13px">This vendor hasn\'t set up their menu yet.</div></div>';
+    menuBody.innerHTML='<div class="store-error"><div style="margin-bottom:10px"><span class="icon icon-utensils" style="width:32px;height:32px"></span></div><div style="color:var(--text);font-weight:600;margin-bottom:6px">Menu unavailable</div><div style="font-size:13px">This vendor hasn\'t set up their menu yet.</div></div>';
   }
 
   // Load social feed embeds
@@ -2401,13 +2404,13 @@ async function loadSocialFeed(vendorId, v){
   const hasAnySocial=v.instagram||v.tiktok||v.youtube;
   if(!hasAnySocial){ feedEl.style.display='none'; return; }
 
-  let feedHtml='<div class="social-feed-title">📱 Social Feed</div><div class="social-feed-scroll">';
+  let feedHtml='<div class="social-feed-title"><span class="icon icon-globe" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:6px"></span>Social Feed</div><div class="social-feed-scroll">';
 
   // Instagram embed (oEmbed — no auth needed for public posts)
   if(v.instagram){
     const igHandle=v.instagram.replace('@','');
     feedHtml+=`<div class="social-embed">
-      <div class="social-embed-header">📸 <a href="https://instagram.com/${igHandle}" target="_blank">@${igHandle} on Instagram</a></div>
+      <div class="social-embed-header"><span class="icon icon-camera" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:4px"></span><a href="https://instagram.com/${igHandle}" target="_blank">@${igHandle} on Instagram</a></div>
       <div style="padding:12px;text-align:center">
         <a href="https://instagram.com/${igHandle}" target="_blank" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:10px;background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);color:#fff;text-decoration:none;font-weight:700;font-size:13px">Follow @${igHandle}</a>
       </div>
@@ -2418,9 +2421,9 @@ async function loadSocialFeed(vendorId, v){
   if(v.tiktok){
     const ttHandle=v.tiktok.replace('@','');
     feedHtml+=`<div class="social-embed">
-      <div class="social-embed-header">🎵 <a href="https://tiktok.com/@${ttHandle}" target="_blank">@${ttHandle} on TikTok</a></div>
+      <div class="social-embed-header"><span class="icon icon-music" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:4px"></span><a href="https://tiktok.com/@${ttHandle}" target="_blank">@${ttHandle} on TikTok</a></div>
       <div style="padding:12px;text-align:center">
-        <a href="https://tiktok.com/@${ttHandle}" target="_blank" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:10px;background:#000;border:1px solid #333;color:#fff;text-decoration:none;font-weight:700;font-size:13px">🎵 Follow on TikTok</a>
+        <a href="https://tiktok.com/@${ttHandle}" target="_blank" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:10px;background:#000;border:1px solid #333;color:#fff;text-decoration:none;font-weight:700;font-size:13px"><span class="icon icon-music" style="width:14px;height:14px;filter:brightness(0) invert(1)"></span>Follow on TikTok</a>
       </div>
     </div>`;
   }
@@ -2429,9 +2432,9 @@ async function loadSocialFeed(vendorId, v){
   if(v.youtube){
     const ytHandle=v.youtube.replace('@','');
     feedHtml+=`<div class="social-embed">
-      <div class="social-embed-header">🎬 <a href="https://youtube.com/@${ytHandle}" target="_blank">@${ytHandle} on YouTube</a></div>
+      <div class="social-embed-header"><span class="icon icon-video" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:4px"></span><a href="https://youtube.com/@${ytHandle}" target="_blank">@${ytHandle} on YouTube</a></div>
       <div style="padding:12px;text-align:center">
-        <a href="https://youtube.com/@${ytHandle}" target="_blank" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:10px;background:#FF0000;color:#fff;text-decoration:none;font-weight:700;font-size:13px">▶ Subscribe on YouTube</a>
+        <a href="https://youtube.com/@${ytHandle}" target="_blank" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;border-radius:10px;background:#FF0000;color:#fff;text-decoration:none;font-weight:700;font-size:13px">Subscribe on YouTube</a>
       </div>
     </div>`;
   }
@@ -2470,7 +2473,7 @@ function renderMenu(data){
   const menuBody=document.getElementById('sp-menu-body');
   const sections=data.sections||data.menu||[];
   if(!sections.length){
-    menuBody.innerHTML='<div class="store-error"><div style="font-size:32px;margin-bottom:10px">🍽️</div><div style="color:var(--text);font-weight:600">No menu items yet</div></div>';
+    menuBody.innerHTML='<div class="store-error"><div style="margin-bottom:10px"><span class="icon icon-utensils" style="width:32px;height:32px"></span></div><div style="color:var(--text);font-weight:600">No menu items yet</div></div>';
     return;
   }
   let html='';
@@ -2480,9 +2483,10 @@ function renderMenu(data){
     items.forEach(item=>{
       const cartItem=cart[item.id];
       const qty=cartItem?cartItem.qty:0;
+      const fallbackIcon='<span class="icon icon-utensils" style="width:24px;height:24px"></span>';
       const photoEl=item.photo_url
-        ?`<img class="menu-item-photo" src="${item.photo_url}" alt="Vendor photo" onerror="imgFallback(this,'${sec.emoji||'🍽️'}')">`
-        :`<div class="menu-item-photo">${item.emoji||sec.emoji||'🍽️'}</div>`;
+        ?`<img class="menu-item-photo" src="${item.photo_url}" alt="Vendor photo" onerror="this.outerHTML='<div class=\\'menu-item-photo\\'>${item.emoji||sec.emoji||fallbackIcon}</div>'">`
+        :`<div class="menu-item-photo">${item.emoji||sec.emoji||fallbackIcon}</div>`;
       html+=`<div class="menu-item">
         ${photoEl}
         <div class="menu-item-info">
@@ -2512,7 +2516,7 @@ async function loadReviews(vendorId){
     const data=await res.json();
     const reviews=data.reviews||[];
     if(!reviews.length){reviewsBody.innerHTML='';return;}
-    let html='<div class="reviews-section"><div class="reviews-title">⭐ Customer Reviews</div>';
+    let html='<div class="reviews-section"><div class="reviews-title"><span class="icon icon-star" style="width:14px;height:14px;display:inline-block;vertical-align:middle;margin-right:6px"></span>Customer Reviews</div>';
     reviews.forEach(r=>{
       const stars='★'.repeat(r.rating||5)+'☆'.repeat(5-(r.rating||5));
       html+=`<div class="review-card">
@@ -3054,10 +3058,10 @@ if('serviceWorker' in navigator){
 <div style="text-align:center;padding:32px 16px 24px;margin-top:40px;border-top:1px solid rgba(255,255,255,.06)">
   <div style="font-size:.75rem;color:rgba(255,255,255,.3);margin-bottom:12px;letter-spacing:1px">MORE FROM UNIVERSOUL</div>
   <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
-    <a href="https://store.digisigns.link" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:.8rem">🛍️ DigiStore</a>
-    <a href="https://book.digisigns.link" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:.8rem">📅 DigiBook</a>
-    <a href="https://tap.digisigns.link" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:.8rem">💳 DigiTap</a>
-    <a href="https://digisigns.link" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:.8rem">🏠 Hub</a>
+    <a href="https://store.digisigns.link" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:.8rem;display:inline-flex;align-items:center;gap:4px"><span class="icon icon-bag" style="width:12px;height:12px;filter:brightness(0) invert(.5)"></span>DigiStore</a>
+    <a href="https://book.digisigns.link" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:.8rem;display:inline-flex;align-items:center;gap:4px"><span class="icon icon-calendar" style="width:12px;height:12px;filter:brightness(0) invert(.5)"></span>DigiBook</a>
+    <a href="https://tap.digisigns.link" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:.8rem;display:inline-flex;align-items:center;gap:4px"><span class="icon icon-card" style="width:12px;height:12px;filter:brightness(0) invert(.5)"></span>DigiTap</a>
+    <a href="https://digisigns.link" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:.8rem;display:inline-flex;align-items:center;gap:4px"><span class="icon icon-building" style="width:12px;height:12px;filter:brightness(0) invert(.5)"></span>Hub</a>
   </div>
   <div style="margin-top:12px;font-size:.65rem;color:rgba(255,255,255,.15)">© Universoul LLC · Santa Barbara, CA</div>
 </div>
