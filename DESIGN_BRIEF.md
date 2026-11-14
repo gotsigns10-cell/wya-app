@@ -172,14 +172,14 @@ Remove:
 
 | Deliverable | Status |
 |-------------|--------|
-| Design tokens CSS file | [ ] |
-| SVG icon set (20+ icons) | [ ] |
-| Vendor card component redesign | [ ] |
-| Navigation consolidation | [ ] |
-| Bottom sheet redesign | [ ] |
-| Order card redesign | [ ] |
-| 1024x1024 app icon | [ ] |
-| App Store screenshots (6 frames) | [ ] |
+| Design tokens CSS file | [x] Completed 2026-11-14 (--radius-*, --space-*, --color-*) |
+| SVG icon set (20+ icons) | [x] Completed 2026-11-14 (35+ icons migrated) |
+| Vendor card component redesign | [x] Completed (bottom sheet solid dark) |
+| Navigation consolidation | [x] Completed 2026-11-14 (5 tabs + overflow) |
+| Bottom sheet redesign | [x] Completed (solid #1A1F26 bg) |
+| Order card redesign | [x] Completed (status pills, clean typography) |
+| 1024x1024 app icon | [ ] Pending (need design tool) |
+| App Store screenshots (6 frames) | [ ] Pending (need visual QA first) |
 
 ---
 

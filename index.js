@@ -8260,6 +8260,9 @@ app.post('/api/admin/qr-scan/:scanId/attribute', (req, res) => {
 });
 
 // ─── WYA Embed Widget ────────────────────────────────────────────────────────
+// SECURITY NOTE (Session 460b): Wildcard CORS intentionally allowed for widget.js
+// This is a public embed script meant to be loaded from any third-party website.
+// No sensitive data exposed — just static JavaScript for vendor map widget.
 app.get('/widget.js', (req, res) => {
   res.setHeader('Cache-Control', 'public, max-age=3600');
   res.setHeader('Content-Type', 'application/javascript; charset=utf-8');
