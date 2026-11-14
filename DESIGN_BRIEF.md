@@ -10,7 +10,7 @@
 |-------|-------|--------|--------|
 | Emoji instances | 79 → 6 | 0 (replace with SVG icons) | ✅ Done (6 remaining are data/rating chars) |
 | Gradient declarations | 31 | 3-4 (primary, secondary, accent, disabled) | In progress |
-| Border-radius values | 18 different | 4 (sm: 4px, md: 8px, lg: 16px, full: 9999px) | In progress |
+| Border-radius values | 18 different | 4 (sm: 4px, md: 8px, lg: 16px, full: 9999px) | 79 converted in customer.html CSS |
 | Keyframe animations | 21 | 5-6 max (enter, exit, pulse, spin, slide, fade) | In progress |
 | Visible tabs (vendor) | 13+ → 5 | 5 + overflow menu | ✅ Done |
 
