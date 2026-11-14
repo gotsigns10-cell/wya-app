@@ -762,7 +762,7 @@ function renderCatPills(){
     const c=categories[k];
     if(c){
       const cnt=counts[k]||0;
-      html+=`<div class="cat-pill" data-cat="${k}" onclick="setCat('${k}')">${c.emoji} ${c.label}${cnt?`<span class="cat-count">${cnt}</span>`:''}</div>`;
+      html+=`<div class="cat-pill" data-cat="${k}" onclick="setCat('${k}')">${catIcon(k,'14px')} ${c.label}${cnt?`<span class="cat-count">${cnt}</span>`:''}</div>`;
     }
   }
   row.innerHTML=html;
@@ -834,8 +834,8 @@ function renderMarkers(){
   comingSoonMarkers={};
   comingSoonVendors.forEach(v=>{
     if(!v.lat||!v.lng)return;
-    const em=catEmoji[v.category]||'📍';
-    const grayIcon=L.divIcon({className:'',html:`<div style="background:#999;color:#fff;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;font-size:16px;border:2px solid #777;opacity:0.7">${em}</div>`,iconSize:[32,32],iconAnchor:[16,32]});
+    const iconHtml=catIcon(v.category,'16px');
+    const grayIcon=L.divIcon({className:'',html:`<div style="background:#999;color:#fff;border-radius:50%;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border:2px solid #777;opacity:0.7">${iconHtml}</div>`,iconSize:[32,32],iconAnchor:[16,32]});
     const m=L.marker([v.lat,v.lng],{icon:grayIcon}).addTo(map);
     m.bindPopup(`<b style="font-family:'DM Sans',sans-serif">${esc(v.name)}</b><br><span style="color:#999;font-size:12px">Coming Soon</span><br><span style="color:#888;font-size:12px">${esc(v.description||v.category||'')}</span>`);
     comingSoonMarkers[v.id]=m;
@@ -896,11 +896,10 @@ function renderList(list){
     // No live vendors — show schedule-aware empty state
     let emptyHtml='';
     if(ss&&(ss.opening_soon||[]).length){
-      emptyHtml+=`<div style="text-align:center;padding:16px 12px 8px"><div style="font-size:28px;margin-bottom:6px">⏰</div><div style="font-weight:700;font-size:15px">Opening Soon</div><div style="color:var(--muted);font-size:13px;margin-bottom:12px">These vendors open within the hour</div></div>`;
+      emptyHtml+=`<div style="text-align:center;padding:16px 12px 8px"><div style="margin-bottom:6px"><span class="icon icon-clock" style="width:32px;height:32px"></span></div><div style="font-weight:700;font-size:15px">Opening Soon</div><div style="color:var(--muted);font-size:13px;margin-bottom:12px">These vendors open within the hour</div></div>`;
       ss.opening_soon.forEach(v=>{
-        const em=catEmoji[v.category]||'📍';
         emptyHtml+=`<div class="vcard" style="border:1.5px solid rgba(34,197,94,.2);background:rgba(34,197,94,.04)" onclick="openStorePanel('${v.id}')">
-          <div class="vcard-thumb">${em}</div>
+          <div class="vcard-thumb">${catIcon(v.category,'24px')}</div>
           <div class="vcard-info"><div class="vcard-name">${esc(v.name)}</div><div class="vcard-desc">Opens ${fmtT(v.opens_at)} · ${v.minutes_until} min</div></div>
           <div class="vcard-right"><span style="background:rgba(34,197,94,.15);color:#22C55E;font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px">${v.minutes_until}m</span></div>
         </div>`;
@@ -952,11 +951,10 @@ function renderList(list){
   // Phase 1203b: Coming Soon section
   let comingSoonHtml='';
   if(comingSoonVendors.length){
-    comingSoonHtml+=`<div class="discovery-section" style="margin-top:16px"><div class="discovery-title" style="color:#999">🔜 Coming Soon</div>`;
+    comingSoonHtml+=`<div class="discovery-section" style="margin-top:16px"><div class="discovery-title" style="color:#999"><span class="icon icon-clock" style="width:16px;height:16px;margin-right:4px;opacity:0.7"></span>Coming Soon</div>`;
     comingSoonVendors.forEach(v=>{
-      const em=catEmoji[v.category]||'📍';
       const catLabel=(categories[v.category]||{}).label||v.category||'Vendor';
-      const thumb=v.photo_url?`<img class="vcard-thumb" src="${v.photo_url}" alt="" onerror="imgFallback(this,'${em}')">`:`<div class="vcard-thumb">${em}</div>`;
+      const thumb=v.photo_url?`<img class="vcard-thumb" src="${v.photo_url}" alt="" onerror="this.style.display='none'">`:`<div class="vcard-thumb">${catIcon(v.category,'24px')}</div>`;
       const csDist=v.distance_mi!=null?`<div class="vcard-dist">${v.distance_mi} mi</div>`:'';
       comingSoonHtml+=`<div class="vcard" style="opacity:0.7;border:1px dashed #ccc">
         ${thumb}
@@ -972,10 +970,9 @@ function renderList(list){
     const ss=window._scheduleStatus;
     const fmtT=t=>{if(!t)return'';const[h,m]=t.split(':');const hr=parseInt(h);return(hr%12||12)+':'+(m||'00')+(hr>=12?' PM':' AM');};
     if(ss.opening_soon&&ss.opening_soon.length){
-      scheduleHtml+=`<div class="discovery-section" style="margin-top:16px"><div class="discovery-title" style="color:#22C55E">⏰ Opening Soon</div>`;
+      scheduleHtml+=`<div class="discovery-section" style="margin-top:16px"><div class="discovery-title" style="color:#22C55E"><span class="icon icon-clock" style="width:16px;height:16px;margin-right:4px"></span>Opening Soon</div>`;
       ss.opening_soon.forEach(v=>{
-        const em=catEmoji[v.category]||'📍';
-        const thumb=v.photo_url?`<img class="vcard-thumb" src="${v.photo_url}" alt="" onerror="imgFallback(this,'${em}')">`:`<div class="vcard-thumb">${em}</div>`;
+        const thumb=v.photo_url?`<img class="vcard-thumb" src="${v.photo_url}" alt="" onerror="this.style.display='none'">`:`<div class="vcard-thumb">${catIcon(v.category,'24px')}</div>`;
         scheduleHtml+=`<div class="vcard" style="border:1.5px solid rgba(34,197,94,.2);background:rgba(34,197,94,.04)" onclick="openStorePanel('${v.id}')">
           ${thumb}
           <div class="vcard-info"><div class="vcard-name">${esc(v.name)}</div><div class="vcard-desc">Opens at ${fmtT(v.opens_at)} · ${v.minutes_until}min away</div></div>
@@ -1197,9 +1194,8 @@ function buildDCard(v,type){
 }
 
 function buildVCard(v){
-  const emFallback=catEm(v.category);
   const catLabel=(categories[v.category]||{}).label||v.category||'Vendor';
-  const thumb=v.photo_url?`<img class="vcard-thumb" src="${v.photo_url}" alt="" onerror="imgFallback(this,'${emFallback}')">`:`<div class="vcard-thumb">${catIcon(v.category)}</div>`;
+  const thumb=v.photo_url?`<img class="vcard-thumb" src="${v.photo_url}" alt="" onerror="this.style.display='none';this.insertAdjacentHTML('afterend','${catIcon(v.category).replace(/'/g,"\\'")}')">`:`<div class="vcard-thumb">${catIcon(v.category)}</div>`;
   const dist=v.distance_mi!==undefined?`<div class="vcard-dist">${v.distance_mi} mi</div>`:'';
   const lastSeen=v.last_seen?new Date(v.last_seen):null;
   const isLive=v.freshness==='live'||(lastSeen?((Date.now()-lastSeen.getTime())<300000):true);
@@ -1650,8 +1646,8 @@ function renderMyOrderCard(o){
   const items=tryParseItems(o.items_json);
   const summary=items.map(i=>`${i.qty||1}x ${i.name}`).join(', ')||'Order';
   const payBadge=o.payment_status==='paid'?'<span class="my-order-pay paid">PAID</span>':o.payment_status==='pending'?'<span class="my-order-pay pending">PENDING</span>':o.payment_status==='expired'?'<span class="my-order-pay" style="background:var(--red);color:#fff">EXPIRED</span>':'';
-  const retryBtn=(o.payment_status==='expired'||o.payment_status==='pending')?`<button class="reorder-btn" style="background:var(--accent);color:#000" onclick="event.stopPropagation();retryPayment(${o.id})">💳 Retry Payment</button>`:'';
-  const reorderBtn=['picked_up','delivered'].includes(o.status)?`<button class="reorder-btn" onclick="event.stopPropagation();reorder(${o.id},'${esc(o.vendor_name||'Vendor')}')">↻ Reorder</button>`:'';
+  const retryBtn=(o.payment_status==='expired'||o.payment_status==='pending')?`<button class="reorder-btn" style="background:var(--accent);color:#000;display:inline-flex;align-items:center;gap:4px" onclick="event.stopPropagation();retryPayment(${o.id})"><span class="icon icon-cart" style="width:12px;height:12px"></span>Retry Payment</button>`:'';
+  const reorderBtn=['picked_up','delivered'].includes(o.status)?`<button class="reorder-btn" onclick="event.stopPropagation();reorder(${o.id},'${esc(o.vendor_name||'Vendor')}')">Reorder</button>`:'';
   return `<div class="my-order-card" onclick="expandOrder(${o.id})">
     <div class="my-order-top"><span class="my-order-vendor">${esc(o.vendor_name||'Vendor')}</span><span class="my-order-time">${timeStr}</span></div>
     <div class="my-order-items">${esc(summary)}</div>
@@ -1697,9 +1693,9 @@ async function expandOrder(orderId){
       <div style="font-size:18px;font-weight:700;margin-bottom:4px">${esc(o.vendor_name||'Vendor')}</div>
       <div style="font-size:13px;color:var(--muted);margin-bottom:12px">${esc(summary)}</div>
       <div style="margin-bottom:8px"><span class="my-order-status ${o.status}" style="font-size:12px;padding:4px 10px">${o.status}</span>${payBadge}</div>
-      ${['pending','confirmed','preparing','ready'].includes(o.status)&&o.estimated_ready_at?`<div style="font-size:13px;color:var(--accent);margin-bottom:8px">⏱ Estimated ready in ~${Math.max(0,Math.round((new Date(o.estimated_ready_at)-Date.now())/60000))} min</div>`:''}
+      ${['pending','confirmed','preparing','ready'].includes(o.status)&&o.estimated_ready_at?`<div style="font-size:13px;color:var(--accent);margin-bottom:8px;display:flex;align-items:center"><span class="icon icon-clock" style="width:14px;height:14px;margin-right:4px"></span>Estimated ready in ~${Math.max(0,Math.round((new Date(o.estimated_ready_at)-Date.now())/60000))} min</div>`:''}
       <div style="font-size:16px;font-weight:700;color:var(--accent);margin-bottom:16px">$${parseFloat(o.total||0).toFixed(2)}</div>
-    </div>${timelineHtml}${(o.payment_status==='expired'||o.payment_status==='pending')?`<div style="padding:0 16px;margin-bottom:12px"><button class="reorder-btn-lg" style="background:var(--accent);color:#000" onclick="retryPayment(${o.id})">💳 Retry Payment — $${parseFloat(o.total||0).toFixed(2)}</button></div>`:''}${['picked_up','delivered'].includes(o.status)?`<div style="padding:0 16px;margin-bottom:12px"><button class="reorder-btn-lg" onclick="reorder(${o.id},'${esc(o.vendor_name||'Vendor')}')">↻ Reorder These Items</button></div>`:''}\
+    </div>${timelineHtml}${(o.payment_status==='expired'||o.payment_status==='pending')?`<div style="padding:0 16px;margin-bottom:12px"><button class="reorder-btn-lg" style="background:var(--accent);color:#000;display:flex;align-items:center;justify-content:center;gap:6px" onclick="retryPayment(${o.id})"><span class="icon icon-cart" style="width:16px;height:16px"></span>Retry Payment — $${parseFloat(o.total||0).toFixed(2)}</button></div>`:''}${['picked_up','delivered'].includes(o.status)?`<div style="padding:0 16px;margin-bottom:12px"><button class="reorder-btn-lg" onclick="reorder(${o.id},'${esc(o.vendor_name||'Vendor')}')">↻ Reorder These Items</button></div>`:''}\
 ${['picked_up','delivered'].includes(o.status)&&!o.reviewed?`<div style="padding:0 16px">${renderReviewForm(o.id)}</div>`:''}<div style="padding:16px"><button style="width:100%;padding:14px;border-radius:12px;background:rgba(255,255,255,.06);border:1px solid var(--border2);color:var(--text);font-size:14px;font-weight:600;cursor:pointer;font-family:inherit" onclick="loadMyOrders()">← Back to Orders</button></div>`;
   }catch(e){}
 }
@@ -2025,11 +2021,11 @@ function onGeoFail(err){
     if(d.lat&&d.lng){
       userLat=d.lat;userLng=d.lng;
       map.setView([userLat,userLng],13);
-      showGeoBar('📍 Showing vendors near you — enable GPS for exact distance');
+      showGeoBar('Showing vendors near you — enable GPS for exact distance');
     } else {
-      showGeoBar('📍 Showing all vendors — enable GPS to sort by distance');
+      showGeoBar('Showing all vendors — enable GPS to sort by distance');
     }
-  }).catch(()=>showGeoBar('📍 Showing all vendors — enable GPS to sort by distance')).finally(()=>loadVendors());
+  }).catch(()=>showGeoBar('Showing all vendors — enable GPS to sort by distance')).finally(()=>loadVendors());
 }
 
 if(navigator.geolocation){
@@ -2045,7 +2041,7 @@ function showGeoBar(msg){
   const bar=document.createElement('div');
   bar.id='geo-bar';
   bar.style.cssText='position:fixed;top:0;left:0;right:0;z-index:150;display:flex;align-items:center;justify-content:center;gap:10px;padding:10px 16px;background:rgba(0,212,170,.08);border-bottom:1px solid rgba(0,212,170,.15);backdrop-filter:blur(12px);font-size:13px;font-weight:600;color:rgba(255,255,255,.8)';
-  bar.innerHTML=`<span>${msg||'📍 Showing vendors near you'}</span><button onclick="retryGeo()" style="${_geoBarBtnStyle}">📍 Use GPS</button><button onclick="hideGeoBar()" style="background:none;border:none;color:rgba(255,255,255,.4);font-size:16px;cursor:pointer;padding:0 4px">✕</button>`;
+  bar.innerHTML=`<span class="icon icon-pin" style="width:14px;height:14px;margin-right:6px;flex-shrink:0"></span><span>${msg||'Showing vendors near you'}</span><button onclick="retryGeo()" style="${_geoBarBtnStyle}"><span class="icon icon-pin" style="width:12px;height:12px;margin-right:4px"></span>Use GPS</button><button onclick="hideGeoBar()" style="background:none;border:none;color:rgba(255,255,255,.4);font-size:16px;cursor:pointer;padding:0 4px">×</button>`;
   document.body.appendChild(bar);
 }
 function hideGeoBar(){var b=document.getElementById('geo-bar');if(b)b.remove();}
@@ -2130,7 +2126,7 @@ setInterval(loadVendors,30000);
       if(d.order){
         showActiveOrderBar(d.order);
         document.getElementById('confirm-sub').textContent=`Your order from ${d.order.vendor_name||'the vendor'} is on its way!`;
-        if(d.order.estimated_ready_at){const mins=Math.max(0,Math.round((new Date(d.order.estimated_ready_at)-Date.now())/60000));if(mins>0){const pe=document.getElementById('confirm-prep-time');pe.textContent=`⏱ Estimated ready in ~${mins} min`;pe.style.display='block';}}
+        if(d.order.estimated_ready_at){const mins=Math.max(0,Math.round((new Date(d.order.estimated_ready_at)-Date.now())/60000));if(mins>0){const pe=document.getElementById('confirm-prep-time');pe.innerHTML=`<span class="icon icon-clock" style="width:14px;height:14px;margin-right:4px"></span>Estimated ready in ~${mins} min`;pe.style.display='flex';pe.style.alignItems='center';}}
       }
     }).catch(()=>{});} else {
       // Phase 1320: Guest checkout — show confirmation even without token
@@ -2199,15 +2195,14 @@ async function openStorePanel(vendorId){
     document.title=v.name+' — WYA';
     document.getElementById('sp-name').textContent=v.name;
     const ratingEl=document.getElementById('sp-rating');
-    const prepSuffix=v.estimated_prep_minutes?` · ⏱ ~${v.estimated_prep_minutes}min`:'';
+    const prepSuffix=v.estimated_prep_minutes?` · ~${v.estimated_prep_minutes}min`:'';
     if(v.avg_rating) ratingEl.textContent=`★ ${Number(v.avg_rating).toFixed(1)}${v.review_count?' ('+v.review_count+')':''}${prepSuffix}`;
     else ratingEl.textContent=prepSuffix?prepSuffix.slice(3):'';
     const thumbEl=document.getElementById('sp-thumb');
     if(v.photo_url){
-      thumbEl.innerHTML=`<img src="${v.photo_url}" style="width:44px;height:44px;border-radius:12px;object-fit:cover" alt="" onerror="this.parentElement.textContent='${catEmoji[v.category]||'📍'}'">`;
+      thumbEl.innerHTML=`<img src="${v.photo_url}" style="width:44px;height:44px;border-radius:12px;object-fit:cover" alt="" onerror="this.parentElement.innerHTML='${catIcon(v.category,'32px').replace(/'/g,"\\'")}'">`;
     } else {
-      thumbEl.textContent=catEmoji[v.category]||'📍';
-      thumbEl.style.fontSize='24px';
+      thumbEl.innerHTML=catIcon(v.category,'32px');
     }
 
     // Navigate button
@@ -2219,9 +2214,9 @@ async function openStorePanel(vendorId){
     const badgeEl=document.getElementById('sp-social-badge');
     if(v.social_score>0){
       const tier=v.social_score>=80?'gold':v.social_score>=50?'silver':v.social_score>=20?'bronze':'';
-      const emoji=v.social_score>=80?'🥇':v.social_score>=50?'🥈':v.social_score>=20?'🥉':'';
+      const tierIcon=`<span class="icon icon-star" style="width:14px;height:14px;margin-right:4px"></span>`;
       if(tier){
-        badgeEl.innerHTML=`<span class="social-badge ${tier}">${emoji} ${tier.charAt(0).toUpperCase()+tier.slice(1)} Vendor · Score ${v.social_score}/100</span>`;
+        badgeEl.innerHTML=`<span class="social-badge ${tier}">${tierIcon}${tier.charAt(0).toUpperCase()+tier.slice(1)} Vendor · Score ${v.social_score}/100</span>`;
         badgeEl.style.display='block';
       } else badgeEl.style.display='none';
     } else badgeEl.style.display='none';
@@ -2230,7 +2225,7 @@ async function openStorePanel(vendorId){
     const reviewPlatforms=[
       {key:'yelp_url',label:'Yelp',cls:'pl-yelp',icon:'star'},
       {key:'google_maps_url',label:'Google Maps',cls:'pl-gmaps',icon:'pin'},
-      {key:'google_business_url',label:'Google Business',cls:'pl-gmaps',icon:'🏢'}
+      {key:'google_business_url',label:'Google Business',cls:'pl-gmaps',icon:'building'}
     ];
     const hasReviewPlat=reviewPlatforms.some(p=>v[p.key]);
     const platBar=document.getElementById('sp-platforms');
@@ -2238,7 +2233,7 @@ async function openStorePanel(vendorId){
       let html='<span class="platform-bar-label">Also find us on</span>';
       reviewPlatforms.forEach(p=>{
         if(v[p.key]){
-          const iconHTML=['star','pin','store','user','check','bell','cart','search','filter','close'].includes(p.icon)?`<span class="icon icon-${p.icon}" style="margin-right:4px"></span>`:p.icon+' ';
+          const iconHTML=['star','pin','store','user','check','bell','cart','search','filter','close','building'].includes(p.icon)?`<span class="icon icon-${p.icon}" style="margin-right:4px"></span>`:p.icon+' ';
           html+=`<a class="platform-link ${p.cls}" href="${v[p.key]}" target="_blank">${iconHTML}${p.label}</a>`;
         }
       });
@@ -2298,8 +2293,8 @@ async function openStorePanel(vendorId){
     const hasExtReviews=v.yelp_url||v.google_maps_url||v.google_business_url;
     if(hasExtReviews){
       let rbHtml='';
-      if(v.yelp_url) rbHtml+=`<a class="review-badge review-badge-yelp" href="${v.yelp_url}" target="_blank">⭐ Read Yelp Reviews</a>`;
-      if(v.google_maps_url||v.google_business_url) rbHtml+=`<a class="review-badge review-badge-google" href="${v.google_maps_url||v.google_business_url}" target="_blank">📍 Google Reviews</a>`;
+      if(v.yelp_url) rbHtml+=`<a class="review-badge review-badge-yelp" href="${v.yelp_url}" target="_blank"><span class="icon icon-star" style="width:12px;height:12px;margin-right:4px"></span>Read Yelp Reviews</a>`;
+      if(v.google_maps_url||v.google_business_url) rbHtml+=`<a class="review-badge review-badge-google" href="${v.google_maps_url||v.google_business_url}" target="_blank"><span class="icon icon-pin" style="width:12px;height:12px;margin-right:4px"></span>Google Reviews</a>`;
       reviewBadgesEl.innerHTML=rbHtml;
       reviewBadgesEl.style.display='flex';
     } else {
@@ -2479,8 +2474,8 @@ function renderMenu(data){
       const cartItem=cart[item.id];
       const qty=cartItem?cartItem.qty:0;
       const photoEl=item.photo_url
-        ?`<img class="menu-item-photo" src="${item.photo_url}" alt="" onerror="imgFallback(this,'${sec.emoji||'🍽️'}')">`
-        :`<div class="menu-item-photo">${item.emoji||sec.emoji||'🍽️'}</div>`;
+        ?`<img class="menu-item-photo" src="${item.photo_url}" alt="" onerror="this.style.display='none'">`
+        :`<div class="menu-item-photo"><span class="icon icon-bag" style="width:24px;height:24px;opacity:0.5"></span></div>`;
       html+=`<div class="menu-item">
         ${photoEl}
         <div class="menu-item-info">
@@ -3052,10 +3047,10 @@ if('serviceWorker' in navigator){
 <div style="text-align:center;padding:32px 16px 24px;margin-top:40px;border-top:1px solid rgba(255,255,255,.06)">
   <div style="font-size:.75rem;color:rgba(255,255,255,.3);margin-bottom:12px;letter-spacing:1px">MORE FROM UNIVERSOUL</div>
   <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
-    <a href="https://store.digisigns.link" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:.8rem">🛍️ DigiStore</a>
-    <a href="https://book.digisigns.link" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:.8rem">📅 DigiBook</a>
-    <a href="https://tap.digisigns.link" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:.8rem">💳 DigiTap</a>
-    <a href="https://digisigns.link" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:.8rem">🏠 Hub</a>
+    <a href="https://store.digisigns.link" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:.8rem;display:inline-flex;align-items:center;gap:4px"><span class="icon icon-bag" style="width:12px;height:12px"></span>DigiStore</a>
+    <a href="https://book.digisigns.link" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:.8rem;display:inline-flex;align-items:center;gap:4px"><span class="icon icon-calendar" style="width:12px;height:12px"></span>DigiBook</a>
+    <a href="https://tap.digisigns.link" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:.8rem;display:inline-flex;align-items:center;gap:4px"><span class="icon icon-cart" style="width:12px;height:12px"></span>DigiTap</a>
+    <a href="https://digisigns.link" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:.8rem;display:inline-flex;align-items:center;gap:4px"><span class="icon icon-building" style="width:12px;height:12px"></span>Hub</a>
   </div>
   <div style="margin-top:12px;font-size:.65rem;color:rgba(255,255,255,.15)">© Universoul LLC · Santa Barbara, CA</div>
 </div>
