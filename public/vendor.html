@@ -429,24 +429,24 @@ button.toggle-btn.stop {
         <div class="field"><label>Business Name</label><input type="text" id="r-name" placeholder="Tacos El Gordo"></div>
         <div class="field"><label>Category</label>
           <select id="r-cat">
-            <option value="food_truck">🚚 Food Truck</option>
-            <option value="farmers_market">🌽 Farmer's Market</option>
-            <option value="pop_up_shop">🏪 Pop-Up Shop</option>
-            <option value="art_vendor">🎨 Art & Crafts</option>
-            <option value="coffee">☕ Coffee & Drinks</option>
-            <option value="bakery">🥐 Bakery & Sweets</option>
-            <option value="flowers">🌸 Flowers & Plants</option>
-            <option value="retail">🛍️ Retail</option>
-            <option value="beauty">💅 Beauty & Wellness</option>
-            <option value="clothing">👕 Clothing</option>
-            <option value="jewelry">💍 Jewelry</option>
-            <option value="music">🎵 Music & Entertainment</option>
-            <option value="home_services">🔧 Home Services</option>
-            <option value="auto_services">🚗 Auto Services</option>
-            <option value="restaurant">🍽️ Restaurant</option>
-            <option value="print_shop">🪧 Print & Sign Shop</option>
-            <option value="signs_graphics">🪧 Signs & Graphics</option>
-            <option value="other">📍 Other</option>
+            <option value="food_truck">Food Truck</option>
+            <option value="farmers_market">Farmer's Market</option>
+            <option value="pop_up_shop">Pop-Up Shop</option>
+            <option value="art_vendor">Art & Crafts</option>
+            <option value="coffee">Coffee & Drinks</option>
+            <option value="bakery">Bakery & Sweets</option>
+            <option value="flowers">Flowers & Plants</option>
+            <option value="retail">Retail</option>
+            <option value="beauty">Beauty & Wellness</option>
+            <option value="clothing">Clothing</option>
+            <option value="jewelry">Jewelry</option>
+            <option value="music">Music & Entertainment</option>
+            <option value="home_services">Home Services</option>
+            <option value="auto_services">Auto Services</option>
+            <option value="restaurant">Restaurant</option>
+            <option value="print_shop">Print & Sign Shop</option>
+            <option value="signs_graphics">Signs & Graphics</option>
+            <option value="other">Other</option>
           </select>
         </div>
         <div class="field"><label>Email</label><input type="email" id="r-email" placeholder="you@example.com" autocomplete="email" inputmode="email"></div>
@@ -1258,7 +1258,7 @@ async function doRegister(){
   if(params.get('claim')==='true'){
     document.getElementById('tab-reg')?.click();
     const sheet=document.querySelector('.auth-sheet');
-    if(sheet) sheet.insertAdjacentHTML('afterbegin','<div style="background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.25);border-radius:10px;padding:12px;margin-bottom:16px;text-align:center;font-size:13px;color:var(--green);font-weight:600">🏪 Claim your business! Register below and we\'ll match you to your listing.</div>');
+    if(sheet) sheet.insertAdjacentHTML('afterbegin','<div style="background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.25);border-radius:10px;padding:12px;margin-bottom:16px;text-align:center;font-size:13px;color:var(--green);font-weight:600;display:flex;align-items:center;justify-content:center;gap:8px"><span class="icon icon-building" style="width:16px;height:16px"></span>Claim your business! Register below and we\'ll match you to your listing.</div>');
   }
   // Phase 749: Handle verification success/invalid
   if(params.get('verify')==='success') setTimeout(()=>showToast('Email verified! You can now go live.'),500);
@@ -2588,7 +2588,7 @@ function renderVendorTab() {
   if (!list.length) { el.innerHTML = '<div style="color:#888;text-align:center;padding:24px">No vendors found</div>'; return; }
   el.innerHTML = list.map(v => {
     const live = v.is_open || v.is_live || v.status === 'open';
-    const img = v.photo_url ? '<img src="' + v.photo_url + '" style="width:40px;height:40px;border-radius:10px;object-fit:cover">' : '🏪';
+    const img = v.photo_url ? '<img src="' + v.photo_url + '" style="width:40px;height:40px;border-radius:10px;object-fit:cover">' : '<span class="icon icon-building" style="width:24px;height:24px"></span>';
     const liveTag = live ? '<span style="color:#22c55e">● LIVE</span>' : '<span style="color:#888">○ Offline</span>';
     const distTag = v.distance_mi !== undefined ? ' · <span style="color:#4CC9F0">' + v.distance_mi + ' mi</span>' : '';
     return '<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 16px;display:flex;align-items:center;gap:12px">' +
@@ -3246,7 +3246,7 @@ async function loadSubscriptionCard(){
     if(!d.status||d.status==='none') return;
     card.style.display='block';
     document.getElementById('sub-plan-name').textContent=d.tier_name||'Free';
-    const st=d.is_founding_vendor?'⭐ Founding Vendor — Free Forever'
+    const st=d.is_founding_vendor?'Founding Vendor — Free Forever'
       :d.status==='trial'?`Trial — ${d.trial_days_remaining||0} days left`
       :d.status==='active'?'Active'
       :d.status==='cancelled'?'Cancelled':'—';
