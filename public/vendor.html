@@ -497,7 +497,7 @@ button.toggle-btn.stop {
 
     <!-- Phase 1369: 3-step launch checklist -->
     <div id="launch-checklist" style="display:none;background:var(--card);border:1.5px solid var(--border2);border-radius:16px;padding:16px 18px;margin-bottom:12px">
-      <div style="font-size:14px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px">🚀 Launch Checklist</div>
+      <div style="font-size:14px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px"><span class="icon icon-rocket" style="width:16px;height:16px"></span> Launch Checklist</div>
       <div id="checklist-step-1" class="onboarding-step" onclick="switchDashTab('menu')">
         <div class="onboarding-check" id="check-1"></div>
         <div class="onboarding-step-text">Add menu items</div>
@@ -516,7 +516,7 @@ button.toggle-btn.stop {
       <button class="toggle-btn go" id="toggle-btn" onclick="toggle()">GO LIVE NOW</button>
     </div>
 
-    <button class="share-btn" onclick="shareLink()">📤 Share My Live Link</button>
+    <button class="share-btn" onclick="shareLink()" aria-label="Share your live vendor link"><span class="icon icon-share" style="width:14px;height:14px"></span> Share My Live Link</button>
 
     <div class="stats-grid" style="grid-template-columns:1fr 1fr 1fr">
       <div class="stat-card"><div class="stat-n" id="opens-today">0</div><div class="stat-l">Opens Today</div></div>
