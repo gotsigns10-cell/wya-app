@@ -454,28 +454,28 @@ img.menu-item-photo{background:var(--dark)}
       <span class="live-chip-dot"></span>
       <span class="live-chip-n" id="live-n">0</span>
     </div>
-    <button class="acct-btn" onclick="onAccountClick()" id="acct-btn">
+    <button class="acct-btn" onclick="onAccountClick()" id="acct-btn" aria-label="Account menu">
       <span id="acct-icon">&#128100;</span>
       <span class="acct-dot" id="acct-dot"></span>
     </button>
-    <button class="acct-btn" id="orders-quick-btn" onclick="onAccountClick()" style="display:none;font-size:11px;width:auto;padding:0 12px;gap:4px"><span>📦</span><span>Orders</span></button>
+    <button class="acct-btn" id="orders-quick-btn" onclick="onAccountClick()" aria-label="View orders" style="display:none;font-size:11px;width:auto;padding:0 12px;gap:4px"><span>📦</span><span>Orders</span></button>
   </div>
   <div class="cat-row" id="cat-row"></div>
   <div class="filter-row" id="filter-row">
-    <div class="filt-pill on" data-av="all" onclick="setAvailFilter('all')">All</div>
-    <div class="filt-pill" data-av="delivery" onclick="setAvailFilter('delivery')">🛵 Delivery</div>
-    <div class="filt-pill" data-av="pickup" onclick="setAvailFilter('pickup')">🥡 Pickup</div>
+    <div class="filt-pill on" data-av="all" onclick="setAvailFilter('all')" role="button" aria-pressed="true">All</div>
+    <div class="filt-pill" data-av="delivery" onclick="setAvailFilter('delivery')" role="button" aria-pressed="false">🛵 Delivery</div>
+    <div class="filt-pill" data-av="pickup" onclick="setAvailFilter('pickup')" role="button" aria-pressed="false">🥡 Pickup</div>
     <div class="filter-divider"></div>
-    <div class="filt-pill sort-on" data-sort="distance" onclick="setSort('distance')"><span class="icon icon-pin" style="margin-right:4px"></span>Distance</div>
-    <div class="filt-pill" data-sort="rating" onclick="setSort('rating')"><span class="icon icon-star" style="margin-right:4px"></span>Rating</div>
-    <div class="filt-pill" data-sort="newest" onclick="setSort('newest')">🆕 Newest</div>
+    <div class="filt-pill sort-on" data-sort="distance" onclick="setSort('distance')" role="button" aria-pressed="true"><span class="icon icon-pin" style="margin-right:4px"></span>Distance</div>
+    <div class="filt-pill" data-sort="rating" onclick="setSort('rating')" role="button" aria-pressed="false"><span class="icon icon-star" style="margin-right:4px"></span>Rating</div>
+    <div class="filt-pill" data-sort="newest" onclick="setSort('newest')" role="button" aria-pressed="false">🆕 Newest</div>
     <div class="filter-divider"></div>
     <div class="filt-pill" id="all-biz-pill" onclick="toggleAllBiz()">🏢 All Businesses</div>
   </div>
 </div>
 
-<div class="sheet" id="sheet">
-  <div class="sheet-handle-wrap" id="sheet-drag"><div class="sheet-handle"></div></div>
+<div class="sheet" id="sheet" role="region" aria-label="Vendors list">
+  <div class="sheet-handle-wrap" id="sheet-drag" role="button" aria-label="Drag to expand or collapse"><div class="sheet-handle"></div></div>
   <div class="sheet-header">
     <div>
       <div class="sheet-title" id="sheet-title">Open Near You</div>
@@ -489,7 +489,7 @@ img.menu-item-photo{background:var(--dark)}
 <div class="store-panel" id="store-panel">
   <div class="store-header" id="store-header">
     <div class="store-header-inner">
-      <div class="store-back" onclick="closeStorePanel()">&#8249;</div>
+      <div class="store-back" onclick="closeStorePanel()" role="button" aria-label="Back to vendor list">&#8249;</div>
       <div class="store-name-wrap">
         <div class="store-name" id="sp-name"></div>
         <div class="store-meta">
@@ -942,7 +942,7 @@ function renderList(list){
     comingSoonVendors.forEach(v=>{
       const em=catEmoji[v.category]||'📍';
       const catLabel=(categories[v.category]||{}).label||v.category||'Vendor';
-      const thumb=v.photo_url?`<img class="vcard-thumb" src="${v.photo_url}" alt="" onerror="imgFallback(this,'${em}')">`:`<div class="vcard-thumb">${em}</div>`;
+      const thumb=v.photo_url?`<img class="vcard-thumb" src="${v.photo_url}" alt="Vendor photo" onerror="imgFallback(this,'${em}')">`:`<div class="vcard-thumb">${em}</div>`;
       const csDist=v.distance_mi!=null?`<div class="vcard-dist">${v.distance_mi} mi</div>`:'';
       comingSoonHtml+=`<div class="vcard" style="opacity:0.7;border:1px dashed #ccc">
         ${thumb}
@@ -961,7 +961,7 @@ function renderList(list){
       scheduleHtml+=`<div class="discovery-section" style="margin-top:16px"><div class="discovery-title" style="color:#22C55E">⏰ Opening Soon</div>`;
       ss.opening_soon.forEach(v=>{
         const em=catEmoji[v.category]||'📍';
-        const thumb=v.photo_url?`<img class="vcard-thumb" src="${v.photo_url}" alt="" onerror="imgFallback(this,'${em}')">`:`<div class="vcard-thumb">${em}</div>`;
+        const thumb=v.photo_url?`<img class="vcard-thumb" src="${v.photo_url}" alt="Vendor photo" onerror="imgFallback(this,'${em}')">`:`<div class="vcard-thumb">${em}</div>`;
         scheduleHtml+=`<div class="vcard" style="border:1.5px solid rgba(34,197,94,.2);background:rgba(34,197,94,.04)" onclick="openStorePanel('${v.id}')">
           ${thumb}
           <div class="vcard-info"><div class="vcard-name">${esc(v.name)}</div><div class="vcard-desc">Opens at ${fmtT(v.opens_at)} · ${v.minutes_until}min away</div></div>
@@ -974,7 +974,7 @@ function renderList(list){
       scheduleHtml+=`<div class="discovery-section" style="margin-top:16px"><div class="discovery-title" style="color:#FCB045">📅 Later Today</div>`;
       ss.later_today.slice(0,5).forEach(v=>{
         const em=catEmoji[v.category]||'📍';
-        const thumb=v.photo_url?`<img class="vcard-thumb" src="${v.photo_url}" alt="" onerror="imgFallback(this,'${em}')">`:`<div class="vcard-thumb">${em}</div>`;
+        const thumb=v.photo_url?`<img class="vcard-thumb" src="${v.photo_url}" alt="Vendor photo" onerror="imgFallback(this,'${em}')">`:`<div class="vcard-thumb">${em}</div>`;
         scheduleHtml+=`<div class="vcard" style="opacity:0.85" onclick="openStorePanel('${v.id}')">
           ${thumb}
           <div class="vcard-info"><div class="vcard-name">${esc(v.name)}</div><div class="vcard-desc">${fmtT(v.opens_at)} – ${fmtT(v.closes_at)}</div></div>
@@ -1170,7 +1170,7 @@ async function submitEventRequest(){
 function buildDCard(v,type){
   const em=catEmoji[v.category]||'📍';
   const catLabel=(categories[v.category]||{}).label||v.category||'Vendor';
-  const thumb=v.photo_url?`<img class="dcard-thumb" src="${v.photo_url}" alt="" onerror="imgFallback(this,'${em}')">`:`<div class="dcard-thumb">${em}</div>`;
+  const thumb=v.photo_url?`<img class="dcard-thumb" src="${v.photo_url}" alt="Vendor photo" onerror="imgFallback(this,'${em}')">`:`<div class="dcard-thumb">${em}</div>`;
   const badge=type==='trending'?'<span class="pill-trending">🔥 Trending</span>':'<span class="pill-new">🆕 New</span>';
   const followers=v.follower_count>0?`<span class="pill-followers">👥 ${v.follower_count}</span>`:'';
   const safeId=String(v.id).replace(/'/g,"\\'");
@@ -1185,7 +1185,7 @@ function buildDCard(v,type){
 function buildVCard(v){
   const emFallback=catEm(v.category);
   const catLabel=(categories[v.category]||{}).label||v.category||'Vendor';
-  const thumb=v.photo_url?`<img class="vcard-thumb" src="${v.photo_url}" alt="" onerror="imgFallback(this,'${emFallback}')">`:`<div class="vcard-thumb">${catIcon(v.category)}</div>`;
+  const thumb=v.photo_url?`<img class="vcard-thumb" src="${v.photo_url}" alt="Vendor photo" onerror="imgFallback(this,'${emFallback}')">`:`<div class="vcard-thumb">${catIcon(v.category)}</div>`;
   const dist=v.distance_mi!==undefined?`<div class="vcard-dist">${v.distance_mi} mi</div>`:'';
   const lastSeen=v.last_seen?new Date(v.last_seen):null;
   const isLive=v.freshness==='live'||(lastSeen?((Date.now()-lastSeen.getTime())<300000):true);
@@ -2465,7 +2465,7 @@ function renderMenu(data){
       const cartItem=cart[item.id];
       const qty=cartItem?cartItem.qty:0;
       const photoEl=item.photo_url
-        ?`<img class="menu-item-photo" src="${item.photo_url}" alt="" onerror="imgFallback(this,'${sec.emoji||'🍽️'}')">`
+        ?`<img class="menu-item-photo" src="${item.photo_url}" alt="Vendor photo" onerror="imgFallback(this,'${sec.emoji||'🍽️'}')">`
         :`<div class="menu-item-photo">${item.emoji||sec.emoji||'🍽️'}</div>`;
       html+=`<div class="menu-item">
         ${photoEl}
