@@ -62,6 +62,7 @@
 .icon-phone{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%2300D4AA' viewBox='0 0 24 24'%3E%3Cpath d='M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z'/%3E%3C/svg%3E") center/contain no-repeat}
 .icon-orders{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%2300D4AA' viewBox='0 0 24 24'%3E%3Cpath d='M8.1 13.34l2.83-2.83L3.91 3.5c-1.56 1.56-1.56 4.09 0 5.66l4.19 4.18zm6.78-1.81c1.53.71 3.68.21 5.27-1.38 1.91-1.91 2.28-4.65.81-6.12-1.46-1.46-4.2-1.1-6.12.81-1.59 1.59-2.09 3.74-1.38 5.27L3.7 19.87l1.41 1.41L12 14.41l6.88 6.88 1.41-1.41L13.41 13l1.47-1.47z'/%3E%3C/svg%3E") center/contain no-repeat}
 .icon-list{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%2300D4AA' viewBox='0 0 24 24'%3E%3Cpath d='M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z'/%3E%3C/svg%3E") center/contain no-repeat}
+.icon-card{background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%2300D4AA' viewBox='0 0 24 24'%3E%3Cpath d='M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4v-6h16v6zm0-10H4V6h16v2z'/%3E%3C/svg%3E") center/contain no-repeat}
 html,body{height:100%;overflow-x:hidden}
 body{font-family:'DM Sans',sans-serif;background:var(--dark);color:var(--text);min-height:100vh;min-height:-webkit-fill-available}
 .screen{display:none;min-height:100vh;flex-direction:column}
@@ -2254,7 +2255,7 @@ function showVendorToast(msg,type){
   if(existing)existing.remove();
   const t=document.createElement('div');
   t.className='vendor-toast';
-  t.textContent=(type==='new_order'?'\uD83D\uDD14 ':'💳 ')+msg;
+  t.innerHTML='<span class="icon '+(type==='new_order'?'icon-bell':'icon-card')+'" style="display:inline-block;width:16px;height:16px;vertical-align:middle;margin-right:6px"></span>'+msg;
   t.onclick=()=>{switchDashTab('orders');t.remove();};
   document.body.appendChild(t);
   requestAnimationFrame(()=>requestAnimationFrame(()=>t.classList.add('show')));
@@ -2638,7 +2639,7 @@ async function loadSchedule(){
     // Events
     const el=document.getElementById('events-list');
     el.innerHTML=(d.events||[]).map(e=>{
-      const thumb=e.image_url?`<img src="${esc(e.image_url)}" style="width:48px;height:48px;border-radius:8px;object-fit:cover;flex-shrink:0">`:`<div style="width:48px;height:48px;border-radius:8px;background:rgba(0,212,170,.1);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🎉</div>`;
+      const thumb=e.image_url?`<img src="${esc(e.image_url)}" style="width:48px;height:48px;border-radius:8px;object-fit:cover;flex-shrink:0">`:`<div style="width:48px;height:48px;border-radius:8px;background:rgba(0,212,170,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span class="icon icon-star" style="width:24px;height:24px"></span></div>`;
       const imgBtn=e.image_url?`<label style="font-size:10px;color:var(--accent);cursor:pointer;margin-top:2px;display:block">Change photo<input type="file" accept="image/*" style="display:none" onchange="uploadExistingEventImage(${e.id},this)"></label>`:`<label style="font-size:10px;color:var(--accent);cursor:pointer;margin-top:2px;display:block">+ Photo<input type="file" accept="image/*" style="display:none" onchange="uploadExistingEventImage(${e.id},this)"></label>`;
       return`<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 16px;display:flex;gap:12px;align-items:center">
       ${thumb}
@@ -2938,7 +2939,7 @@ async function resendVerification(){
   btn.disabled=true;btn.textContent='Sending...';
   try{
     const d=await(await fetch('/api/vendor/resend-verification',{method:'POST',headers:{'x-auth-token':tok}})).json();
-    if(d.ok){btn.textContent='✓ Sent';btn.style.color='var(--green)';showToast('Verification email sent! Check your inbox.');}
+    if(d.ok){btn.innerHTML='<span class="icon icon-check" style="display:inline-block;width:12px;height:12px;vertical-align:middle;margin-right:4px"></span>Sent';btn.style.color='var(--green)';showToast('Verification email sent! Check your inbox.');}
     else showToast(d.error||'Failed');
   }catch(e){showToast('Network error');}
 }
@@ -3007,7 +3008,7 @@ async function loadOnboardingBanner(){
       banner.className='onboarding-banner';
       banner.style.borderColor='rgba(34,197,94,.3)';
       banner.style.background='linear-gradient(135deg,rgba(34,197,94,.08),var(--card))';
-      banner.innerHTML='<div class="onboarding-title"><span style="color:#22C55E">🎉 Profile Complete!</span><button onclick="localStorage.setItem(\'wya_onboard_congrats_seen\',\'1\');this.closest(\'.onboarding-banner\').remove()" style="background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer">&times;</button></div><p style="color:var(--muted);font-size:13px;margin:0">Your profile is complete! Customers now see a <span style="color:#22C55E;font-weight:700">✓ Verified</span> badge on your listing.</p>';
+      banner.innerHTML='<div class="onboarding-title"><span style="color:#22C55E"><span class="icon icon-check" style="display:inline-block;width:16px;height:16px;vertical-align:middle;margin-right:4px"></span>Profile Complete!</span><button onclick="localStorage.setItem(\'wya_onboard_congrats_seen\',\'1\');this.closest(\'.onboarding-banner\').remove()" style="background:none;border:none;color:var(--muted);font-size:18px;cursor:pointer">&times;</button></div><p style="color:var(--muted);font-size:13px;margin:0">Your profile is complete! Customers now see a <span style="color:#22C55E;font-weight:700"><span class="icon icon-check" style="display:inline-block;width:12px;height:12px;vertical-align:middle;margin-right:2px"></span>Verified</span> badge on your listing.</p>';
       tabContent.insertBefore(banner,tabContent.firstChild);
       return;
     }
