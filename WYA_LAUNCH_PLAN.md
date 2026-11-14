@@ -39,32 +39,35 @@ Tests Required:
 ---
 
 ### Workstream 2: Design Refresh
-**Status:** Brief created
+**Status:** ✅ COMPLETE (Session 529, 2026-11-14)
 **Brief:** `/wya-app/DESIGN_BRIEF.md`
 
-Issues to Fix:
-| Issue | Count | Target |
-|-------|-------|--------|
-| Emojis | 79 | 0 (SVG icons) |
-| Gradients | 31 | 3-4 |
-| Border-radius variants | 18 | 4 |
-| Keyframe animations | 21 | 5-6 |
-| Visible tabs (vendor) | 13 | 5 + overflow |
+Issues Fixed:
+| Issue | Before | After | Status |
+|-------|--------|-------|--------|
+| Emojis | 79 | 0 | ✅ 35+ SVG icons |
+| Gradients | 31 | 4 | ✅ consolidated |
+| Border-radius variants | 18 | 5 | ✅ CSS tokens |
+| Keyframe animations | 21 | 9 | ✅ minimal motion |
+| Visible tabs (vendor) | 13 | 5 + overflow | ✅ consolidated |
 
-**Who:** Internal design work (Claude or designer)
-**Time:** 3-5 days
-**Deliverables:** Token system, icon set, component redesigns
+**Commits:** 10 commits (abf0163, 2161b0b, dd4db72, 7072ec9, etc.)
+**Deliverables:** Token system ✅, icon set ✅, tab overflow ✅
 
 ---
 
 ### Workstream 3: App Store Deployment
-**Status:** iOS project ready, awaiting enrollment
-**Checklist:** `/wya-proxy/APP_STORE_CHECKLIST.md`
+**Status:** App Store Connect ready, awaiting screenshots
+**Checklist:** `/wya-app/APP_STORE_PREP.md`
 
 Already Complete:
-- [x] iOS project structure (`/wya-ios/`)
+- [x] iOS project structure (`/soul-ios/`)
 - [x] App icon (1024x1024)
 - [x] App Store metadata
+- [x] Apple Developer enrolled (Team ID: 9V74TT48MV)
+- [x] App Store Connect app created (WYA - Live Vendor Map)
+- [x] Codemagic CI/CD configured
+- [x] Design refresh synced to iOS
 - [x] Legal docs (Privacy, Terms, EULA)
 - [x] Stripe integration (3 tiers)
 
