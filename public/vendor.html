@@ -3310,7 +3310,7 @@ function confirmDeleteVendor(){
   overlay.id='delete-modal-overlay';
   overlay.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px';
   overlay.innerHTML=`<div style="background:var(--card);border:1px solid var(--border2);border-radius:20px;padding:28px;max-width:380px;width:100%">
-    <div style="text-align:center;font-size:2rem;margin-bottom:12px">⚠️</div>
+    <div style="text-align:center;margin-bottom:12px"><span class="icon icon-warning" style="width:32px;height:32px"></span></div>
     <div style="font-size:16px;font-weight:800;text-align:center;margin-bottom:8px;color:var(--red)">Delete Your Account?</div>
     <div style="font-size:13px;color:var(--muted);text-align:center;margin-bottom:16px;line-height:1.5">This will permanently delete your vendor profile, menu items, orders, and subscription. This CANNOT be undone.</div>
     <div class="field" style="margin-bottom:16px"><label for="del-pw" style="font-size:12px;font-weight:700">Enter your password to confirm</label><input id="del-pw" type="password" placeholder="Your password" style="width:100%"></div>
