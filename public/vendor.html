@@ -3255,7 +3255,7 @@ async function loadSubscriptionCard(){
     (tiers.tiers||[]).forEach(t=>{
       const cur=(d.tier===t.id||d.tier===t.name);
       const btn=document.createElement('button');
-      btn.textContent=cur?`${t.name} ✓`:`Switch to ${t.name}`;
+      btn.innerHTML=cur?`${t.name} <span class="icon icon-check" style="display:inline-block;width:12px;height:12px;vertical-align:middle"></span>`:`Switch to ${t.name}`;
       btn.disabled=cur;
       btn.style.cssText=`padding:8px 14px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;border:1.5px solid ${cur?'rgba(34,197,94,.3)':'var(--border2)'};background:${cur?'rgba(34,197,94,.08)':'var(--dark)'};color:${cur?'#22C55E':'var(--text)'}`;
       if(!cur) btn.onclick=()=>changePlan(t.id,t.name);
@@ -3429,7 +3429,7 @@ async function loadSocialHub(){
         <span style="font-size:22px">🔗</span><span style="font-size:10px;font-weight:600">Copy Link</span>
       </button>
       <button onclick="socialShareTo('native')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 8px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:12px;cursor:pointer;font-family:inherit;color:var(--text)">
-        <span style="font-size:22px">📤</span><span style="font-size:10px;font-weight:600">More...</span>
+        <span class="icon icon-share" style="display:inline-block;width:22px;height:22px"></span><span style="font-size:10px;font-weight:600">More...</span>
       </button>
     `;
 
@@ -3473,7 +3473,7 @@ async function loadSocialHub(){
     if(templates.general){
       const txt=templates.general.text;
       stHtml+=`<div style="background:rgba(255,255,255,.03);border:1px solid var(--border2);border-radius:12px;padding:14px">
-        <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px"><span style="font-size:14px">📤</span><span style="font-size:13px;font-weight:700">General</span></div>
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px"><span class="icon icon-share" style="display:inline-block;width:14px;height:14px"></span><span style="font-size:13px;font-weight:700">General</span></div>
         <div style="font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:10px">${esc(txt)}</div>
         <div style="display:flex;gap:6px">
           <button onclick="socialShareTo('whatsapp','${btoa(encodeURIComponent(txt))}')" style="flex:1;padding:8px;background:rgba(37,211,102,.1);color:#25D366;border:1px solid rgba(37,211,102,.3);border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit">WhatsApp</button>
@@ -3661,7 +3661,7 @@ async function generateSocialCard(format){
       <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
         <button id="sh-dl-png" style="display:inline-flex;align-items:center;gap:4px;padding:10px 18px;background:var(--accent);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">📥 Download PNG</button>
         <a href="${svgUrl}" download="${safeName}-wya-${format||'feed'}.svg" style="display:inline-flex;align-items:center;gap:4px;padding:10px 18px;background:rgba(255,255,255,.08);color:var(--text);border:1px solid var(--border2);border-radius:10px;text-decoration:none;font-size:13px;font-weight:700">SVG</a>
-        <button onclick="socialShareTo('native')" style="padding:10px 18px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);border-radius:10px;color:var(--green);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">📤 Share</button>
+        <button onclick="socialShareTo('native')" style="padding:10px 18px;background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.3);border-radius:10px;color:var(--green);font-size:13px;font-weight:700;cursor:pointer;font-family:inherit"><span class="icon icon-share" style="display:inline-block;width:14px;height:14px;vertical-align:middle;margin-right:4px"></span>Share</button>
       </div>
       <div style="margin-top:10px;font-size:11px;color:var(--muted)">
         ${(d.hashtags||[]).map(h=>'<span style="color:#00D4AA">#'+h+'</span>').join(' ')}
