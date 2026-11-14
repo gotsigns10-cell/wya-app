@@ -612,7 +612,7 @@ button.toggle-btn.stop {
       <div class="profile-header"><h3><span class="icon icon-star"></span> Review Platforms</h3><span style="font-size:11px;color:var(--muted)">Link your review profiles for social proof</span></div>
       <div class="profile-row" onclick="editField(this,'yelp_url')"><span class="profile-key"><span class="icon icon-star"></span> Yelp Page</span><span class="profile-val" id="p-yelp_url">—</span></div>
       <div class="profile-row" onclick="editField(this,'google_maps_url')"><span class="profile-key"><span class="icon icon-pin"></span> Google Maps</span><span class="profile-val" id="p-google_maps_url">—</span></div>
-      <div class="profile-row" onclick="editField(this,'google_business_url')"><span class="profile-key">🏢 Google Business</span><span class="profile-val" id="p-google_business_url">—</span></div>
+      <div class="profile-row" onclick="editField(this,'google_business_url')"><span class="profile-key"><span class="icon icon-store" style="width:16px;height:16px;margin-right:6px"></span>Google Business</span><span class="profile-val" id="p-google_business_url">—</span></div>
     </div>
 
     <div class="profile-card">
@@ -1695,7 +1695,7 @@ async function checkSubscription(){
     if(d.is_founding_vendor){
       const wrap=document.getElementById('subscribe-wrap');
       wrap.style.display='block';
-      wrap.innerHTML='<div style="background:linear-gradient(135deg,rgba(255,107,0,.15) 0%,rgba(0,212,170,.15) 100%);border:1.5px solid rgba(255,107,0,.4);border-radius:20px;padding:24px;text-align:center;margin-bottom:16px"><div style="font-size:32px;margin-bottom:8px">⭐</div><div style="font-size:18px;font-weight:800;color:#FF5E1A;margin-bottom:6px">Founding Vendor</div><div style="font-size:14px;color:#9CA3AF;line-height:1.5">Free forever — thank you for helping build WYA!</div></div>';
+      wrap.innerHTML='<div style="background:linear-gradient(135deg,rgba(255,107,0,.15) 0%,rgba(0,212,170,.15) 100%);border:1.5px solid rgba(255,107,0,.4);border-radius:20px;padding:24px;text-align:center;margin-bottom:16px"><div style="margin-bottom:8px"><span class="icon icon-star" style="width:32px;height:32px"></span></div><div style="font-size:18px;font-weight:800;color:#FF5E1A;margin-bottom:6px">Founding Vendor</div><div style="font-size:14px;color:#9CA3AF;line-height:1.5">Free forever — thank you for helping build WYA!</div></div>';
     } else if(d.status==='trial'){
       document.getElementById('subscribe-wrap').style.display='block';
       if(d.trial_days_remaining>0){
@@ -2644,7 +2644,7 @@ async function loadSchedule(){
     // Events
     const el=document.getElementById('events-list');
     el.innerHTML=(d.events||[]).map(e=>{
-      const thumb=e.image_url?`<img src="${esc(e.image_url)}" style="width:48px;height:48px;border-radius:8px;object-fit:cover;flex-shrink:0">`:`<div style="width:48px;height:48px;border-radius:8px;background:rgba(0,212,170,.1);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0">🎉</div>`;
+      const thumb=e.image_url?`<img src="${esc(e.image_url)}" style="width:48px;height:48px;border-radius:8px;object-fit:cover;flex-shrink:0">`:`<div style="width:48px;height:48px;border-radius:8px;background:rgba(0,212,170,.1);display:flex;align-items:center;justify-content:center;flex-shrink:0"><span class="icon icon-party" style="width:24px;height:24px"></span></div>`;
       const imgBtn=e.image_url?`<label style="font-size:10px;color:var(--accent);cursor:pointer;margin-top:2px;display:block">Change photo<input type="file" accept="image/*" style="display:none" onchange="uploadExistingEventImage(${e.id},this)"></label>`:`<label style="font-size:10px;color:var(--accent);cursor:pointer;margin-top:2px;display:block">+ Photo<input type="file" accept="image/*" style="display:none" onchange="uploadExistingEventImage(${e.id},this)"></label>`;
       return`<div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 16px;display:flex;gap:12px;align-items:center">
       ${thumb}
@@ -3376,11 +3376,11 @@ async function loadSocialHub(){
 
     // Connected platforms
     const plEl=document.getElementById('sh-platforms');
-    const platformIcons={instagram:'📸',tiktok:'🎵',youtube:'🎬',facebook:'👤',website:'🌐'};
+    const platformIcons={instagram:'icon-instagram',tiktok:'icon-tiktok',youtube:'icon-youtube',facebook:'icon-user',website:'icon-globe'};
     if(d.connected.length){
       plEl.innerHTML=d.connected.map(p=>`
         <a href="${esc(p.url)}" target="_blank" style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(255,255,255,.03);border:1px solid var(--border2);border-radius:10px;text-decoration:none;transition:.15s">
-          <span style="font-size:20px">${platformIcons[p.platform]||'🔗'}</span>
+          <span class="icon ${platformIcons[p.platform]||'icon-link'}" style="width:20px;height:20px"></span>
           <div style="flex:1">
             <div style="font-size:13px;font-weight:600;color:var(--text)">${esc(p.handle)}</div>
             <div style="font-size:10px;color:var(--muted);text-transform:capitalize">${p.platform}</div>
@@ -3394,11 +3394,11 @@ async function loadSocialHub(){
 
     // Delivery platforms
     const delEl=document.getElementById('sh-delivery');
-    const deliveryIcons={doordash:'🔴',ubereats:'🟢',grubhub:'🟠',yelp:'⭐',google_maps:'📍',google_business:'🏢'};
+    const deliveryIcons={doordash:'icon-doordash',ubereats:'icon-ubereats',grubhub:'icon-delivery',yelp:'icon-star',google_maps:'icon-pin',google_business:'icon-store'};
     if(d.deliveryPlatforms.length){
       delEl.innerHTML=d.deliveryPlatforms.map(p=>`
         <a href="${esc(p.url)}" target="_blank" style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(255,255,255,.03);border:1px solid var(--border2);border-radius:10px;text-decoration:none">
-          <span style="font-size:20px">${deliveryIcons[p.platform]||'🔗'}</span>
+          <span class="icon ${deliveryIcons[p.platform]||'icon-link'}" style="width:20px;height:20px"></span>
           <div style="flex:1"><div style="font-size:13px;font-weight:600;color:var(--text)">${esc(p.label)}</div></div>
           <span style="font-size:10px;color:var(--green);font-weight:700">LINKED</span>
         </a>
@@ -3826,11 +3826,11 @@ async function respondCatering(id,status){
 <div style="text-align:center;padding:32px 16px 24px;margin-top:40px;border-top:1px solid rgba(255,255,255,.06)">
   <div style="font-size:.75rem;color:rgba(255,255,255,.3);margin-bottom:12px;letter-spacing:1px">MORE FROM UNIVERSOUL</div>
   <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
-    <a href="https://wya.digisigns.link/customer" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:.8rem">🌮 WYA Map</a>
-    <a href="https://store.digisigns.link" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:.8rem">🛍️ DigiStore</a>
-    <a href="https://book.digisigns.link" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:.8rem">📅 DigiBook</a>
-    <a href="https://tap.digisigns.link" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:.8rem">💳 DigiTap</a>
-    <a href="https://digisigns.link" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:.8rem">🏠 Hub</a>
+    <a href="https://wya.digisigns.link/customer" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:.8rem;display:inline-flex;align-items:center;gap:4px"><span class="icon icon-pin" style="width:12px;height:12px"></span>WYA Map</a>
+    <a href="https://store.digisigns.link" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:.8rem;display:inline-flex;align-items:center;gap:4px"><span class="icon icon-bag" style="width:12px;height:12px"></span>DigiStore</a>
+    <a href="https://book.digisigns.link" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:.8rem;display:inline-flex;align-items:center;gap:4px"><span class="icon icon-calendar" style="width:12px;height:12px"></span>DigiBook</a>
+    <a href="https://tap.digisigns.link" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:.8rem;display:inline-flex;align-items:center;gap:4px"><span class="icon icon-cart" style="width:12px;height:12px"></span>DigiTap</a>
+    <a href="https://digisigns.link" style="color:rgba(255,255,255,.5);text-decoration:none;font-size:.8rem;display:inline-flex;align-items:center;gap:4px"><span class="icon icon-store" style="width:12px;height:12px"></span>Hub</a>
   </div>
   <div style="margin-top:12px;font-size:.65rem;color:rgba(255,255,255,.15)">© Universoul LLC · Santa Barbara, CA</div>
 </div>
