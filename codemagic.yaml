@@ -14,7 +14,7 @@ workflows:
       groups:
         - wya_credentials  # Contains: CERTIFICATE_PASSWORD, APP_STORE_CONNECT_PRIVATE_KEY
 
-      xcode: 15.4  # Xcode 16 has SPM API compatibility issues with Capacitor 8
+      xcode: 26.6  # Capacitor 8 SPM binaries require Xcode 26+
       node: 22
 
     triggering:
