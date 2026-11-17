@@ -19,9 +19,6 @@
   "plugins": {
     "Geolocation": {
       "permissionRequests": ["always"]
-    },
-    "PushNotifications": {
-      "presentationOptions": ["badge", "sound", "alert"]
     }
   }
 }
