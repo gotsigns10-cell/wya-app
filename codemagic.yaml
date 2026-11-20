@@ -4,15 +4,20 @@ workflows:
     max_build_duration: 60
     instance_type: mac_mini_m2
 
+    # Use same App Store Connect integration as Soul iOS
+    integrations:
+      app_store_connect: SOULAPI
+
     environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.universoul.wya
       vars:
         BUNDLE_ID: "com.universoul.wya"
         TEAM_ID: "9V74TT48MV"
-        PROVISIONING_PROFILE_UUID: "866843c3-81a5-4817-b415-d5fb313c6106"
-        APP_STORE_CONNECT_KEY_IDENTIFIER: "6T7FMU83Q3"
-        APP_STORE_CONNECT_ISSUER_ID: "54717bff-71a1-46bc-a578-a94db1886499"
+        APP_STORE_APPLE_ID: "6829488221"
       groups:
-        - wya_credentials  # Contains: CERTIFICATE_PASSWORD, APP_STORE_CONNECT_PRIVATE_KEY
+        - appstore
 
       xcode: 26.6  # Capacitor 8 SPM binaries require Xcode 26+
       node: 22
@@ -42,27 +47,10 @@ workflows:
           # Project uses Swift Package Manager (SPM), not CocoaPods
           npx cap sync ios
 
-      - name: Install code signing
+      - name: Set up signing
         script: |
-          # Initialize Codemagic keychain
-          keychain initialize
-
-          # Decode and install distribution certificate
-          echo "Installing distribution certificate..."
-          base64 -d ios/signing/dist-cert.p12.b64 > /tmp/dist-cert.p12
-          keychain add-certificates --certificate /tmp/dist-cert.p12 --certificate-password "$CERTIFICATE_PASSWORD"
-
-          # Decode and install provisioning profile
-          echo "Installing provisioning profile..."
-          mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
-          base64 -d ios/signing/WYA_App_Store.mobileprovision.b64 > "$HOME/Library/MobileDevice/Provisioning Profiles/$PROVISIONING_PROFILE_UUID.mobileprovision"
-
-          # Verify installation
-          echo "Verifying signing identities..."
-          security find-identity -v -p codesigning
-          echo ""
-          echo "Installed profiles:"
-          ls -la "$HOME/Library/MobileDevice/Provisioning Profiles/"
+          # Use Codemagic managed profiles (automatic signing)
+          xcode-project use-profiles
 
       - name: Increment build number
         script: |
@@ -81,16 +69,6 @@ workflows:
           echo "Xcode version:"
           xcodebuild -version
           echo ""
-          echo "Signing identities:"
-          security find-identity -v -p codesigning
-          echo ""
-          echo "Profiles:"
-          ls -la "$HOME/Library/MobileDevice/Provisioning Profiles/"
-          echo ""
-
-          # Get signing identity from keychain
-          SIGN_IDENTITY=$(security find-identity -v -p codesigning | grep "iPhone Distribution" | head -1 | sed 's/.*"\(.*\)"/\1/')
-          echo "Using signing identity: $SIGN_IDENTITY"
 
           # Resolve SPM dependencies first
           echo "=== Resolving Swift Package Dependencies ==="
@@ -106,11 +84,6 @@ workflows:
             -archivePath "$CM_BUILD_DIR/WYA.xcarchive" \
             -destination "generic/platform=iOS" \
             -clonedSourcePackagesDirPath "$CM_BUILD_DIR/SourcePackages" \
-            CODE_SIGN_STYLE=Manual \
-            CODE_SIGN_IDENTITY="$SIGN_IDENTITY" \
-            DEVELOPMENT_TEAM="$TEAM_ID" \
-            PROVISIONING_PROFILE="$PROVISIONING_PROFILE_UUID" \
-            PROVISIONING_PROFILE_SPECIFIER="" \
             COMPILER_INDEX_STORE_ENABLE=NO \
             2>&1 | tee /tmp/xcodebuild-archive.log
 
@@ -125,69 +98,19 @@ workflows:
 
       - name: Export IPA
         script: |
-          set -e
-
-          # Create export options plist for App Store
-          cat > /tmp/ExportOptions.plist << EOF
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0">
-          <dict>
-            <key>method</key>
-            <string>app-store</string>
-            <key>teamID</key>
-            <string>$TEAM_ID</string>
-            <key>uploadSymbols</key>
-            <true/>
-            <key>signingStyle</key>
-            <string>manual</string>
-            <key>provisioningProfiles</key>
-            <dict>
-              <key>$BUNDLE_ID</key>
-              <string>$PROVISIONING_PROFILE_UUID</string>
-            </dict>
-          </dict>
-          </plist>
-          EOF
-
-          echo "=== Export Options ==="
-          cat /tmp/ExportOptions.plist
-          echo ""
-
-          echo "=== Exporting IPA ==="
           xcodebuild -exportArchive \
             -archivePath "$CM_BUILD_DIR/WYA.xcarchive" \
-            -exportPath "$CM_BUILD_DIR/ipa" \
-            -exportOptionsPlist /tmp/ExportOptions.plist \
-            2>&1 | tee /tmp/xcodebuild-export.log
-
-          echo "=== Checking for IPA ==="
-          ls -la "$CM_BUILD_DIR/ipa/" || true
-
-          IPA_FILE=$(find "$CM_BUILD_DIR/ipa" -name "*.ipa" -print -quit 2>/dev/null)
-          if [ -z "$IPA_FILE" ]; then
-            echo "ERROR: No IPA file created"
-            tail -50 /tmp/xcodebuild-export.log
-            exit 1
-          fi
-
-          echo "IPA created: $IPA_FILE"
-
-          # Copy to standard location for Codemagic
-          mkdir -p build/ios/ipa
-          cp "$IPA_FILE" build/ios/ipa/
+            -exportOptionsPlist /Users/builder/export_options.plist \
+            -exportPath build/ios/ipa
 
     artifacts:
       - build/ios/ipa/*.ipa
       - "$CM_BUILD_DIR/*.xcarchive"
-      - "$CM_BUILD_DIR/ipa/*.ipa"
       - /tmp/xcodebuild-*.log
 
     publishing:
       app_store_connect:
-        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
-        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
-        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
+        auth: integration
         submit_to_testflight: true
 
       email:
