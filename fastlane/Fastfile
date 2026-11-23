@@ -46,6 +46,18 @@ platform :ios do
       in_house: false
     )
 
+    # Auto-increment build number based on latest TestFlight build
+    latest_build = latest_testflight_build_number(
+      app_identifier: "com.universoul.wya",
+      api_key: api_key
+    )
+    new_build = latest_build + 1
+    UI.message("Incrementing build number from #{latest_build} to #{new_build}")
+    increment_build_number(
+      build_number: new_build,
+      xcodeproj: "ios/App/App.xcodeproj"
+    )
+
     # Build with manual code signing using pre-installed certificate and profile
     profile_uuid = ENV["PROFILE_UUID"] || "866843c3-81a5-4817-b415-d5fb313c6106"
     build_app(
