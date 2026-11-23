@@ -14,6 +14,7 @@ workflows:
         BUNDLE_ID: "com.universoul.wya"
         TEAM_ID: "9V74TT48MV"
         APP_STORE_APPLE_ID: "6829488221"
+        PROFILE_UUID: "866843c3-81a5-4817-b415-d5fb313c6106"
       xcode: 16.0
       node: 22
 
@@ -40,19 +41,32 @@ workflows:
       - name: Sync Capacitor iOS
         script: npx cap sync ios
 
-      - name: Fetch signing files from App Store Connect
+      - name: Fetch distribution certificate from App Store Connect
         script: |
-          # Fetch or create signing files using App Store Connect API
-          # --create will auto-create missing profiles/certs
-          app-store-connect fetch-signing-files "$BUNDLE_ID" \
-            --type IOS_APP_STORE \
-            --create
+          # Fetch just the distribution certificate (not profiles)
+          # This gets the team's cert that can sign any app
+          app-store-connect certificates list \
+            --type IOS_DISTRIBUTION \
+            --save
 
-      - name: Set up keychain and profiles
+      - name: Install signing credentials
         script: |
+          set -e
+
+          # Initialize keychain
           keychain initialize
+
+          # Add certificates fetched from ASC
           keychain add-certificates
-          xcode-project use-profiles
+
+          # Install bundled provisioning profile (no password needed)
+          echo "Installing provisioning profile..."
+          base64 -d ios/signing/WYA_App_Store.mobileprovision.b64 > /tmp/WYA.mobileprovision
+
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          cp /tmp/WYA.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/$PROFILE_UUID.mobileprovision
+
+          echo "Profile installed: $PROFILE_UUID"
 
       - name: Increment build number
         script: |
@@ -70,6 +84,9 @@ workflows:
           echo "=== Build Environment ==="
           xcodebuild -version
 
+          echo "=== Available signing identities ==="
+          security find-identity -v -p codesigning
+
           # Resolve SPM dependencies
           echo "=== Resolving Swift Package Dependencies ==="
           xcodebuild -resolvePackageDependencies \
@@ -84,13 +101,42 @@ workflows:
             -archivePath "$CM_BUILD_DIR/WYA.xcarchive" \
             -destination "generic/platform=iOS" \
             -clonedSourcePackagesDirPath "$CM_BUILD_DIR/SourcePackages" \
+            CODE_SIGN_STYLE=Manual \
+            CODE_SIGN_IDENTITY="Apple Distribution" \
+            DEVELOPMENT_TEAM="$TEAM_ID" \
+            PROVISIONING_PROFILE_SPECIFIER="$PROFILE_UUID" \
             COMPILER_INDEX_STORE_ENABLE=NO
 
       - name: Export IPA
         script: |
-          xcode-project build-ipa \
-            --archive "$CM_BUILD_DIR/WYA.xcarchive" \
-            --ipa build/ios/ipa/WYA.ipa
+          set -e
+
+          cat > /tmp/ExportOptions.plist << EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>method</key>
+              <string>app-store</string>
+              <key>teamID</key>
+              <string>$TEAM_ID</string>
+              <key>signingStyle</key>
+              <string>manual</string>
+              <key>provisioningProfiles</key>
+              <dict>
+                  <key>$BUNDLE_ID</key>
+                  <string>$PROFILE_UUID</string>
+              </dict>
+              <key>uploadSymbols</key>
+              <true/>
+          </dict>
+          </plist>
+          EOF
+
+          xcodebuild -exportArchive \
+            -archivePath "$CM_BUILD_DIR/WYA.xcarchive" \
+            -exportPath build/ios/ipa \
+            -exportOptionsPlist /tmp/ExportOptions.plist
 
     artifacts:
       - build/ios/ipa/*.ipa
