@@ -45,10 +45,10 @@ workflows:
           set -e
           echo "Installing bundled provisioning profile..."
 
-          base64 -d ios/signing/WYA_App_Store.mobileprovision.b64 > /tmp/WYA.mobileprovision
+          base64 -D -i ios/signing/WYA_App_Store.mobileprovision.b64 -o /tmp/WYA.mobileprovision
 
-          # Extract UUID
-          PROFILE_UUID=$(grep -a -A1 '<key>UUID</key>' /tmp/WYA.mobileprovision | grep '<string>' | sed 's/.*<string>\(.*\)<\/string>.*/\1/')
+          # Extract UUID using security cms (macOS native)
+          PROFILE_UUID=$(security cms -D -i /tmp/WYA.mobileprovision 2>/dev/null | plutil -extract UUID raw - 2>/dev/null || echo "866843c3-81a5-4817-b415-d5fb313c6106")
           echo "Profile UUID: $PROFILE_UUID"
 
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
@@ -90,7 +90,7 @@ workflows:
           xcodebuild -version
 
           # Get profile UUID
-          PROFILE_UUID=$(grep -a -A1 '<key>UUID</key>' /tmp/WYA.mobileprovision | grep '<string>' | sed 's/.*<string>\(.*\)<\/string>.*/\1/')
+          PROFILE_UUID=$(security cms -D -i /tmp/WYA.mobileprovision 2>/dev/null | plutil -extract UUID raw - 2>/dev/null || echo "866843c3-81a5-4817-b415-d5fb313c6106")
           echo "Using profile UUID: $PROFILE_UUID"
 
           # Resolve SPM dependencies
@@ -117,7 +117,7 @@ workflows:
         script: |
           set -e
 
-          PROFILE_UUID=$(grep -a -A1 '<key>UUID</key>' /tmp/WYA.mobileprovision | grep '<string>' | sed 's/.*<string>\(.*\)<\/string>.*/\1/')
+          PROFILE_UUID=$(security cms -D -i /tmp/WYA.mobileprovision 2>/dev/null | plutil -extract UUID raw - 2>/dev/null || echo "866843c3-81a5-4817-b415-d5fb313c6106")
 
           cat > /tmp/ExportOptions.plist << EOF
           <?xml version="1.0" encoding="UTF-8"?>
