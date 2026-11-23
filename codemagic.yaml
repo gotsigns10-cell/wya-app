@@ -57,21 +57,33 @@ workflows:
 
       - name: Set up signing from API
         script: |
-          # Initialize keychain and fetch certificate from App Store Connect
+          set -e
+          echo "=== Setting up code signing ==="
+
+          # Initialize keychain
           keychain initialize
 
-          # Fetch distribution cert from API - this gets the TEAM certificate
+          # Fetch distribution cert from API
+          echo "Fetching distribution certificates..."
           app-store-connect certificates list --type IOS_DISTRIBUTION --save || {
-            echo "Failed to fetch certificates, trying to create..."
-            app-store-connect certificates create --type IOS_DISTRIBUTION --save || true
+            echo "No existing certs, trying DISTRIBUTION type..."
+            app-store-connect certificates list --type DISTRIBUTION --save || {
+              echo "Creating new distribution certificate..."
+              app-store-connect certificates create --type IOS_DISTRIBUTION --save || true
+            }
           }
 
           # Add certs to keychain
-          keychain add-certificates
+          echo "Adding certificates to keychain..."
+          keychain add-certificates || echo "Warning: keychain add-certificates had issues"
 
           # List available identities
           echo "=== Available signing identities ==="
-          security find-identity -v -p codesigning
+          security find-identity -v -p codesigning || echo "No identities found"
+
+          # List installed profiles
+          echo "=== Installed provisioning profiles ==="
+          ls -la ~/Library/MobileDevice/Provisioning\ Profiles/ || echo "No profiles dir"
 
       - name: Increment build number
         script: |
@@ -108,9 +120,9 @@ workflows:
             -destination "generic/platform=iOS" \
             -clonedSourcePackagesDirPath "$CM_BUILD_DIR/SourcePackages" \
             CODE_SIGN_STYLE=Manual \
-            CODE_SIGN_IDENTITY="Apple Distribution: Sergio Barragan (9V74TT48MV)" \
+            "CODE_SIGN_IDENTITY=Apple Distribution" \
             DEVELOPMENT_TEAM="$TEAM_ID" \
-            PROVISIONING_PROFILE_SPECIFIER="$PROFILE_UUID" \
+            "PROVISIONING_PROFILE=$PROFILE_UUID" \
             COMPILER_INDEX_STORE_ENABLE=NO
 
       - name: Export IPA
