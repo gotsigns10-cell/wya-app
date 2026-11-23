@@ -4,9 +4,6 @@ workflows:
     max_build_duration: 60
     instance_type: mac_mini_m2
 
-    integrations:
-      app_store_connect: SOULAPI
-
     environment:
       ios_signing:
         distribution_type: app_store
@@ -17,6 +14,9 @@ workflows:
         BUNDLE_ID: "com.universoul.wya"
         TEAM_ID: "9V74TT48MV"
         APP_STORE_APPLE_ID: "6829488221"
+        # ASC credentials from appstore group for profile fetching
+        APP_STORE_CONNECT_KEY_IDENTIFIER: $APP_STORE_CONNECT_KEY_ID
+        APP_STORE_CONNECT_ISSUER_ID: $APP_STORE_CONNECT_ISSUER_ID
       xcode: 16.0
       node: 22
 
