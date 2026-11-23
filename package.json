@@ -8,11 +8,10 @@
     "build": "echo 'No build step required - webDir points to public/, app loads from remote server'"
   },
   "dependencies": {
-    "@capacitor/android": "8.0.2",
-    "@capacitor/cli": "8.0.2",
-    "@capacitor/core": "8.0.2",
-    "@capacitor/geolocation": "8.0.0-next.4",
-    "@capacitor/ios": "8.0.2",
+    "@capacitor/android": "8.2.0",
+    "@capacitor/cli": "8.2.0",
+    "@capacitor/core": "8.2.0",
+    "@capacitor/ios": "8.2.0",
     "@parse/node-apn": "^8.2.0",
     "bcrypt": "^6.0.0",
     "better-sqlite3": "^12.10.0",
