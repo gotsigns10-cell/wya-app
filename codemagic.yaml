@@ -8,15 +8,17 @@ workflows:
       app_store_connect: SOULAPI
 
     environment:
+      xcode: 16.0
+      node: 22
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.universoul.wya
       groups:
         - appstore
       vars:
         BUNDLE_ID: "com.universoul.wya"
         TEAM_ID: "9V74TT48MV"
         APP_STORE_APPLE_ID: "6829488221"
-        PROFILE_UUID: "866843c3-81a5-4817-b415-d5fb313c6106"
-      xcode: 16.0
-      node: 22
 
     triggering:
       events:
@@ -29,40 +31,27 @@ workflows:
       - name: Install dependencies
         script: npm ci && npm run build && npx cap sync ios
 
-      - name: Setup signing
-        script: |
-          keychain initialize
+      - name: Set up signing
+        script: xcode-project use-profiles
 
-          # Fetch cert and profile from Apple using SOULAPI integration
-          app-store-connect fetch-signing-files "$BUNDLE_ID" --type IOS_APP_STORE --create || true
-
-          # Fallback: install bundled profile
-          base64 -D -i ios/signing/WYA_App_Store.mobileprovision.b64 -o /tmp/WYA.mobileprovision
-          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          cp /tmp/WYA.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/$PROFILE_UUID.mobileprovision
-
-          keychain add-certificates || true
-          xcode-project use-profiles || true
-
-          echo "=== Identities ===" && security find-identity -v -p codesigning | head -5
-
-      - name: Build
+      - name: Build Archive
         script: |
           cd ios/App
-          agvtool new-version -all $(($(app-store-connect get-latest-testflight-build-number "$BUNDLE_ID" 2>/dev/null || echo 0) + 1))
-
-          xcodebuild -resolvePackageDependencies -project App.xcodeproj -scheme App -clonedSourcePackagesDirPath "$CM_BUILD_DIR/spm"
-
+          BUILD_NUM=$(($(app-store-connect get-latest-testflight-build-number "$BUNDLE_ID" 2>/dev/null || echo 0) + 1))
+          echo "Building with CURRENT_PROJECT_VERSION=$BUILD_NUM"
           xcodebuild archive \
-            -project App.xcodeproj -scheme App \
+            -project App.xcodeproj \
+            -scheme App \
+            -configuration Release \
             -archivePath "$CM_BUILD_DIR/WYA.xcarchive" \
-            -destination "generic/platform=iOS" \
-            -clonedSourcePackagesDirPath "$CM_BUILD_DIR/spm" \
-            -allowProvisioningUpdates \
-            COMPILER_INDEX_STORE_ENABLE=NO
+            CURRENT_PROJECT_VERSION=$BUILD_NUM
 
-      - name: Export
-        script: xcode-project build-ipa --archive "$CM_BUILD_DIR/WYA.xcarchive" --ipa build/ios/ipa/WYA.ipa
+      - name: Export IPA
+        script: |
+          xcodebuild -exportArchive \
+            -archivePath "$CM_BUILD_DIR/WYA.xcarchive" \
+            -exportOptionsPlist /Users/builder/export_options.plist \
+            -exportPath build/ios/ipa
 
     artifacts:
       - build/ios/ipa/*.ipa
