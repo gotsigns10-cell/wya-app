@@ -4,7 +4,6 @@ workflows:
     max_build_duration: 60
     instance_type: mac_mini_m2
 
-    # Use same App Store Connect integration as Soul iOS
     integrations:
       app_store_connect: SOULAPI
 
@@ -12,14 +11,13 @@ workflows:
       ios_signing:
         distribution_type: app_store
         bundle_identifier: com.universoul.wya
+      groups:
+        - appstore
       vars:
         BUNDLE_ID: "com.universoul.wya"
         TEAM_ID: "9V74TT48MV"
         APP_STORE_APPLE_ID: "6829488221"
-      groups:
-        - appstore
-
-      xcode: 26.6  # Capacitor 8 SPM binaries require Xcode 26+
+      xcode: 16.0
       node: 22
 
     triggering:
@@ -44,12 +42,10 @@ workflows:
 
       - name: Sync Capacitor iOS
         script: |
-          # Project uses Swift Package Manager (SPM), not CocoaPods
           npx cap sync ios
 
-      - name: Set up signing
+      - name: Set up code signing
         script: |
-          # Use Codemagic managed profiles (automatic signing)
           xcode-project use-profiles
 
       - name: Increment build number
@@ -66,11 +62,9 @@ workflows:
           cd ios/App
 
           echo "=== Build Environment ==="
-          echo "Xcode version:"
           xcodebuild -version
-          echo ""
 
-          # Resolve SPM dependencies first
+          # Resolve SPM dependencies
           echo "=== Resolving Swift Package Dependencies ==="
           xcodebuild -resolvePackageDependencies \
             -project App.xcodeproj \
@@ -84,29 +78,18 @@ workflows:
             -archivePath "$CM_BUILD_DIR/WYA.xcarchive" \
             -destination "generic/platform=iOS" \
             -clonedSourcePackagesDirPath "$CM_BUILD_DIR/SourcePackages" \
-            COMPILER_INDEX_STORE_ENABLE=NO \
-            2>&1 | tee /tmp/xcodebuild-archive.log
-
-          echo "Archive complete. Checking result..."
-          ls -la "$CM_BUILD_DIR/"
-
-          if [ ! -d "$CM_BUILD_DIR/WYA.xcarchive" ]; then
-            echo "ERROR: Archive not found!"
-            tail -100 /tmp/xcodebuild-archive.log
-            exit 1
-          fi
+            COMPILER_INDEX_STORE_ENABLE=NO
 
       - name: Export IPA
         script: |
           xcodebuild -exportArchive \
             -archivePath "$CM_BUILD_DIR/WYA.xcarchive" \
-            -exportOptionsPlist /Users/builder/export_options.plist \
-            -exportPath build/ios/ipa
+            -exportPath build/ios/ipa \
+            -exportOptionsPlist /Users/builder/export_options.plist
 
     artifacts:
       - build/ios/ipa/*.ipa
       - "$CM_BUILD_DIR/*.xcarchive"
-      - /tmp/xcodebuild-*.log
 
     publishing:
       app_store_connect:
