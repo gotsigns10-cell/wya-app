@@ -14,7 +14,6 @@ workflows:
         BUNDLE_ID: "com.universoul.wya"
         TEAM_ID: "9V74TT48MV"
         APP_STORE_APPLE_ID: "6829488221"
-        PROFILE_UUID: "866843c3-81a5-4817-b415-d5fb313c6106"
       xcode: 16.0
       node: 22
 
@@ -41,32 +40,38 @@ workflows:
       - name: Sync Capacitor iOS
         script: npx cap sync ios
 
-      - name: Fetch distribution certificate from App Store Connect
-        script: |
-          # Fetch just the distribution certificate (not profiles)
-          # This gets the team's cert that can sign any app
-          app-store-connect certificates list \
-            --type IOS_DISTRIBUTION \
-            --save
-
-      - name: Install signing credentials
+      - name: Install bundled provisioning profile
         script: |
           set -e
+          echo "Installing bundled provisioning profile..."
 
-          # Initialize keychain
-          keychain initialize
-
-          # Add certificates fetched from ASC
-          keychain add-certificates
-
-          # Install bundled provisioning profile (no password needed)
-          echo "Installing provisioning profile..."
           base64 -d ios/signing/WYA_App_Store.mobileprovision.b64 > /tmp/WYA.mobileprovision
+
+          # Extract UUID
+          PROFILE_UUID=$(grep -a -A1 '<key>UUID</key>' /tmp/WYA.mobileprovision | grep '<string>' | sed 's/.*<string>\(.*\)<\/string>.*/\1/')
+          echo "Profile UUID: $PROFILE_UUID"
 
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
           cp /tmp/WYA.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/$PROFILE_UUID.mobileprovision
+          echo "Profile installed at: ~/Library/MobileDevice/Provisioning Profiles/$PROFILE_UUID.mobileprovision"
 
-          echo "Profile installed: $PROFILE_UUID"
+      - name: Set up signing from API
+        script: |
+          # Initialize keychain and fetch certificate from App Store Connect
+          keychain initialize
+
+          # Fetch distribution cert from API - this gets the TEAM certificate
+          app-store-connect certificates list --type IOS_DISTRIBUTION --save || {
+            echo "Failed to fetch certificates, trying to create..."
+            app-store-connect certificates create --type IOS_DISTRIBUTION --save || true
+          }
+
+          # Add certs to keychain
+          keychain add-certificates
+
+          # List available identities
+          echo "=== Available signing identities ==="
+          security find-identity -v -p codesigning
 
       - name: Increment build number
         script: |
@@ -84,8 +89,9 @@ workflows:
           echo "=== Build Environment ==="
           xcodebuild -version
 
-          echo "=== Available signing identities ==="
-          security find-identity -v -p codesigning
+          # Get profile UUID
+          PROFILE_UUID=$(grep -a -A1 '<key>UUID</key>' /tmp/WYA.mobileprovision | grep '<string>' | sed 's/.*<string>\(.*\)<\/string>.*/\1/')
+          echo "Using profile UUID: $PROFILE_UUID"
 
           # Resolve SPM dependencies
           echo "=== Resolving Swift Package Dependencies ==="
@@ -102,7 +108,7 @@ workflows:
             -destination "generic/platform=iOS" \
             -clonedSourcePackagesDirPath "$CM_BUILD_DIR/SourcePackages" \
             CODE_SIGN_STYLE=Manual \
-            CODE_SIGN_IDENTITY="Apple Distribution" \
+            CODE_SIGN_IDENTITY="Apple Distribution: Sergio Barragan (9V74TT48MV)" \
             DEVELOPMENT_TEAM="$TEAM_ID" \
             PROVISIONING_PROFILE_SPECIFIER="$PROFILE_UUID" \
             COMPILER_INDEX_STORE_ENABLE=NO
@@ -110,6 +116,8 @@ workflows:
       - name: Export IPA
         script: |
           set -e
+
+          PROFILE_UUID=$(grep -a -A1 '<key>UUID</key>' /tmp/WYA.mobileprovision | grep '<string>' | sed 's/.*<string>\(.*\)<\/string>.*/\1/')
 
           cat > /tmp/ExportOptions.plist << EOF
           <?xml version="1.0" encoding="UTF-8"?>
