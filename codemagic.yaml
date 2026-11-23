@@ -14,109 +14,63 @@ workflows:
         BUNDLE_ID: "com.universoul.wya"
         TEAM_ID: "9V74TT48MV"
         APP_STORE_APPLE_ID: "6829488221"
+        PROFILE_UUID: "866843c3-81a5-4817-b415-d5fb313c6106"
       xcode: 16.0
       node: 22
 
     triggering:
       events:
         - push
-        - tag
       branch_patterns:
         - pattern: 'master'
           include: true
-        - pattern: 'main'
-          include: true
-      tag_patterns:
-        - pattern: 'v*'
-          include: true
 
     scripts:
-      - name: Install npm dependencies
-        script: npm ci
+      - name: Install dependencies
+        script: npm ci && npm run build && npx cap sync ios
 
-      - name: Build web assets
-        script: npm run build
-
-      - name: Sync Capacitor iOS
-        script: npx cap sync ios
-
-      - name: Set up keychain
+      - name: Setup signing
         script: |
-          # Initialize Codemagic keychain for signing
           keychain initialize
 
-      - name: Fetch signing files
-        script: |
-          # Fetch certificates and create/fetch profiles automatically
-          # This creates the profile if it doesn't exist
-          app-store-connect fetch-signing-files "$BUNDLE_ID" \
-            --type IOS_APP_STORE \
-            --platform IOS \
-            --create \
-            --strict-match-identifier || {
-              echo "fetch-signing-files failed, trying manual setup..."
-              # Fallback: list certs and use existing profile
-              app-store-connect certificates list --type IOS_DISTRIBUTION --save || true
-            }
+          # Fetch cert and profile from Apple using SOULAPI integration
+          app-store-connect fetch-signing-files "$BUNDLE_ID" --type IOS_APP_STORE --create || true
 
-      - name: Add certificates to keychain
-        script: |
-          keychain add-certificates
-          xcode-project use-profiles || echo "use-profiles had warnings"
+          # Fallback: install bundled profile
+          base64 -D -i ios/signing/WYA_App_Store.mobileprovision.b64 -o /tmp/WYA.mobileprovision
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          cp /tmp/WYA.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/$PROFILE_UUID.mobileprovision
 
-          echo "=== Signing identities ==="
-          security find-identity -v -p codesigning || true
+          keychain add-certificates || true
+          xcode-project use-profiles || true
 
-      - name: Increment build number
+          echo "=== Identities ===" && security find-identity -v -p codesigning | head -5
+
+      - name: Build
         script: |
           cd ios/App
-          LATEST_BUILD=$(app-store-connect get-latest-testflight-build-number "$BUNDLE_ID" 2>/dev/null || echo "0")
-          NEW_BUILD=$((LATEST_BUILD + 1))
-          echo "Setting build number to $NEW_BUILD"
-          agvtool new-version -all $NEW_BUILD
+          agvtool new-version -all $(($(app-store-connect get-latest-testflight-build-number "$BUNDLE_ID" 2>/dev/null || echo 0) + 1))
 
-      - name: Build Archive
-        script: |
-          set -e
-          cd ios/App
+          xcodebuild -resolvePackageDependencies -project App.xcodeproj -scheme App -clonedSourcePackagesDirPath "$CM_BUILD_DIR/spm"
 
-          echo "=== Build Environment ==="
-          xcodebuild -version
-          echo ""
-
-          # Resolve SPM dependencies
-          echo "=== Resolving Swift Package Dependencies ==="
-          xcodebuild -resolvePackageDependencies \
-            -project App.xcodeproj \
-            -scheme App \
-            -clonedSourcePackagesDirPath "$CM_BUILD_DIR/SourcePackages"
-
-          echo "=== Starting xcodebuild archive ==="
-          # Use automatic signing - let Xcode resolve everything
           xcodebuild archive \
-            -project App.xcodeproj \
-            -scheme App \
+            -project App.xcodeproj -scheme App \
             -archivePath "$CM_BUILD_DIR/WYA.xcarchive" \
             -destination "generic/platform=iOS" \
-            -clonedSourcePackagesDirPath "$CM_BUILD_DIR/SourcePackages" \
+            -clonedSourcePackagesDirPath "$CM_BUILD_DIR/spm" \
             -allowProvisioningUpdates \
             COMPILER_INDEX_STORE_ENABLE=NO
 
-      - name: Export IPA
-        script: |
-          xcode-project build-ipa \
-            --archive "$CM_BUILD_DIR/WYA.xcarchive" \
-            --ipa build/ios/ipa/WYA.ipa
+      - name: Export
+        script: xcode-project build-ipa --archive "$CM_BUILD_DIR/WYA.xcarchive" --ipa build/ios/ipa/WYA.ipa
 
     artifacts:
       - build/ios/ipa/*.ipa
-      - "$CM_BUILD_DIR/*.xcarchive"
 
     publishing:
       app_store_connect:
         auth: integration
         submit_to_testflight: true
-
       email:
         recipients:
           - sergio@instantsignco.com
