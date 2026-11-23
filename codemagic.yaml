@@ -40,50 +40,32 @@ workflows:
       - name: Sync Capacitor iOS
         script: npx cap sync ios
 
-      - name: Install bundled provisioning profile
+      - name: Set up keychain
         script: |
-          set -e
-          echo "Installing bundled provisioning profile..."
-
-          base64 -D -i ios/signing/WYA_App_Store.mobileprovision.b64 -o /tmp/WYA.mobileprovision
-
-          # Extract UUID using security cms (macOS native)
-          PROFILE_UUID=$(security cms -D -i /tmp/WYA.mobileprovision 2>/dev/null | plutil -extract UUID raw - 2>/dev/null || echo "866843c3-81a5-4817-b415-d5fb313c6106")
-          echo "Profile UUID: $PROFILE_UUID"
-
-          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          cp /tmp/WYA.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/$PROFILE_UUID.mobileprovision
-          echo "Profile installed at: ~/Library/MobileDevice/Provisioning Profiles/$PROFILE_UUID.mobileprovision"
-
-      - name: Set up signing from API
-        script: |
-          set -e
-          echo "=== Setting up code signing ==="
-
-          # Initialize keychain
+          # Initialize Codemagic keychain for signing
           keychain initialize
 
-          # Fetch distribution cert from API
-          echo "Fetching distribution certificates..."
-          app-store-connect certificates list --type IOS_DISTRIBUTION --save || {
-            echo "No existing certs, trying DISTRIBUTION type..."
-            app-store-connect certificates list --type DISTRIBUTION --save || {
-              echo "Creating new distribution certificate..."
-              app-store-connect certificates create --type IOS_DISTRIBUTION --save || true
+      - name: Fetch signing files
+        script: |
+          # Fetch certificates and create/fetch profiles automatically
+          # This creates the profile if it doesn't exist
+          app-store-connect fetch-signing-files "$BUNDLE_ID" \
+            --type IOS_APP_STORE \
+            --platform IOS \
+            --create \
+            --strict-match-identifier || {
+              echo "fetch-signing-files failed, trying manual setup..."
+              # Fallback: list certs and use existing profile
+              app-store-connect certificates list --type IOS_DISTRIBUTION --save || true
             }
-          }
 
-          # Add certs to keychain
-          echo "Adding certificates to keychain..."
-          keychain add-certificates || echo "Warning: keychain add-certificates had issues"
+      - name: Add certificates to keychain
+        script: |
+          keychain add-certificates
+          xcode-project use-profiles || echo "use-profiles had warnings"
 
-          # List available identities
-          echo "=== Available signing identities ==="
-          security find-identity -v -p codesigning || echo "No identities found"
-
-          # List installed profiles
-          echo "=== Installed provisioning profiles ==="
-          ls -la ~/Library/MobileDevice/Provisioning\ Profiles/ || echo "No profiles dir"
+          echo "=== Signing identities ==="
+          security find-identity -v -p codesigning || true
 
       - name: Increment build number
         script: |
@@ -100,10 +82,7 @@ workflows:
 
           echo "=== Build Environment ==="
           xcodebuild -version
-
-          # Get profile UUID
-          PROFILE_UUID=$(security cms -D -i /tmp/WYA.mobileprovision 2>/dev/null | plutil -extract UUID raw - 2>/dev/null || echo "866843c3-81a5-4817-b415-d5fb313c6106")
-          echo "Using profile UUID: $PROFILE_UUID"
+          echo ""
 
           # Resolve SPM dependencies
           echo "=== Resolving Swift Package Dependencies ==="
@@ -113,50 +92,21 @@ workflows:
             -clonedSourcePackagesDirPath "$CM_BUILD_DIR/SourcePackages"
 
           echo "=== Starting xcodebuild archive ==="
+          # Use automatic signing - let Xcode resolve everything
           xcodebuild archive \
             -project App.xcodeproj \
             -scheme App \
             -archivePath "$CM_BUILD_DIR/WYA.xcarchive" \
             -destination "generic/platform=iOS" \
             -clonedSourcePackagesDirPath "$CM_BUILD_DIR/SourcePackages" \
-            CODE_SIGN_STYLE=Manual \
-            "CODE_SIGN_IDENTITY=Apple Distribution" \
-            DEVELOPMENT_TEAM="$TEAM_ID" \
-            "PROVISIONING_PROFILE=$PROFILE_UUID" \
+            -allowProvisioningUpdates \
             COMPILER_INDEX_STORE_ENABLE=NO
 
       - name: Export IPA
         script: |
-          set -e
-
-          PROFILE_UUID=$(security cms -D -i /tmp/WYA.mobileprovision 2>/dev/null | plutil -extract UUID raw - 2>/dev/null || echo "866843c3-81a5-4817-b415-d5fb313c6106")
-
-          cat > /tmp/ExportOptions.plist << EOF
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0">
-          <dict>
-              <key>method</key>
-              <string>app-store</string>
-              <key>teamID</key>
-              <string>$TEAM_ID</string>
-              <key>signingStyle</key>
-              <string>manual</string>
-              <key>provisioningProfiles</key>
-              <dict>
-                  <key>$BUNDLE_ID</key>
-                  <string>$PROFILE_UUID</string>
-              </dict>
-              <key>uploadSymbols</key>
-              <true/>
-          </dict>
-          </plist>
-          EOF
-
-          xcodebuild -exportArchive \
-            -archivePath "$CM_BUILD_DIR/WYA.xcarchive" \
-            -exportPath build/ios/ipa \
-            -exportOptionsPlist /tmp/ExportOptions.plist
+          xcode-project build-ipa \
+            --archive "$CM_BUILD_DIR/WYA.xcarchive" \
+            --ipa build/ios/ipa/WYA.ipa
 
     artifacts:
       - build/ios/ipa/*.ipa
