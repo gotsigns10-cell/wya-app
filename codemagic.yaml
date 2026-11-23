@@ -10,9 +10,6 @@ workflows:
     environment:
       xcode: 16.0
       node: 22
-      ios_signing:
-        distribution_type: app_store
-        bundle_identifier: com.universoul.wya
       groups:
         - appstore
       vars:
@@ -31,8 +28,27 @@ workflows:
       - name: Install dependencies
         script: npm ci && npm run build && npx cap sync ios
 
-      - name: Set up signing
-        script: xcode-project use-profiles
+      - name: Fetch signing files
+        script: |
+          # Initialize keychain
+          keychain initialize
+
+          # Fetch or create signing files from App Store Connect
+          # --create flag generates new cert+profile if none exist
+          # Codemagic generates and manages the certificate private key
+          app-store-connect fetch-signing-files "$BUNDLE_ID" \
+            --type IOS_APP_STORE \
+            --create
+
+          # Add certificates to keychain
+          keychain add-certificates
+
+          # Apply profiles to Xcode project
+          xcode-project use-profiles
+
+          # Debug: show available identities
+          echo "=== Signing Identities ==="
+          security find-identity -v -p codesigning | head -10
 
       - name: Build Archive
         script: |
