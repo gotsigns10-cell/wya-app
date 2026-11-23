@@ -47,7 +47,7 @@ Issues Fixed:
 |-------|--------|-------|--------|
 | Emojis | 79 | 0 | ✅ 35+ SVG icons |
 | Gradients | 31 | 4 | ✅ consolidated |
-| Border-radius variants | 18 | 5 | ✅ CSS tokens |
+| Border-radius variants | 67 | 5 tokens | ✅ 134 CSS rules |
 | Keyframe animations | 21 | 9 | ✅ minimal motion |
 | Visible tabs (vendor) | 13 | 5 + overflow | ✅ consolidated |
 

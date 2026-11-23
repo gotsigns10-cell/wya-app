@@ -624,6 +624,15 @@ ${reviewHtml}
 });
 
 // Phase 1365: Removed Phase 1358 Hub redirect — standalone frontend restored
+// Phase 1750: Cache-busting headers for HTML files — prevents stale JS in browser cache
+app.use((req, res, next) => {
+  if (req.path.endsWith('.html') || req.path === '/' || ['vendor', 'plans', 'admin', 'account', 'customer', 'map'].includes(req.path.slice(1))) {
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+  }
+  next();
+});
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Phase 1364b: Extensionless HTML routes — /vendor, /plans, /admin, /account, /customer

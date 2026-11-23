@@ -198,9 +198,17 @@ E2E: ✅ All automated tests passing
 - `npx cap sync ios` → 4 plugins synced
 - Web assets copied to ios/App/App/public/
 
+### Screenshots - EXIST ⚠️
+Screenshots created Nov 12 (pre-design refresh):
+- `/wya-app/screenshots/` — 5 iPhone (1290x2796)
+- `/wya-app/screenshots/ipad_129/` — 5 iPad 12.9" (2048x2732)
+- `/wya-app/screenshots/ipad_13/` — 5 iPad 13" (2064x2752)
+
+**Note:** These predate design refresh. May need regeneration if emojis visible.
+
 ### Remaining for App Store
-1. [ ] Generate 5 screenshots (need visual tool or VNC)
-2. [ ] Upload to App Store Connect
+1. [x] Screenshots exist (may need refresh post-design)
+2. [ ] Upload screenshots to App Store Connect
 3. [ ] Trigger new TestFlight build with design changes
 4. [ ] Submit for App Store review
 

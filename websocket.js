@@ -204,10 +204,68 @@ function broadcastVendorLocation(vendorId, lat, lng, heading = 0, speed = 0) {
   });
 }
 
-// Start server
-server.listen(PORT, '0.0.0.0', () => {
-  console.log(`[WYA-WS] WebSocket server running on port ${PORT}`);
+// Prevent double-listen when imported as module
+let _started = false;
+
+// Attach error handler BEFORE listening
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`[WYA-WS] Port ${PORT} in use, retrying in 3s...`);
+    setTimeout(() => {
+      server.close();
+      server.listen(PORT, '0.0.0.0');
+    }, 3000);
+  } else {
+    console.error(`[WYA-WS] Server error:`, err);
+  }
 });
+
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('[WYA-WS] Received SIGTERM, shutting down gracefully...');
+  wss.close(() => {
+    server.close(() => {
+      console.log('[WYA-WS] Server closed');
+      process.exit(0);
+    });
+  });
+});
+
+process.on('SIGINT', () => {
+  console.log('[WYA-WS] Received SIGINT (ignoring in PM2 mode)');
+  // Don't exit on SIGINT - let PM2 send SIGTERM for proper shutdown
+});
+
+// Start server only when run directly
+if (!_started && require.main === module) {
+  _started = true;
+
+  // Log startup
+  console.log(`[WYA-WS] Starting... PID: ${process.pid}`);
+
+  server.listen(PORT, '0.0.0.0', () => {
+    console.log(`[WYA-WS] WebSocket server running on port ${PORT}`);
+    console.log(`[WYA-WS] Ready to accept connections`);
+  });
+
+  // Keepalive heartbeat with status - ensures event loop stays active
+  let heartbeats = 0;
+  setInterval(() => {
+    heartbeats++;
+    if (heartbeats % 20 === 0) { // Every 10 minutes
+      console.log(`[WYA-WS] Heartbeat #${heartbeats}, clients: ${clients.size}`);
+    }
+  }, 30000);
+
+  // Detect unexpected shutdown
+  process.on('beforeExit', (code) => {
+    console.log(`[WYA-WS] beforeExit with code ${code}`);
+  });
+
+  process.on('exit', (code) => {
+    console.log(`[WYA-WS] exit with code ${code}`);
+  });
+}
 
 module.exports = {
   broadcastVendorLocation,
