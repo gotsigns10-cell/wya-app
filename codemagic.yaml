@@ -53,9 +53,9 @@ workflows:
       - name: Build Archive
         script: |
           cd ios/App
-          # Hardcoded to 25 — previous TestFlight version was 17
+          # Hardcoded — previous TestFlight version was 25
           # TODO: Fix app-store-connect API query (returns empty/0)
-          BUILD_NUM=25
+          BUILD_NUM=26
           echo "Building with CURRENT_PROJECT_VERSION=$BUILD_NUM"
           xcodebuild archive \
             -project App.xcodeproj \
