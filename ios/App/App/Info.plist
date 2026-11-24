@@ -66,11 +66,12 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<!-- Push Notification permission -->
+	<key>NSUserNotificationUsageDescription</key>
+	<string>WYA sends notifications about nearby vendors, customer inquiries, and order updates.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>WYA uses your location to show you nearby vendors and help customers find your business when you go live.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>WYA uses background location to keep your vendor pin accurate on the map even when the app is in the background.</string>
-	<key>NSLocationAlwaysUsageDescription</key>
 	<string>WYA uses background location to keep your vendor pin accurate on the map even when the app is in the background.</string>
 	<key>UIBackgroundModes</key>
 	<array>

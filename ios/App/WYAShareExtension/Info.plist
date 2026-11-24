@@ -18,6 +18,11 @@
     <string>1.0</string>
     <key>CFBundleVersion</key>
     <string>1</string>
+    <!-- Photo Library permission for Share Extension -->
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>WYA needs access to your photos to share images with vendors.</string>
+    <key>NSPhotoLibraryAddOnlyUsageDescription</key>
+    <string>WYA needs to save shared images to your library.</string>
     <key>NSExtension</key>
     <dict>
         <key>NSExtensionAttributes</key>
