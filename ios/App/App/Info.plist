@@ -78,5 +78,8 @@
 		<string>fetch</string>
 		<string>remote-notification</string>
 	</array>
+	<!-- Export Compliance - HTTPS only, no custom encryption -->
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 </dict>
 </plist>
